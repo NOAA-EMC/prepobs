@@ -12,6 +12,7 @@ set(exe_name prepobs_oiqcbufr)
 add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}
+  MPI::MPI_Fortran
   w3emc::w3emc_4
   bufr::bufr_4)
 
