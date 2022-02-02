@@ -9,6 +9,6 @@ load("hpc/1.1.0")
 load("hpc-intel/18.0.5.274")
 
 -- Load common modules for this package
-load("prepbos_common")
+load("prepobs_common")
 
 whatis("Description: prepobs build environment")
