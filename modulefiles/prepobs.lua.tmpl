@@ -1,0 +1,20 @@
+help([[
+Sets environment variables for prepobs pacakage
+]])
+
+local pkgName = myModuleName()
+local pkgVersion = myModuleVersion()
+local pkgNameVer = myModuleFullName()
+
+conflict(pkgName)
+
+local base = "@CMAKE_INSTALL_PREFIX@"
+
+setenv("HOMEprepobs", base)
+setenv("FIXprepobs", pathJoin(base, "fix"))
+setenv("USHprepobs", pathJoin(base, "ush"))
+
+whatis("Name: ".. pkgName)
+whatis("Version: " .. pkgVersion)
+whatis("Category: Utility")
+whatis("Description: This module sets the environment variables for PREPOBS package")
