@@ -30,6 +30,8 @@ endif()
 
 # Build code.
 add_subdirectory(gblevents.fd)
+add_subdirectory(gdascounts_ave.fd)
+add_subdirectory(global_postevents.fd)
 add_subdirectory(prepobs_cqcbufr.fd)
 add_subdirectory(prepobs_cqcvad.fd)
 add_subdirectory(prepobs_glerladj.fd)
@@ -43,3 +45,4 @@ add_subdirectory(prepobs_prepdata.fd)
 add_subdirectory(prepobs_prevents.fd)
 add_subdirectory(prepobs_profcqc.fd)
 add_subdirectory(syndat_syndata.fd)
+add_subdirectory(timetwin.fd)
