@@ -11,7 +11,9 @@ conflict(pkgName)
 local base = "@CMAKE_INSTALL_PREFIX@"
 
 setenv("HOMEprepobs", base)
+setenv("EXECprepobs", pathJoin(base, "exec"))
 setenv("FIXprepobs", pathJoin(base, "fix"))
+setenv("SCRIPTSprepobs", pathJoin(base, "scripts"))
 setenv("USHprepobs", pathJoin(base, "ush"))
 
 whatis("Name: ".. pkgName)
