@@ -20,6 +20,10 @@ file(DOWNLOAD
 
 # Collect list of fix files to install.
 list(APPEND fix_files
+  gdascounts_avg.awk
+  gdascounts_base.shtml
+  gdascounts_html
+  gdascounts_types
   glerldict.lmd
   prepobs_cqc_statbge
   prepobs_errtable.cdas
@@ -27,6 +31,7 @@ list(APPEND fix_files
   prepobs_oiqc.oberrs
   prepobs_oiqc.oberrs.cdas
   prepobs_prep.bufrtable
+  satellite_counts.tbl
   syndat_weight
   )
 

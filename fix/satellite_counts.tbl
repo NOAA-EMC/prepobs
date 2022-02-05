@@ -1,0 +1,14 @@
+sndr    ; Satellite Soundings; GOES
+sbuv2   ; Ozone              ; OZONE
+satw    ; Satellite Winds    ; SATWND
+scat    ; Scatterometer Winds; QUIKSCAT
+ssmi    ; DMSP               ; SSMI RADIANCES
+pcp_ssmi; *                  ; SSMI RAINFALL RATES
+cosmic  ; Cosmic/gps         ; COSMIC
+pcp_tmi ; Satellite Surface  ; NASA TRMM DATA
+hirs3   ; Satellite Radiances; HIRS3 1B
+hirs4   ; *                  ; HIRS4 1B
+amsua   ; *                  ; AMSUA 1B**
+amsub   ; *                  ; AMSUB 1B 
+mhs     ; *                  ; MHS 
+airs    ; *                  ; AIRS
