@@ -30,8 +30,14 @@ endif()
 # Build and install code.
 add_subdirectory(sorc)
 
+# Install scripts.
+add_subdirectory(scripts)
+
 # Install utility scripts.
 add_subdirectory(ush)
 
 # Install fix files.
 add_subdirectory(fix)
+
+# Install module file for this package.
+add_subdirectory(modulefiles)
