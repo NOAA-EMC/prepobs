@@ -8,7 +8,7 @@ cmake_ver=os.getenv("cmake_ver")
 craype_ver=os.getenv("craype_ver")
 cray_mpich_ver=os.getenv("cray_mpich_ver")
 
--- load("envvar")
+load("envvar")
 load(pathJoin("PrgEnv-intel", PrgEnv_intel_ver))
 load(pathJoin("intel", intel_ver))
 load(pathJoin("cmake", cmake_ver))
