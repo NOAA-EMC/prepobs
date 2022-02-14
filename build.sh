@@ -7,7 +7,7 @@ pkg_root=`dirname $(readlink -f $0)`
 
 INSTALL_TARGET=${INSTALL_TARGET:-"wcoss2"}
 INSTALL_PREFIX=${INSTALL_PREFIX:-"$pkg_root/install"}
-MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"modulefiles"}
+MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"${INSTALL_PREFIX}/modulefiles"}
 
 target=$(echo $INSTALL_TARGET | tr [:upper:] [:lower:])
 if [[ "$target" =~ ^(wcoss2|hera|orion)$ ]]; then
@@ -27,7 +27,7 @@ mkdir -p build && cd build
 # build and install.
 cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
       -DCMAKE_INSTALL_BINDIR=exec \
-      -DCMODULEFILE_INSTALL_PREFIX=$MODULEFILE_INSTALL_PREFIX \
+      -DMODULEFILE_INSTALL_PREFIX=$MODULEFILE_INSTALL_PREFIX \
       ..
 make -j ${BUILD_JOBS:-6} VERBOSE=${BUILD_VERBOSE:-}
 make install
