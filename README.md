@@ -14,6 +14,8 @@ Move into desired branch and then run:
 INSTALL_PREFIX=/path/you/wish/to/install/prepobs ./build.sh
 ```
 
+build.sh default to building for WCOSS2, but it also supports Hera and Orion by setting `INSTALL_TARGET=hera/orion/wcoss2`
+
 or install in local clone space:
 
 ```bash
