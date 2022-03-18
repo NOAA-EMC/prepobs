@@ -9620,10 +9620,10 @@ c-----------------------------------
 c
 c Output basic stats
 c ------------------
-      nave = (numreps-nmiss) / (kflight-1)
+c      nave = (numreps-nmiss) / (kflight-1)
       write(io8,*)
       write(io8,*) kflight,' different flights found'
-      write(io8,*) nave,' reports per flight, on average'
+c      write(io8,*) nave,' reports per flight, on average'
 c
 c Output indices for each flight
 c ------------------------------
