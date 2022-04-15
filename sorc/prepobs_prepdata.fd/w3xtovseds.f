@@ -68,6 +68,9 @@ C      SUBROUTINE W3CNVXTOVS
 C 2020-01-09  J. Dong -- In subroutine W3XTOVSEDS, changed the windowing
 C      decade from 20 to 40 for cases when the year is represented by
 C      2 digits instead of 4.
+
+C 2022-05-15  I. GENKOVA --  DEFINED IDSAT AS INTEGER(8) TO ACCOMODATE
+C     COMPILER ON WCOSS2
 C
 C USAGE :   CALL W3XTOVSEDS(IUNIT,IBDATE,IBUFTN,ISATOB,PBOT,DSNAME,
 C                           IDSDAT,IDSDMP_8,IERR)
@@ -217,8 +220,7 @@ C$$$
       REAL GEOOPR(18),TLAYER(15),PLAYER(16),RINC(5)
 
       INTEGER IBUFTN(140),ISATOB(3),JDATE(5),JDUMP(5),IBIT(2)
-
-      INTEGER(8) IDSDMP_8,JDUMP_8(5),KDATE(8),LDATE(8)
+      INTEGER(8) IDSDAT, IDSDMP_8,JDUMP_8(5),KDATE(8),LDATE(8) 
 
       CHARACTER*8 SUBSET,DSNAME
       DATA NUMLVL/0/,ISTLVL/0/
@@ -289,6 +291,7 @@ C  -----------------------------------------------------------------
          JFIRST = 1
          IUNITL = IUNIT
          CALL DUMPBF(IUNIT,JDATE,JDUMP)
+         print'(" w3xtovseds output for jdate and jdump ")'
          print'(" CENTER DATE (JDATE) = ",5(I0,1X))', jdate
          print'(" DUMP DATE   (JDUMP) = ",5(I0,1X))', jdump
          print'(1X)'
