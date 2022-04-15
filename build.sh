@@ -27,7 +27,6 @@ mkdir -p build && cd build
 # build and install.
 cmake -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
       -DCMAKE_INSTALL_BINDIR=exec \
-      -DCMAKE_BUILD_TYPE=Debug \
       -DMODULEFILE_INSTALL_PREFIX=$MODULEFILE_INSTALL_PREFIX \
       ..
 make -j ${BUILD_JOBS:-6} VERBOSE=${BUILD_VERBOSE:-}

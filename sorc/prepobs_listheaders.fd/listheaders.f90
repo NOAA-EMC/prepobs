@@ -78,10 +78,6 @@ do k=1,klist
    kount(k)=0
    do m=1,kmsgs+1
       call rdmemm(m,subset,jdate,iret)
-! ILIANA check returned jdate
-      PRINT 987, jdate
-987    FORMAT(/19X,'ILIANA: listheaders.f90 jdate= ', I12.12/)
-
       if (iret.ne.0 ) then
 ! All messages have been read; write out the count associated with the
 !  current list type and move on to the next list type

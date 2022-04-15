@@ -12673,7 +12673,7 @@ CCC
       LOGICAL  SATMST,TR80KM,TOVEDS
       INTEGER  IBUF(140),JRTRV(3),NUMOB(5,4,2,4,4),KEPOB(5,4,2,4),
      $ MSTOB(5,4,2,4),IDATA(MAXOBS),KSATOB(3),IDSAT(8),ISAMPLE(2) 
-C     MADE IDSAT(4) TO IDSAT(8)      
+C     MADE IDSAT(4) TO IDSAT(8) to accomodate compiler on WCOSS2     
       INTEGER(8) IDSDAT,IDSDMP_8
       REAL(8)  BMISS,obs8_8,alon_8,alat_8
       COMMON/ADP/ISATOB,PMAND(23),RDATA(MAXOBS),IPRINT
@@ -12756,8 +12756,7 @@ C.......................................................................
 C IER = 1 RETURNS DATA SET INFO (ONLY) AFTER FIRST CALL
          PRINT 7000, DSNAME,IDSDAT,IDSDMP_8
  7000    FORMAT(//22X,'--> DATA SET INFORMATION: NAME: ',A8,'; DATE: ',
-     $    I10.10,'; DUMP TIME: ',I30.30,' <--'//)
-C..........ILIANA I12.12 -> I30.30         
+     $    I10.10,'; DUMP TIME: ',I12.12,' <--'//)
 C DOES DATE FROM DATA SET MATCH CENTER (CYCLE) DATE?
          IF(IDSDAT.NE.IDAT10)  THEN
             PRINT 324
