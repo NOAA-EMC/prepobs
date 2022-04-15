@@ -217,8 +217,8 @@ C$$$
       REAL GEOOPR(18),TLAYER(15),PLAYER(16),RINC(5)
 
       INTEGER IBUFTN(140),ISATOB(3),JDATE(5),JDUMP(5),IBIT(2)
-
-      INTEGER(8) IDSDMP_8,JDUMP_8(5),KDATE(8),LDATE(8)
+C   ADDED IDSAT to integer8
+      INTEGER(8) IDSDAT, IDSDMP_8,JDUMP_8(5),KDATE(8),LDATE(8) 
 
       CHARACTER*8 SUBSET,DSNAME
       DATA NUMLVL/0/,ISTLVL/0/
@@ -289,6 +289,7 @@ C  -----------------------------------------------------------------
          JFIRST = 1
          IUNITL = IUNIT
          CALL DUMPBF(IUNIT,JDATE,JDUMP)
+         print'(" ILIANA w3xttovseds output for jdate and jdump ")'
          print'(" CENTER DATE (JDATE) = ",5(I0,1X))', jdate
          print'(" DUMP DATE   (JDUMP) = ",5(I0,1X))', jdump
          print'(1X)'
