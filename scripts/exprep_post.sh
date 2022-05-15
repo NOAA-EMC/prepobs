@@ -3,17 +3,20 @@
 echo "-------------------------------------------------------------"
 echo "exprep_post.sh     - Runs various post-analysis processing   "
 echo "                     steps on the PREPBUFR files (removes or "
-echo "                     masks restricted data)                  "
+echo "                     masks restricted data from both today's "
+echo "                     PREPBUFR files and from AIRCAR and      "
+echo "                     AIRCFT Table A entries in 2-day old     "
+echo "                     PREPBUFR files).                        "
 echo "                   - GDAS only: Identify TimeTwin duplicate  "
 echo "                     upper-air (RAOB, PIBAL, DROP) wind      "
-echo "                     report parts                            "
+echo "                     report parts.                           "
 echo "                   - 18Z GDAS only: Reformat GDAS received,  "
 echo "                     selected, and assimilated data counts   "
 echo "                     (both satellite and non-satellite) for  "
 echo "                     all four cycles for today and save the  "
 echo "                     result in the monthly archive directory "
 echo "                     (run monthly summary on the second day  "
-echo "                     of the next month and post to web)      "
+echo "                     of the next month and post to web).     "
 echo "                   - 18Z GDAS only: Update the Master Ship   "
 echo "                     Station List based on any new           "
 echo "                     info read from the updated VOS ship     "
@@ -49,6 +52,11 @@ echo "                processing (Melchior)                                   "
 echo "  Jul 15 2020 - Modified $path variable to include (or exclude)         "
 echo "                $COMPONENT subdir based on GFS version.                 "
 echo "  Dec 09 2021 - Updated for use on WCOSS2 (Esposito)                    " 
+echo "  ??? ?? ???? - Added new "remorest" processing to remove restricted    "
+echo "                data from 2-day old PREPBUFR files (Keyser).            "
+echo "  ??? ?? ???? - Added logic to handle PREPBUFR center times that are    "
+echo "                not on the whole hour (needed for new RTMA_RU runs)     "
+echo "                (Keyser).                                               "
 ###############################################################################
 
 # NOTE: NET is gfs for the gdas RUN (as for the gfs RUN)
@@ -66,6 +74,8 @@ if [ ! -s break ]; then
    echo "step ############# break ##############################" > break
 fi
 cat break > $pgmout
+
+PROCESS_REMOREST_dm2=${PROCESS_REMOREST_dm2:-NO}
 
 hr_fraction=""
 set +u
@@ -128,53 +138,122 @@ CENTERED ON $cdate10"
    dot_tmmark=".$tmmark"
    [ $net = gdas -o $net = gfs -o $net = cdas ]  &&  dot_tmmark=""
 
-########################################################
-#  Remove or mask restricted data from PREPUFR files
-########################################################
+##############################################################
+#  Remove or mask restricted data from today's PREPBUFR files
+##############################################################
 
-cat <<\EOFparm > bufr_remorest.prepbufr.parm
+#  If either the restriction indicator (mnemonic RSRD) is set for a report, or
+#  the report is in a Table A entry pre-determined to contain only restricted
+#  reports, then the report is always restricted {regardless of the time in
+#  hours for the expiration on restriction (mnemonic EXPRSRD)}.
+#    ---> Since we are running in near-realtime, there is no need to test on
+#         the value of EXPRSRD.  This will always be > current time difference.
+#    ---> For all Table A entries listed in parm card namelist switch
+#         "MSG_RESTR" (see below):
+#            All reports are considered to be restricted by definition of this
+#            switch. They will be skipped by program BUFR_REMOREST.
+#    ---> For all Table A entries listed in parm card namelist switch
+#         "MSG_MIXED" (see below):
+#            RSRD may not be set for all reports. Those with RSRD set are
+#            considered to be restricted regardless of EXPRSRD because
+#            "DIFF_HR" (the difference in hours between the current UTC wall-
+#            clock date and the PREPBUFR file center date),is exported as 0
+#            into program BUFR_REMOREST (EXPRSRD will always be > actual
+#            DIFF_HR since we are running in near-realtime).  They will be
+#            skipped by program BUFR_REMOREST.  Those reports that do not have
+#            RSRD set are considered to be non-restricted and will be retained
+#            by program BUFR_REMOREST.
+#    ---> For all Table A entries listed in parm card namelist switch
+#         "MSG_MASKA" (see below):
+#            All reports with a dump report type listed in namelist switch
+#            IMASK_T29 (see below) may have RSRD set for some reports.  Those
+#            with RSRD set are considered to be restricted regardless of
+#            EXPRSRD because "DIFF_HR" (the difference in hours between the
+#            current UTC wall-clock date and the PREPBUFR file center date),
+#            is exported as 0 into program BUFR_REMOREST (EXPRSRD will always
+#            be > actual DIFF_HR since we are running in near-realtime). They
+#            are not removed, but all occurrences of their ids will be masked
+#            out by program BUFR_REMOREST. In addition, program BUFR_REMOREST
+#            re-sets their values for RSRD and EXPRSRD to missing so that the
+#            reports are no longer considered to be restricted. Reports with a
+#            dump report type not listed in namelist switch IMASK_T29 are
+#            considered to be non-restricted and their ids are not masked out
+#            by program BUFR_REMOREST.
+# -----------------------------------------------------------------------------
+
+  export DIFF_HR=0
+
+  cat <<\EOFparm > bufr_remorest.prepbufr.parm
 =========================================================================
 
-  Cards for PREPBUFR Version of BUFR_REMOREST -- Version 15 March 2013
+  Cards for PREPBUFR Version of BUFR_REMOREST -- Version ?? ??? 20??
 
   -->   GPSIPW can be moved from MSG_RESTR to MSG_MIXED oncw dump interface to
          PREPDATA can recognize U.S.-provider (ENI) reports which are now
          restricted
 
  &SWITCHES
-   MSG_RESTR = 'AIRCAR  ',   ! These are the Table A Entries for
-               'MSONET  ',   !  BUFR messages for which ALL reports
-               'GPSIPW  ',   !  are RESTRICTED and will be REMOVED.
-               '        ',   !  (up to 20)
-   MSG_MIXED = 'ADPSFC  ',   ! These are the Table A Entries for
-               'AIRCFT  ',   !  BUFR messages which contain a MIXTURE
-               '        ',   !  of restricted and unrestricted
-               '        ',   !  reports (based on mnemonic "RSRD").  All
-               '        ',   !  restricted reports will be REMOVED.
-               '        ',   !  (up to 20)
-   MSG_MASKA = 'SFCSHP  ',   ! These are the Table A Entries for
-               '        ',   !  BUFR messages for which ALL reports
-               '        ',   !  are RESTRICTED if their dump report type is
-               '        ',   !  one of up to 10 possible listed in switch
-               '        ',   !  IMASK_T29 below (each line in IMASK_T29 applies
-               '        ',   !  to the Table A entry in the same line number
-               '        ',   !  here). Restricted reports will not be removed,
-               '        ',   !  but their report ids will be unilaterally
-               '        ',   !  changed to "MASKSTID"
-               '        ',   !  (up to 20)
-               '        ' 
-   IMASK_T29 = 522,523,8*99999, ! Dump report types restricted in MSG_MASKA(1)
-               10*99999,        ! Dump report types restricted in MSG_MASKA(2)
+   MSG_RESTR = 'AIRCAR  ',   ! These are the Table A Entries for BUFR messages
+               'MSONET  ',   !  for which ALL reports are considered to be
+               'GPSIPW  ',   !  restricted. All reports will be REMOVED by
+               '        ',   !  program BUFR_REMOREST.
+               '        ',   !  (up to 20 Table A entries)
+               '        ',   !
+               '        ',   ! Note: move MSONET to MSG_MIXED when we know for sure that RSRD values are correct for each provider/sub-provider
+               '        ',   !
+   MSG_MIXED = 'AIRCFT  ',   ! These are the Table A Entries for BUFR messages
+               'ADPSFC  ',   !  which may contain a MIXTURE of reports with and
+               '        ',   !  withough mnemonic "RSRD" being set. If "RSRD" is
+               '        ',   !  not set -or- it is set and mnemonic "EXPRSRD"
+               '        ',   !  is also set and has a value luess than "DIFF_HR"
+               '        ',   !  (the difference in hrs between the current UTC
+               '        ',   !  wall-clock date and the PREPBUFR file center
+               '        ',   !  date) minus 4, the report will be RETAINED by
+               '        ',   !  program BUFR_REMOREST. Otherwise, it will be
+               '        ',   !  REMOVED by program BUFR_REMOREST.
+               '        ',   !  (up to 20 Table A entries)
+               '        ',
+   MSG_MASKA = 'SFCSHP  ',   ! These are the Table A Entries for BUFR messages
+               '        ',   !  which, if their dump report type is one of up
+               '        ',   !  to 10 possible listed in switch IMASK_T29
+               '        ',   !  (where each line in IMASK_T29 applies to the
+	       '        ',   !  Table A entry in the same line number here),
+               '        ',   !  may contain a mixture or reports with and
+               '        ',   !  without their value for mnemonic "RSRD") being
+               '        ',   !  set. If "RSRD" is not set for a report -or- it
+               '        ',   !  is set and the time in mnemonic "EXPRSRD" is
+               '        ',   !  also set and has a value less than "DIFF_HR"
+               '        ',   !  (the difference in hours between the current
+               '        ',   !  UTC wall-clock date and the PREPBUFR file
+               '        ',   !  center date) minus 4, the report will be
+               '        ',   !  copied without any changes by program
+               '        ',   !  BUFR_REMOREST. Otherwise, the report will not
+               '        ',   !  be removed, but all occurrances of its id will
+               '        ',   !  be changed to "MASKSTID" by program
+               '        ',   !  BUFR_REMOREST. In addition, program
+               '        ',   !  BUFR_REMOREST re-sets its values for "RSRD" and
+               '        ',   !  "EXPRSRD to missing so that the report is no
+                             !  longer considered to be restricted. Reports
+                             !  with a dump report type not listed in switch
+                             !  IMASK_T29 are considered to be non-restricted
+                             !  and their report ids are not changed (masked
+                             !  out) when copied by program BUFR_REMOREST.
+                             !  (up to 20 Table A entries)
+                             ! 
+   IMASK_T29 = 522,523,8*99999, ! MSG_MASKA(1) dump report types that may
+                                ! contain restricted reports
+               10*99999,        ! MSG_MASKA(2) dump report types that may
+                                ! contain restructed reports
                10*99999         ! etc., {up to 20 for MSG_MASKA(20)}
 
  /
 
-    Note 1: A particular Table A entry should NEVER appear in more than one
-            of MSG_RESTR, MSG_MIXED or MSG_MASKA.
+    Note 1: A particular Table A entry should NEVER appear in more than one of
+            MSG_RESTR, MSG_MIXED or MSG_MASKA.
     Note 2: Any Table A entry not in either MSG_RESTR, MSG_MIXED or MSG_MASKA
-            is assumed to be a Table A entry for BUFR messages for which
-            ALL reports are UNRESTRICTED (these messages are copied
-            intact, no reports are unpacked).
+            is assumed to be a Table A entry for BUFR messages for which ALL
+            reports are UNRESTRICTED (these messages are copied intact, no
+            reports are unpacked).
     Note 3: Always fill in the arrays MSG_RESTR, MSG_MIXED and MSG_MASKA
             beginning with word 1.  If there are less than 20 words filled in
             an array, either set the extra words to "        " (8 blank
@@ -182,12 +261,12 @@ cat <<\EOFparm > bufr_remorest.prepbufr.parm
             "        ").
     Note 4: In array IMASK_T29, a value of "99999" means not applicable whereas
             a value of "000" means reports in all dump report types in the
-            corresponding Table A entry in MSG_MASKA should be restricted
-            (masked) {in this case IMASK_T29(1,x) would be set to 000 and
-            IMASK_T29(2:10,x) would be set to 99999 for all reports in Table A
-            entry MSG_MASKA(x) since they would all be ignored - this is the
-            default for all Table A entries MSG_MASKA(1:20) if this is not set
-            (i.e., for data dump files)}
+            corresponding Table A entry in MSG_MASKA should be considered {in 
+	    this case IMASK_T29(1,x) would be set to 000 and IMASK_T29(2:10,x)
+            should be set to 99999 for all reports in Table A entry
+            MSG_MASKA(x) since they would all be ignored - this is the default
+            for all Table A entries MSG_MASKA(1:20) if this switch is not set
+            (i.e., for data dump files)}.
 
 =========================================================================
 EOFparm
@@ -309,6 +388,204 @@ it already exists"
 fi
 
 fi # test for PROCESS_REMOREST=YES
+
+
+if [ "$PROCESS_REMOREST_dm2" = 'YES' ]; then
+
+  cdate10M2=`$NDATE -$tmhr $PDYm2$cyc`
+
+  msg="REMOVE OR MASK RESTRICTED DATA FROM $tmmark_uc $net_uc PREPBUFR files \
+CENTERED ON $cdate10M2 (2-days ago)"
+  $DATA/postmsg "$jlogfile" "$msg"
+  set +x
+  echo
+  echo "$msg"
+  echo
+  set -x
+
+  dot_tmmark=".$tmmark"
+  [ $net = gdas -o $net = gfs -o $net = cdas ]  &&  dot_tmmark=""
+
+##########################################################################
+#  Remove restriction on data in "AIRCAR" and "AIRCFT" Table A entries in
+#   2-day old PREPBUFR files (all other data previously restricted in
+#   real-time PREPBUFR files continue to be restricted here)
+##########################################################################
+
+#    ---> For all Table A entries listed in parm card namelist switch
+#         "MSG_RESTR" (see below):
+#            All reports are considered to be restricted by definition of this
+#            switch. They will be skipped by program BUFR_REMOREST.
+#    ---> For all Table A entries listed in parm card namelist switch
+#         "MSG_MIXED" (see below):
+#            The restriction indicator (mnemonic RSRD) may not be set for all
+#            reports. If RSRD is set for a report, then its value for time in
+#            hours for the expiration on restriction (mnemonic EXPRSRD) is
+#            examined. If "DIFF_HR" (the difference in hours between the
+#            current UTC wall-clock date and the PREPBUFR file center date,
+#            exported into program BUFR_REMOREST) minus 4 is less than or equal
+#            to EXPRSRD, then the report is considered to be restricted and
+#            will be skipped by program BUFR_REMOREST. Otherwise, the report is
+#            considered to be non-restricted and will be retained by program
+#            BUFR_REMOREST.
+#    ---> For all Table A entries listed in parm card namelist switch
+#         "MSG_MASKA" (see below):
+#            All reports with a dump report type listed in namelist switch
+#            IMASK_T29 (see below) may have RSRD set for some reports.  If RSRD
+#            is set for a report, then its value for EXPRSRD is examined. If
+#            "DIFF_HR" minus 4 is less than or equal to EXPRSRD, then the
+#            report is considered to be restricted.  It will not be removed,
+#            but all occurrences of its id will be masked out by program
+#            BUFR_REMOREST.  In addition, program BUFR_REMOREST re-sets its
+#            values for RSRD and EXPRSRD to missing so that the report is no
+#            longer considered to be restricted.  Reports with a dump report
+#            type not listed in namelist switch IMASK_T29 are considered to be
+#            non-restricted and their ids are not masked out by program
+#            BUFR_REMOREST.
+#            (Note: All reports in Table A entry "SFCSHP" that have RSRD set
+#                   also have EXPRSRD set to missing.  Thus all such reports
+#                   are considered as restricted for all time.)
+#    ---> Since we are running 2-days late, we want to test on the value of
+#         EXPRSRD (which currently should be set to 48 hours for any reports in
+#         the "AIRCAR" and "AIRCFT" Table A entries which have RSRD set).  This
+#         will allow non-rstprod users to have access to all original "AIRCAR"
+#         and "AIRCFT" reports in non-restricted PREPBUFR files after EXPRSRD +
+#         4 (52) hours.
+# -----------------------------------------------------------------------------
+
+  ymdh=$(date -u +'%Y%m%d%H')
+  export DIFF_HR=`$NHOUR  $ymdh            $cdate10M2`
+#                         current_date     prepbufr_date
+
+  msg="Any reports with EXPRSRD less than `expr $DIFF_HR - 4 ` hrs will now \
+be retained"
+  $DATA/postmsg "$jlogfile" "$msg"
+
+  $DATA/postmsg "$jlogfile" "$msg"
+=========================================================================
+
+  Cards for PREPBUFR Version of BUFR_REMOREST -- Version 1.1.0 (09 Sep 2015)
+  (documentation in bufr_remorest.prepbufr.parm above for $PROCESS_REMOREST
+   also applies here)
+
+  -->   GPSIPW can be moved from MSG_RESTR to MSG_MIXED oncw dump interface to
+         PREPDATA can recognize U.S.-provider (ENI) reports which are now
+	 restricted
+
+&SWITCHES
+  MSG_RESTR = 'MSONET  ',   ! Note: move MSONET to MSG_MIXED when we know for sure that RSRD values are correct for each provider/sub-provider
+              'GPSIPW  ',
+  MSG_MIXED = 'AIRCAR  ',
+              'AIRCFT  ',
+	      'ADPSFC  ',
+	      '        ',
+  MSG_MASKA = 'SFCSHP  ',
+              '        ',
+  IMASK_T29 = 522,523,8*99999,
+              10*99999,
+	      10*99999
+
+/
+
+=========================================================================
+EOF_EXPRSRDparm
+
+REMX=${REMX:-$EXECobsproc_shared_bufr_remorest/bufr_remorest}
+REMC=${REMC_EXPRSRD:-bufr_remorest.prepbufr_EXPRSRD.parm}
+
+if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
+   cp $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} \
+    $RUN.$cycle.prepbufr${dot_tmmark}
+   $USHobsproc_shared_bufr_remorest/bufr_remorest.sh \
+    $RUN.$cycle.prepbufr${dot_tmmark}
+   errsc=$?
+   [ "$errsc" -ne '0' ]  &&  exit $errsc
+   cp $RUN.$cycle.prepbufr${dot_tmmark} \
+    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+   msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago successfully \
+created -- overwrite existing file made 2-days ago"
+   $DATA/postmsg "$jlogfile" "$msg"
+   if test "$SENDDBN" = "YES"; then
+      if test "$net" = "gdas"; then
+	 $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_nr $job \
+          $COMOUTm2/$RUN.$cycle.prepbufr.nr
+      elif test "$net" = "nam"; then
+	 $DBNROOT/bin/dbn_alert MODEL NAM_BUFR_PREPda_nr $job \
+          $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+      elif test "$net" = "gfs"; then
+	 $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_nr $job \
+          $COMOUTm2/$RUN.$cycle.prepbufr.nr
+      elif test "$net" = "rap" -o "$net" = "rap_e" -o "$net" = "rap_p"; then
+	 $DBNROOT/bin/dbn_alert MODEL ${net_uc}_BUFR_PREPda_nr $job \
+	  $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+      fi
+   fi
+   if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok ]; then
+# make unblocked unrestricted prebufr file
+#  ---> ON WCOSS prepbufr is already unblocked, so for now just copy it to the
+#       unblok file location used before on CCS - hopefully this can be removed
+#       someday!
+      cp -p $RUN.$cycle.prepbufr${dot_tmmark} \
+$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
+      err_cp=$?
+      if [ $err_cp -eq 0 ]; then
+	 cp $RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr \
+	  $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
+	 chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
+	 msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago \
+successfully created - overwrite existing file made 2-days ago"
+	 $DATA/postmsg "$jlogfile" "$msg"
+	 if test "$SENDDBN" = "YES"; then
+	    if test "$net" = "gdas"; then
+	       $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_unblok_nr $job \
+		$COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
+	    elif test "$net" = "gfs"; then
+	       $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_unblok_nr $job \
+		$COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
+	    fi
+	 fi
+      else
+	 msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago NOT \
+created because cp command had return code $err_cp -- existing file made \
+2-days ago is not overwritten"
+	 $DATA/postmsg "$jlogfile" "$msg"
+      fi
+   else
+      msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago NOT \
+created because unblocked prepbufr file from 2-days ago does not exist"
+      $DATA/postmsg "$jlogfile" "$msg"
+   fi
+else
+   msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago NOT created \
+because prepbufr file from 2-days ago does not exist"
+   $DATA/postmsg "$jlogfile" "$msg"
+   if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok ]; then
+      msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago NOT \
+created because prepbufr file from 2-days ago does not exist"
+   fi
+fi
+
+if [ -f $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} ]; then
+   cp $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
+    $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
+   $USHobsproc_shared_bufr_remorest/bufr_remorest.sh \
+    $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
+   errsc=$?
+   [ "$errsc" -ne '0' ]  &&  exit $errsc
+   cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
+    $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
+   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
+   msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr from 2-days ago \
+successfully created -- overwrite existing file made 2-days ago"
+   $DATA/postmsg "$jlogfile" "$msg"
+else
+   msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr from 2-days ago NOT \
+created because prepbufr_pre-qc file from 2-days ago does not exist"
+   $DATA/postmsg "$jlogfile" "$msg"
+fi
+
+fi #  endif loop $PROCESS_REMOREST_dm2
 
 
 
