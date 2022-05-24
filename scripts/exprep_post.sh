@@ -462,6 +462,8 @@ be retained"
   $DATA/postmsg "$jlogfile" "$msg"
 
   $DATA/postmsg "$jlogfile" "$msg"
+
+  cat <<\EOF_EXPRSRDparm > bufr_remorest.prepbufr_EXPRSRD.parm
 =========================================================================
 
   Cards for PREPBUFR Version of BUFR_REMOREST -- Version 1.1.0 (09 Sep 2015)
@@ -490,13 +492,13 @@ be retained"
 =========================================================================
 EOF_EXPRSRDparm
 
-REMX=${REMX:-$EXECobsproc_shared_bufr_remorest/bufr_remorest}
+REMX=${REMX:-$EXECobsproc/bufr_remorest}
 REMC=${REMC_EXPRSRD:-bufr_remorest.prepbufr_EXPRSRD.parm}
 
 if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
    cp $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} \
     $RUN.$cycle.prepbufr${dot_tmmark}
-   $USHobsproc_shared_bufr_remorest/bufr_remorest.sh \
+   $USHobsproc/bufr_remorest.sh \
     $RUN.$cycle.prepbufr${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
@@ -569,7 +571,7 @@ fi
 if [ -f $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} ]; then
    cp $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
     $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
-   $USHobsproc_shared_bufr_remorest/bufr_remorest.sh \
+   $USHobsproc/bufr_remorest.sh \
     $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
