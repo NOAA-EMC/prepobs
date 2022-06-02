@@ -331,9 +331,12 @@
 #     DATA          String indicating the working directory path (usually a
 #                   temporary location)
 #     COMSP         String indicating the directory/filename path to input BUFR
-#                   observational data dumps, tropical cyclone location
-#                   (tcvitals) files, global atmos guess files, and status
-#                   files (e.g., "$COMROOT/gfs/prod/gfs.20060612/gfs.t12z.")
+#                   observational data dumps, global atmos guess files, and 
+#                   status files
+#                   (e.g. "$COMROOT/obsproc/v1.0/gfs.20220512/00/atmos/gfs.t12z.")
+#     COMSPtcvital  String indicating the directory/filename path to input BUFR
+#                   tropical cyclone location (tcvitals) files
+#                   (e.g. "$COMROOT/gfs/v16.2/gfs.20220512/00/atmos/gfs.t12z.")
 #     DBNROOT       String indicating directory path to bin/dbn_alert file
 #                   location
 #                   NOTE : This is required ONLY if the imported shell variable
@@ -583,7 +586,7 @@
 #                   programs (used by GBLEVENTS subroutine)
 #                   NOTE: Only read by gdas, gfs, cdas and nam networks
 #                   If imported "RUN=gdas" or "RUN=gfs", default is
-#                   "$HOMEgfs/fix/fix_gsi/prepobs_errtable.global";
+#                   "$HOMEgfs/fix/prepobs_errtable.global";
 #                   if imported "NET=cdas", default is
 #                   "$HOMEprepobs/fix/prepobs_errtable.cdas";
 #                   if imported "NET=nam", default is
@@ -1119,7 +1122,7 @@ PRPT=${PRPT:-$FIXPREP/prepobs_prep.bufrtable}
 cp $PRPT prep.bufrtable
 LANDC=${LANDC:-$FIXPREP/prepobs_landc}
 if [ "$RUN" = 'gdas' -o "$RUN" = 'gfs' ]; then
-   PRVT=${PRVT:-$HOMEgfs/fix/fix_gsi/prepobs_errtable.global}
+   PRVT=${PRVT:-$HOMEgfs/fix/prepobs_errtable.global}
 elif [ "$NET" = 'cdas' ]; then
    PRVT=${PRVT:-$HOMEprepobs/fix/prepobs_errtable.cdas}
 elif [ "$NET" = 'nam' ]; then
@@ -2512,7 +2515,7 @@ if [ "$SYNDATA"  = 'YES' ]; then
       if [ -f ${tstsp}syndata.tcvitals.$tmmark ]; then
          cp ${tstsp}syndata.tcvitals.$tmmark tcvitals_orig
       else
-         cp ${COMSP}syndata.tcvitals.$tmmark tcvitals_orig
+         cp ${COMSPtcvital}syndata.tcvitals.$tmmark tcvitals_orig
       fi
 
       if [ "$RELOCATION_HAS_RUN" != 'YES' -o "$NET" = 'nam' ]; then

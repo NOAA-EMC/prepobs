@@ -1335,6 +1335,8 @@ C       feature.
 C 2020-09-14  S. Melchior -- In subroutine PREP, added ability to
 C       process new WMO BUFR sequence Meteosat AMV data from subsets:
 C       005067, 005068, 005069. 
+C 2022-05-15  I. Genkova -- In subroutine SATEDS, updated IDSAT(4) to 
+C       IDSAT(8) to accomodate WCOSS2 compiler
 C
 C
 C USAGE:
@@ -3106,7 +3108,7 @@ C  IN INTERFACE WITH SUBROUTINE IW3UNPBF
      $ FLACMS,IACFTH,SUBSKP,JPGPSD,GWINDO,RASS,TWINDO,JPWDSD,IWWNDO,
      $ FLDMFR,WRMISS,SKGP45,JPASCD,IAWNDO,npkrpt,SKGNSS
       NAMELIST/PARM/IUNIT
-      CALL W3TAGB('PREPOBS_PREPDATA',2021,0175,0050,'EMC')
+      CALL W3TAGB('PREPOBS_PREPDATA',2022,0105,0050,'EMC')
 C DETERMINE MACHINE WORD LENGTH (BYTES) FOR BOTH INTEGERS AND REALS
       CALL WORDLENGTH(LWI,LWR)
       PRINT 2213, LWI,LWR
@@ -12629,6 +12631,8 @@ C 2020-08-20 J. Dong --
 C     - Defined IDSDAT to eliminate Boundary Run-Time Check Failures.
 C     - Modified the code to handle invalid float errors during the
 C       run when the code was compiled with debug options enabled.
+C 2022-04-15 I. GENKOVA -- UPDATED IDSAT(4) TO IDSAT(8) TO ACCOMODATE 
+C     WCOSS2 COMPILER
 C
 C USAGE:    CALL SATEDS
 C   INPUT FILES:
@@ -12672,7 +12676,7 @@ CCC
       CHARACTER*8   STNPRT,STNID,DSNAME,SUBSET_d
       LOGICAL  SATMST,TR80KM,TOVEDS
       INTEGER  IBUF(140),JRTRV(3),NUMOB(5,4,2,4,4),KEPOB(5,4,2,4),
-     $ MSTOB(5,4,2,4),IDATA(MAXOBS),KSATOB(3),IDSAT(4),ISAMPLE(2)
+     $ MSTOB(5,4,2,4),IDATA(MAXOBS),KSATOB(3),IDSAT(8),ISAMPLE(2) 
       INTEGER(8) IDSDAT,IDSDMP_8
       REAL(8)  BMISS,obs8_8,alon_8,alat_8
       COMMON/ADP/ISATOB,PMAND(23),RDATA(MAXOBS),IPRINT
