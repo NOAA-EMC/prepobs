@@ -198,6 +198,7 @@ cat $FIXprepobs/gdascounts_html  >> ${MONTH}.htmlscript
 # Move this over to the public web server.
 #
 if [ "$SENDWEB" = 'YES' ]; then
+  #if [ "$USER" = nwprod ]; then # nco suggested change
   if [ "$USER" = ops.prod ]; then
     if [ $PARATEST = YES ]; then
     scp ${Month}_${YEAR}.html nwprod@ncorzdm:/home/people/nco/nwprod/pmb/nwtest/gdas/

@@ -53,7 +53,8 @@
     for d_cyc in t00z t06z t12z t18z
     do
       cycdir=$(echo ${d_cyc} | sed 's/^.\(.*\).$/\1/')
-      INFILE=${COMINgdas}${PDY}/${cycdir}/$COMPONENT/$RUN.${d_cyc}.gsistat        
+      #INFILE=${COMIN1}${PDY}/${cycdir}/$COMPONENT/$RUN.${d_cyc}.gsistat        
+      INFILE=${COMINgdas}${PDY}/${cycdir}/$COMPONENT/$RUN.${d_cyc}.gsistat # nco suggested
       if [ ! -f $INFILE ]; then
             echo -e "\n\n  INFILE:  $INFILE  does not exist \n\n"
             break
