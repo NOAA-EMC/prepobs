@@ -2179,7 +2179,7 @@ set -x
             [ $err != 0 ] && exit 55  # for extra measure
          fi
       elif [ $BACK = 'YES' ] ; then
-         echo 'BACK=YES'		 
+         echo 'BACK=YES'
          if [ "$launcher_PREP" = mpiexec ]; then
 	   mpiexec -np 6 --cpu-bind verbose,core $DATA/prepthrds.sh # Keep '-np 6' > NSPLIT=4
          else
