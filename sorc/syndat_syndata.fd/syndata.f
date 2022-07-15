@@ -206,6 +206,9 @@ C 2020-10-09  X. Wu -- In subroutine EDTPRP, the distance threshold for
 C        inner core dropsonde data reduced to 55km. A 32 m/s wind 
 C        threshold was added.  This allows for more inner core data to
 C        be assimilated in GFSv16.     
+C 2022-??-??  C. Hill
+C        Dynamic memory allocation introduced (2021-08-31) to permit BUFR
+C        sonde processing.
 C
 C
 C USAGE:
@@ -592,9 +595,12 @@ C  On WCOSS should always set BUFRLIB missing (BMISS) to 10E8 to avoid
 C   overflow when either an INTEGER*4 variable is set to BMISS or a
 C   REAL*8 (or REAL*4) variable that is missing is NINT'd
 C  -------------------------------------------------------------------
+      CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 08/31/21
+      CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 08/31/21 
 ccccc CALL SETBMISS(10E10_8)
       CALL SETBMISS(10E8_8)
       BMISS=GETBMISS()
+      CALL MAXOUT(50000)                 ! CH 08/31/21
       print'(1X)'
       print'(" BUFRLIB value for missing is: ",G0)', bmiss
       print'(1X)'
@@ -28934,6 +28940,7 @@ C  --------------------------------------------------------------
       CALL OPENBF(IUNTPN,'IN',IUNTPN)
 
       CALL OPENBF(IUNTPO,'OUT',IUNTPN)
+      CALL MAXOUT(50000)                ! CH 08/31/21
       CALL UFBQCD(IUNTPO,'SYNDATA',SYNPC)
 
 C  VARIOUS COPYING OPTIONS

@@ -27,6 +27,7 @@
 | RASSDA   | A48119 | RADIO ACOUSTIC SOUNDING SYSTEM (RASS) TEMP PROFILE RPTS  |
 | WDSATR   | A48120 | WINDSAT SCATTEROMETER DATA (REPROCESSED)                 |
 | ASCATW   | A48121 | ASCAT SCATTEROMETER DATA (REPROCESSED)                   |
+| UPRAIR   | A48122 | UPPER-AIR (BUFR RAOB, PIBAL, DROPS) REPORTS              |
 *                                                                              |
 *                                                                              |
 * THE FOLLOWING ARE TABLE D ENTRIES FOR SEQUENCES DEFINED IN TABLE A ENTRIES   |
@@ -626,6 +627,9 @@
 | WDSATR   | WSEQC1  PHER        SSTE        SPDE        VPRE        CLDE      |
 |          |                                                                   |
 | ASCATW   | HEADR   CAT  SAID   CTCN WVCQ   BSCD  LKCS <P___INFO>  <W___INFO> |
+|          |                                                                   |
+| UPRAIR   | HEADR   SIRC       {PRSLEVEL}  <SST_INFO>  <PREWXSEQ>  {CLOUDSEQ} |
+| UPRAIR   |        <CLOU2SEQ>  <SWINDSEQ>  <AFIC_SEQ>  <TURB3SEQ>             |
 |          |                                                                   |
 | HEADR    | SID   207003    XOB    YOB    207000    DHR    ELV    TYP    T29  |
 | HEADR    | TSB   ITP       SQN    PROCN  RPT       TCOR   <RSRD_SEQ>         |

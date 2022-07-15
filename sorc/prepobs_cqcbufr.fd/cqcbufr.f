@@ -231,6 +231,9 @@ C 2020-08-09  S. Melchior - In subroutine TMPCHK, explicitly defined ICK
 C     as an integer. Moved ICK.NE.0 logic inside ITI.NE.0 logic.
 C     BENEFIT: corrects problems when compiled and run with full DEBUG
 C              options enabled.
+C 2022-??-??  C. Hill
+C     Dynamic memory allocation introduced (2021-08-31) to permit BUFR
+C     sonde processing.
 C
 C USAGE:
 C   INPUT FILES:
@@ -354,9 +357,12 @@ C  On WCOSS should always set BUFRLIB missing (BMISS) to 10E8 to avoid
 C   overflow when either an INTEGER*4 variable is set to BMISS or a
 C   REAL*8 (or REAL*4) variable that is missing is NINT'd
 C  -------------------------------------------------------------------
+      CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 08/31/21
+      CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 08/31/21
 ccccc CALL SETBMISS(10E10_8)
       CALL SETBMISS(10E8_8)
       BMISS=GETBMISS()
+      CALL MAXOUT(50000)                 ! CH 08/31/21
       XMISS=BMISS
       IMISS=10E8
       print *
@@ -7318,7 +7324,10 @@ C  -------------------
         CALL CLOSBF(NFIN)
         REWIND NFIN
         CALL OPENBF(NFIN,'IN',NFIN)
-        IF(ITIME.EQ.2) CALL OPENBF(NFOUT,'OUT',NFIN)
+        IF(ITIME.EQ.2) THEN
+         CALL OPENBF(NFOUT,'OUT',NFIN)
+         CALL MAXOUT(50000)              ! CH 08/31/21 
+        ENDIF
         IS = 0
         DO I=1,NST
           SQN(I) = 0.
