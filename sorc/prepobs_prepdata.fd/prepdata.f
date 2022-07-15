@@ -5515,7 +5515,15 @@ C  header and originator)
          ELSE IF(CBULL.EQ.'IUAX01 MMMX') THEN
             HDR(8) = 2.  ! Mexican MDCRS
          ELSE IF(CBULL.EQ.'IUAX06 KARP') THEN
-            HDR(8) = 3.  ! ADS-C MDCRS
+            HDR(8) = 3.  ! ADS-C U.S.
+         ELSE IF(CBULL.EQ.'IUAX07 KARP') THEN
+            HDR(8) = 4.  ! ADS-C non-U.S.
+         ELSE IF(CBULL.EQ.'IUAI01 SCSC') THEN
+            HDR(8) = 5.  ! LATAM AMDAR
+         ELSE IF(CBULL(1:3).EQ.'IUA'.AND.CBULL(8:11).EQ.'BABJ') THEN
+            HDR(8) = 6.  ! China AMDAR
+         ELSE IF(CBULL.EQ.'IUAX92 KARP') THEN
+            HDR(8) = 9.  ! ADS-C experimental
          END IF
       END IF
 C RECEIPT TIME GOES IN HDR(5)
