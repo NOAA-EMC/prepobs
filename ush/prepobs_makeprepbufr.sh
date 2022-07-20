@@ -1119,7 +1119,7 @@ PRPT=${PRPT:-$FIXPREP/prepobs_prep.bufrtable}
 cp $PRPT prep.bufrtable
 LANDC=${LANDC:-$FIXPREP/prepobs_landc}
 if [ "$RUN" = 'gdas' -o "$RUN" = 'gfs' ]; then
-   PRVT=${PRVT:-$HOMEgfs/fix/fix_gsi/prepobs_errtable.global}
+   PRVT=${PRVT:-$HOMEgfs/fix/prepobs_errtable.global}
 elif [ "$NET" = 'cdas' ]; then
    PRVT=${PRVT:-$HOMEprepobs/fix/prepobs_errtable.cdas}
 elif [ "$NET" = 'nam' ]; then
