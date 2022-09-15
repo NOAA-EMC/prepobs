@@ -1,0 +1,193 @@
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+prepobs v1.0.0	RELEASED	MAR 01, 2022
+	v1.0.1	IMPLEMENTED	JUN 28, 2022
+
+Transition from WCOSS Cray and Phase3 to WCOSS2
+===============================================
+Usage
+ module use /apps/ops/test/nco/modulefiles/compiler/intel/19.1.3.304
+ module load prepobs/1.0.1
+
+Where is the release tag on subversion/git/vlab? 
+ git clone https://github.com/NOAA-EMC/prepobs
+ git checkout release/prepobs.v1.0.0
+
+List of external software used (anything outside of your vertical structure), including compilers and version numbers for everything
+ Software used must be a minimal list of modules/versions specified per job
+ bacio_ver=2.4.1
+ w3emc_ver=2.9.1
+ bufr_ver=11.5.0
+
+List of all code/scripts modified with this release
+---------------------------------------------------
+A CMakeLists.txt
+A README.md
+A VERSION
+A build.sh
+A cmake/FindMKL.cmake
+A cmake/FindNetCDF.cmake
+A fix/CMakeLists.txt
+  fix/gdascounts_avg.awk
+  fix/gdascounts_base.shtml
+  fix/gdascounts_html
+  fix/gdascounts_types
+  fix/glerldict.lmd
+  fix/prepobs_cqc_statbge
+  fix/prepobs_errtable.cdas
+  fix/prepobs_errtable.nam
+  fix/prepobs_oiqc.oberrs
+  fix/prepobs_oiqc.oberrs.cdas
+  fix/prepobs_prep.bufrtable
+  fix/satellite_counts.tbl
+  fix/syndat_weight
+A modulefiles/CMakeLists.txt
+A modulefiles/prepobs.lua.tmpl
+A modulefiles/prepobs_common.lua
+A modulefiles/prepobs_hera.lua
+A modulefiles/prepobs_orion.lua
+A modulefiles/prepobs_wcoss2.lua
+A scripts/CMakeLists.txt
+M scripts/exprep_post.sh
+A sorc/CMakeLists.txt
+A sorc/gblevents.fd/CMakeLists.txt
+  sorc/gblevents.fd/gblevents.f
+A sorc/gdascounts_ave.fd/CMakeLists.txt
+  sorc/gdascounts_ave.fd/build_new.f
+A sorc/global_postevents.fd/CMakeLists.txt
+  sorc/global_postevents.fd/postevents.f
+A sorc/prepobs_cqcbufr.fd/CMakeLists.txt
+  sorc/prepobs_cqcbufr.fd/cqcbufr.f
+  sorc/prepobs_cqcbufr.fd/radcor.f
+A sorc/prepobs_cqcvad.fd/CMakeLists.txt
+  sorc/prepobs_cqcvad.fd/cqcvad.f
+A sorc/prepobs_glerladj.fd/CMakeLists.txt
+  sorc/prepobs_glerladj.fd/glerldictmod.f90
+  sorc/prepobs_glerladj.fd/glerlmain.f90
+  sorc/prepobs_glerladj.fd/indict.f90
+  sorc/prepobs_glerladj.fd/landtowater.f90
+  sorc/prepobs_glerladj.fd/spd_to_dir.f90
+  sorc/prepobs_glerladj.fd/td_to_q.f90
+  sorc/prepobs_glerladj.fd/uv_to_sd.f90
+  sorc/prepobs_glerladj.fd/uz.f
+  sorc/prepobs_glerladj.fd/uzl.f
+  sorc/prepobs_glerladj.fd/watertoland.f90
+A sorc/prepobs_listheaders.fd/CMakeLists.txt
+  sorc/prepobs_listheaders.fd/listheaders.f90
+A sorc/prepobs_monoprepbufr.fd/CMakeLists.txt
+  sorc/prepobs_monoprepbufr.fd/monoprepbufr.f90
+A sorc/prepobs_mpcopybufr.fd/CMakeLists.txt
+  sorc/prepobs_mpcopybufr.fd/mpcopybufr.f90
+A sorc/prepobs_oiqcbufr.fd/CMakeLists.txt
+  sorc/prepobs_oiqcbufr.fd/oiqcbufr.f
+A sorc/prepobs_prepacpf.fd/CMakeLists.txt
+  sorc/prepobs_prepacpf.fd/prepacpf.f
+A sorc/prepobs_prepacqc.fd/CMakeLists.txt
+  sorc/prepobs_prepacqc.fd/acftobs_qc.f
+  sorc/prepobs_prepacqc.fd/indexc40.f
+  sorc/prepobs_prepacqc.fd/input_acqc.f
+  sorc/prepobs_prepacqc.fd/output_acqc_noprof.f
+  sorc/prepobs_prepacqc.fd/output_acqc_prof.f
+  sorc/prepobs_prepacqc.fd/pietc.f90
+  sorc/prepobs_prepacqc.fd/pkind.f90
+  sorc/prepobs_prepacqc.fd/pmat.f90
+  sorc/prepobs_prepacqc.fd/pmat2.f90
+  sorc/prepobs_prepacqc.fd/pmat3.f90
+  sorc/prepobs_prepacqc.fd/prepacqc.f
+  sorc/prepobs_prepacqc.fd/pspl.f90
+  sorc/prepobs_prepacqc.fd/sub2mem_mer.f
+  sorc/prepobs_prepacqc.fd/sub2mem_um.f
+  sorc/prepobs_prepacqc.fd/tranQCflags.f
+A sorc/prepobs_prepdata.fd/CMakeLists.txt
+  sorc/prepobs_prepdata.fd/inc_w3unpkb7.inc
+  sorc/prepobs_prepdata.fd/iw3unpbf.f
+  sorc/prepobs_prepdata.fd/prepdata.f
+  sorc/prepobs_prepdata.fd/w3atovsunp.f
+  sorc/prepobs_prepdata.fd/w3cnvxtovs.f
+  sorc/prepobs_prepdata.fd/w3rtovsunp.f
+  sorc/prepobs_prepdata.fd/w3unpkb7.f
+  sorc/prepobs_prepdata.fd/w3xtovseds.f
+  sorc/prepobs_prepdata.fd/w3xtovsmnd.f
+  sorc/prepobs_prepdata.fd/wordlength.f
+A sorc/prepobs_prevents.fd/CMakeLists.txt
+  sorc/prepobs_prevents.fd/gblevents_cdas.f
+  sorc/prepobs_prevents.fd/prevents.f
+A sorc/prepobs_profcqc.fd/CMakeLists.txt
+  sorc/prepobs_profcqc.fd/profcqc.f
+A sorc/syndat_syndata.fd/CMakeLists.txt
+  sorc/syndat_syndata.fd/syndata.f
+A sorc/timetwin.fd/CMakeLists.txt
+  sorc/timetwin.fd/timetwin.f
+A ush/CMakeLists.txt
+  ush/build_mainpage.sh
+  ush/download_fix.sh
+M ush/gdas_counts.sh
+  ush/gdas_countstat.sh
+  ush/gdas_summary.sh
+  ush/gdascounts_combine.sh
+  ush/getges.sh
+  ush/getges_driver.sh
+  ush/getges_nc.sh
+  ush/getges_sig.sh
+  ush/global_postevents.sh
+  ush/mstr_shp_stn_lst_update.sh
+  ush/mstr_shp_stn_lst_update2.sh
+  ush/prepobs_cqcbufr.sh
+  ush/prepobs_cqcvad.sh
+  ush/prepobs_glerladj.sh
+M ush/prepobs_makeprepbufr.sh
+  ush/prepobs_oiqcbufr.sh
+  ush/prepobs_prepacqc.sh
+  ush/prepobs_prevents.sh
+  ush/prepobs_profcqc.sh
+  ush/prepobs_syndata.sh
+  ush/satellite_daily.pl
+  ush/satellite_html.pl
+  ush/satellite_summary.sh
+A versions/README
+A versions/build.ver
+------------------------------
+M-modified; A-added; D-deleted
+
+What changes were made to the above code/scripts to support the new architecture?
+ prep and prep_post  have been removed from the obsproc software package to be a standalone application, installed on WCOSS2 as a module.
+ prepobs  has been moved to github as its own repository. https://github.com/NOAA-EMC/prepobs
+ prepobs utilizes cmake to build and install the code. build prepobs repo with cmake
+
+Were any other changes made that aren’t directly related to the transition? 
+ No
+
+Are there any changes to incoming data needs or outgoing products? 
+ No
+
+If output filenames are changing, list the current and new filename 
+ N/A
+
+Compute resource information, for every job:
+ Please see https://github.com/NOAA-EMC/obsproc release branch release/obsproc.v1.0.0/triggers for various network j*dump.wc2.pbs trigger settings
+ Total tasks
+ Tasks per node
+ Serial or parallel or mpmd
+ Memory requirements (exclusive or shared)
+
+List any other PBS resource information requirements or MPI tunables
+ *** Providing PBS and/or ecFlow submission scripts as part of release tag is preferred; if they are provided then resource information is not needed in the release notes.
+
+Runtime changes compared to current production (/gpfs/dell1/nco/ops/com/logs/runtime/daily/* for current stats)
+ Optimization for network dump jobs was not performed prior to release because of the team reshuffling and resultant tight deadline. 
+ Obsproc developers will work with assigned SPA to meet optimization goals for network dump jobs.
+
+Disk space required per day or per cycle; data retention on disk will remain the same unless otherwise requested.
+ Same as WCOSS1
+
+Dissemination will remain the same unless otherwise communicated to NCO and a PNS/SCN issued
+ HPSS archive retention will remain the same unless approval granted by HPCRAC
+
+What are your up and downstream dependencies?
+ Upstream: decoders, satingest ($DCOMROOT)
+
+Provide a pointer to your COMOUT, temp directory and pbspro output file that was used during testing:
+ see obsproc.v1.0.0 Release Notes
+===========================================================================
+WCOSS1 RN:https://github.com/ShelleyMelchior-NOAA/smelchior/tree/main/RNs
+
+END
