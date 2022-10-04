@@ -2138,6 +2138,9 @@ cc         iprint = 1
 c     if(stnidx.eq.'89571   ')  iprint = 1
 c     if(stnidx.eq.'68906   ')  iprint = 1
 c     if(stnidx.eq.'68842   ')  iprint = 1
+      if(stnidx.eq.'10304   ')  iprint = 1
+      if(stnidx.eq.'70200   ')  iprint = 1
+      if(stnidx.eq.'72215   ')  iprint = 1
 c     if(stnidx.eq.'74794   ')  iprint = 1
 c     if(stnidx.eq.'74389   ')  iprint = 1
 c     if(stnidx.eq.'96801A  ')  iprint = 1
@@ -3155,7 +3158,7 @@ C  anything else - the level is not processed
 
 CC    USE NBFLG TO CHOOSE VSIG OR VSIGX          CH 12/18/2020
 CC                                              rev 03/23/2022 
-      IF(NBFLG.EQ.0) 
+      IF(NBFLG.EQ.0)
      +CALL UFBINT(LUNIT,VSG_8,1,255,NLEV,'VSIG')
 
       IF ((NBFLG.GT.0).AND.(NBFLG.LE.NBMX)) THEN
@@ -3365,12 +3368,7 @@ CC
 CC     RECALL THAT VLINC = NLEVX / 255
       IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
        LS = 1
-c      NC = 0
-c      NC0 =0
        DO L2 = 1,NLEVX
-c      NC=INT(REAL(L2)/VLINC)
-c      IF ((NC.EQ.LS).AND.(NC.GT.NC0)
-c    + .AND.(LS.LE.255).AND.(VSGX8(L2).LT.BMISS)) THEN
        IF (NUSL(L2).EQ.1) THEN
 CC      ARRX -> ARR_8
         DO MS = 1,10
@@ -3448,23 +3446,17 @@ CC
       IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
 CC     RECALL THAT VLINC = NLEVX / 255
        LS = 1
-c      NC = 0
-c      NC0 =0
        DO L2 = 1,NLEVX
-c       NC=INT(REAL(L2)/VLINC)
-c       IF ((NC.EQ.LS).AND.(NC.GT.NC0)
-c    +  .AND.(LS.LE.255).AND.(VSGX8(L2).LT.BMISS)) THEN
-        IF (NUSL(L2).EQ.1) THEN
-CC     ARRX -> ARR_8
-         DO MS = 1,10
-          ARR_8(MS,LS) = ARRX(MS,L2)
-         ENDDO
-         LS = LS + 1
-c        NC0=NC
-        ENDIF
+       IF (NUSL(L2).EQ.1) THEN
+CC      ARRX -> ARR_8
+        DO MS = 1,10
+         ARR_8(MS,LS) = ARRX(MS,L2)
+        ENDDO
+       LS = LS + 1
+       ENDIF
 CC     STEP TO THE NEXT LEVEL
        ENDDO
-       NLEV=MIN(LS,255)
+      NLEV=MIN(LS,255)
       ENDIF
       ENDIF
 
@@ -3889,8 +3881,8 @@ C        63   Missing
      +CALL UFBINT(LUNIT,RMORE_8,4,1,NRMORE,'SIRC TTSS UALNHR UALNMN')
 CCCCCCCCCCCCCCCCCCCv CH 11/13/2020
       IF((NBFLG.GT.0).AND.(NBFLG.LE.NBMX)) THEN
-       CALL UFBINT(LUNIT,RMORE_8,2,1,NRMORE,'SIRC CTTSS')
-       CALL UFBINT(LUNIT,RMORE_8(3),2,1,NRMORE,'HOUR CMINU')
+       CALL UFBINT(LUNIT,RMORE_8,2,1,NRMORE,'SIRC TTSS')
+       CALL UFBINT(LUNIT,RMORE_8(3),2,1,NRMORE,'HOUR MINU')
       END IF
 CCCCCCCCCCCCCCCCCCC^ CH 11/13/2020
       RMORE=RMORE_8

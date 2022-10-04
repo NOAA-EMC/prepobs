@@ -21,6 +21,12 @@
 ! PROGRAM HISTORY LOG:
 ! 1999-06-29  KISTLER -- ORIGINAL AUTHOR
 ! 2013-03-06  KEYSER  -- CHANGES TO RUN ON WCOSS
+! 2022-??-??  C. Hill --
+!  Dynamic memory allocation introduced (2022-05-19) to permit BUFR
+!  sonde processing.  Code block introduced (2022-05-06) to read opened
+!  file containing BUFR sonde data and write an external station list
+!  for later reference in PREPOBS_PREPDATA.
+!
 !
 ! USAGE:
 !   INPUT FILES:
@@ -82,8 +88,8 @@ write(6,namin)
 
 CALL DATELEN(10)
 
-CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 05/19/22
-CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 05/19/22
+CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 05/19/2022
+CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 05/19/2022
 
 do i=1,nfiles
 
@@ -103,25 +109,23 @@ do i=1,nfiles
     DO WHILE(MP_IREADMG(LUNIN,SUBSET,IDATE).EQ.0)
        CALL COPYMG(LUNIN,LUNOT)
 ! Find UPRAIR data, read the RPID and BUHD, and write to common external file
-        IF(SUBSET(1:6).EQ.'NC0021') THEN
-         IRT=0
-         DO WHILE(IRT.EQ.0)
-          CALL READSB(LUNIN,IRT)
-          write(88,*) IRT, SUBSET
-          IF(IRT.EQ.0) THEN
-           CALL UFBINT(LUNIN,RPID8,1,1,NLEV,'RPID')
-           WRITE(CRPID,'(A8)') RPID8
-           write(88,*) SUBSET, CRPID
-           IF(IBFMS(RPID8).EQ.0) THEN
-            CALL UFBINT(LUNIN,BUHD8,1,1,NLEV,'BUHD')
-            WRITE(CBUHD,'(A8)') BUHD8
-!           IF(CBUHD(1:2).EQ.'IU') WRITE(91,'(A8,1X,A8)') CRPID, CBUHD
-            WRITE(91,'(A8,1X,A8)') CRPID, CBUHD
-           ENDIF
+       IF(SUBSET(1:6).EQ.'NC0021') THEN
+        IRT=0
+        DO WHILE(IRT.EQ.0)
+         CALL READSB(LUNIN,IRT)
+         IF(IRT.EQ.0) THEN
+          CALL UFBINT(LUNIN,RPID8,1,1,NLEV,'RPID')
+          WRITE(CRPID,'(A8)') RPID8
+          IF(IBFMS(RPID8).EQ.0) THEN
+           CALL UFBINT(LUNIN,BUHD8,1,1,NLEV,'BUHD')
+           WRITE(CBUHD,'(A8)') BUHD8
+!          IF(CBUHD(1:2).EQ.'IU') WRITE(91,'(A8,1X,A8)') CRPID, CBUHD
+           WRITE(91,'(A8,1X,A8)') CRPID, CBUHD
           ENDIF
-         ENDDO
-        ENDIF
-! End UPRAIR station content search              CH 05/06/202
+         ENDIF
+        ENDDO 
+       ENDIF
+! End UPRAIR station content search                   CH 05/06/2022
     ENDDO
 
     CALL CLOSBF(LUNIN)

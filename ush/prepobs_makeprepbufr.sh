@@ -421,9 +421,9 @@
 #                   Default is "tm00"
 #     BUFRLIST      String indicating list of BUFR data dump file names to
 #                   process
-#                   Default is "uprair proflr aircar aircft satwnd adpupa adpsfc \
-#                   sfcshp sfcbog vadwnd goesnd spssmi erscat qkswnd msonet \
-#                   gpsipw rassda wdsatr ascatw"
+#                   Default is "uprair proflr aircar aircft satwnd adpupa \
+#                   adpsfc sfcshp sfcbog vadwnd goesnd spssmi erscat qkswnd \
+#                   msonet gpsipw rassda wdsatr ascatw"
 #     POE           String indicating whether or not to use a poe-like launcher
 #                   to spread instances of the PREPBUFR processing herefile 
 #                   MP_PREPDATA over multiple pes in parallel. (= "NO" - 
@@ -2006,7 +2006,7 @@ else
   ln -sf $DATA/uprairids $DATA/fort.92
  else
   echo "" > $DATA/fort.92
- fi 
+ fi
 fi
 ###
 

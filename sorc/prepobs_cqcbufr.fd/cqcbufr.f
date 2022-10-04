@@ -231,6 +231,9 @@ C 2020-08-09  S. Melchior - In subroutine TMPCHK, explicitly defined ICK
 C     as an integer. Moved ICK.NE.0 logic inside ITI.NE.0 logic.
 C     BENEFIT: corrects problems when compiled and run with full DEBUG
 C              options enabled.
+C 2022-??-??  C. Hill
+C     Dynamic memory allocation introduced (2021-08-31) to permit BUFR
+C     sonde processing.
 C
 C USAGE:
 C   INPUT FILES:
