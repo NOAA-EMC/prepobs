@@ -592,9 +592,12 @@ C  On WCOSS should always set BUFRLIB missing (BMISS) to 10E8 to avoid
 C   overflow when either an INTEGER*4 variable is set to BMISS or a
 C   REAL*8 (or REAL*4) variable that is missing is NINT'd
 C  -------------------------------------------------------------------
+      CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 08/31/21
+      CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 08/31/21
 ccccc CALL SETBMISS(10E10_8)
       CALL SETBMISS(10E8_8)
       BMISS=GETBMISS()
+      CALL MAXOUT(50000)                 ! CH 08/31/21
       print'(1X)'
       print'(" BUFRLIB value for missing is: ",G0)', bmiss
       print'(1X)'
@@ -28934,6 +28937,7 @@ C  --------------------------------------------------------------
       CALL OPENBF(IUNTPN,'IN',IUNTPN)
 
       CALL OPENBF(IUNTPO,'OUT',IUNTPN)
+      CALL MAXOUT(50000)                ! CH 08/31/2
       CALL UFBQCD(IUNTPO,'SYNDATA',SYNPC)
 
 C  VARIOUS COPYING OPTIONS

@@ -66,7 +66,8 @@
 
 ! PROGRAM PREPOBS_MPCOPYBUFR
 
-CHARACTER*8 SUBSET
+CHARACTER*8 SUBSET,CRPID,CBUHD
+REAL*8      RPID8,BUHD8
 
 namelist /namin/nfiles
 
@@ -80,6 +81,9 @@ read(5,namin)
 write(6,namin)
 
 CALL DATELEN(10)
+
+CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 05/19/22
+CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 05/19/22
 
 do i=1,nfiles
 
@@ -98,6 +102,26 @@ do i=1,nfiles
 
     DO WHILE(MP_IREADMG(LUNIN,SUBSET,IDATE).EQ.0)
        CALL COPYMG(LUNIN,LUNOT)
+! Find UPRAIR data, read the RPID and BUHD, and write to common external file
+        IF(SUBSET(1:6).EQ.'NC0021') THEN
+         IRT=0
+         DO WHILE(IRT.EQ.0)
+          CALL READSB(LUNIN,IRT)
+          write(88,*) IRT, SUBSET
+          IF(IRT.EQ.0) THEN
+           CALL UFBINT(LUNIN,RPID8,1,1,NLEV,'RPID')
+           WRITE(CRPID,'(A8)') RPID8
+           write(88,*) SUBSET, CRPID
+           IF(IBFMS(RPID8).EQ.0) THEN
+            CALL UFBINT(LUNIN,BUHD8,1,1,NLEV,'BUHD')
+            WRITE(CBUHD,'(A8)') BUHD8
+!           IF(CBUHD(1:2).EQ.'IU') WRITE(91,'(A8,1X,A8)') CRPID, CBUHD
+            WRITE(91,'(A8,1X,A8)') CRPID, CBUHD
+           ENDIF
+          ENDIF
+         ENDDO
+        ENDIF
+! End UPRAIR station content search              CH 05/06/202
     ENDDO
 
     CALL CLOSBF(LUNIN)
