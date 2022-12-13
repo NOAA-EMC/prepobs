@@ -3011,7 +3011,8 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
  
       DATA HDSTR/'NUL  CLON CLAT HOUR MINU SELV               '/
       DATA HDSTB/'NUL CLONH CLATH HOUR MINU HBMSL HEIT        '/ ! BUFR
-      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD          '/
+      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD NUL 
+     $ LATDH LONDH LTDS '/
       DATA QMSTR/'QMPR QMAT QMDD QMGP QMWN                    '/
       DATA RCSTR/'RCHR RCMI RCTS                              '/
  
@@ -3383,6 +3384,7 @@ CC      ARRX -> ARR_8
          ARR_8(MS,LS) = ARRX(MS,L2)
         ENDDO
 C
+        
 C       GNSS drift information to be added here
 C       [ ARR_8(8,LS)  <-- XDR  ]
 C       [ ARR_8(9,LS)  <-- YDR  ]
