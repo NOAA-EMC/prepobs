@@ -2989,7 +2989,7 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
       COMMON/IUBFEE/POB(255),QOB(255),TOB(255),ZOB(255),DOB(255),
      $              SOB(255),VSG(255),OB8(255),CF8(255),
-     $              XOB(255),YOB(255),HRDR(255)
+     $              XDR(255),YDR(255),HRDR(255)
       COMMON/IUBFFF/PQM(255),QQM(255),TQM(255),ZQM(255),WQM(255)
       COMMON/IUBFII/PWMIN
       COMMON/IUBFLL/Q81(255),Q82(255)
@@ -3395,7 +3395,7 @@ C          IF (L2.EQ.10) THEN
 C            ARR_8(10,LS) = ARRX(10,L2)
 C          END IF
 
-          PRINT *, "LVSTR: ", ARRX 
+C          PRINT *, "LVSTR: ", ARRX 
 C         PRINT *, "GNSS drift info: ", ARR_8(8,LS), ARR_8(9,LS), ARR_8(10,LS)
 
 C       GNSS drift information to be added here
@@ -3412,6 +3412,7 @@ CC      STEP TO THE NEXT LEVEL
       ENDIF
 
       ARR=ARR_8
+C      PRINT *, "ARR: ", ARR
 CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
 
       PWMIN = 999999.
@@ -3451,10 +3452,18 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
+         XDR(L) = BMISS
+         XDR(L) = ARR(8,L)
+         YDR(L) = BMISS
+         YDR(L) = ARR(9,L)
+         HRDR(L) = BMISS
+         HRDR(L) = ARR(10,L)
          if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
-     $       G0)', L,vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L)
+     $       G0,"; XOB = ",G0,"; YOB = ",G0,"; HRDR = ",G0,"; fin")', L, 
+     $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),xdr(L),
+     $       ydr(L),hrdr(L)
          end if
          IF(MAX(POB(L),DOB(L),SOB(L)).LT.BMISS) PWMIN =MIN(PWMIN,POB(L))
       ENDDO
