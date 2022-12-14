@@ -2988,7 +2988,8 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
       COMMON/IUBFEE/POB(255),QOB(255),TOB(255),ZOB(255),DOB(255),
-     $              SOB(255),VSG(255),OB8(255),CF8(255)
+     $              SOB(255),VSG(255),OB8(255),CF8(255),
+     $              XOB(255),YOB(255),HRDR(255)
       COMMON/IUBFFF/PQM(255),QQM(255),TQM(255),ZQM(255),WQM(255)
       COMMON/IUBFII/PWMIN
       COMMON/IUBFLL/Q81(255),Q82(255)
@@ -3011,7 +3012,7 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
  
       DATA HDSTR/'NUL  CLON CLAT HOUR MINU SELV               '/
       DATA HDSTB/'NUL CLONH CLATH HOUR MINU HBMSL HEIT        '/ ! BUFR
-      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD NUL 
+      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD 
      $ LATDH LONDH LTDS '/
       DATA QMSTR/'QMPR QMAT QMDD QMGP QMWN                    '/
       DATA RCSTR/'RCHR RCMI RCTS                              '/
@@ -3372,29 +3373,41 @@ CCCCCCCCCCCCCCCCCCCv CH 11/12/2020
 
       IF((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
 CC    WITH VSIGX, VARIABLES ARE READ INTO LARGER ARRAY
-       CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,LVSTR)
+        CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,LVSTR)
 C
 C
-      IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
-       LS = 1
-       DO L2 = 1,NLEVX
-       IF (NUSL(L2).EQ.1) THEN
-CC      ARRX -> ARR_8
-        DO MS = 1,10
-         ARR_8(MS,LS) = ARRX(MS,L2)
-        ENDDO
-C
-        
+        IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
+        LS = 1
+        DO L2 = 1,NLEVX
+        IF (NUSL(L2).EQ.1) THEN
+CC        ARRX -> ARR_8
+          DO MS = 1,10
+             ARR_8(MS,LS) = ARRX(MS,L2)
+          ENDDO
+
+C          IF (L2.EQ.8) THEN  
+C            ARR_8(8,LS) = ARRX(8,L2)
+C          END IF
+C          IF (L2.EQ.9) THEN
+C            ARR_8(9,LS) = ARRX(9,L2)
+C          END IF
+C          IF (L2.EQ.10) THEN
+C            ARR_8(10,LS) = ARRX(10,L2)
+C          END IF
+
+          PRINT *, "LVSTR: ", ARRX 
+C         PRINT *, "GNSS drift info: ", ARR_8(8,LS), ARR_8(9,LS), ARR_8(10,LS)
+
 C       GNSS drift information to be added here
 C       [ ARR_8(8,LS)  <-- XDR  ]
 C       [ ARR_8(9,LS)  <-- YDR  ]
 C       [ ARR_8(10,LS) <-- HRDR ]
 C
-        LS = LS + 1
-       ENDIF
-CC     STEP TO THE NEXT LEVEL
-       ENDDO
-       NLEV=MIN(LS,255)
+          LS = LS + 1
+        ENDIF
+CC      STEP TO THE NEXT LEVEL
+        ENDDO
+        NLEV=MIN(LS,255)
       ENDIF
       ENDIF
 
