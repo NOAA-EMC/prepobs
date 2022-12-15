@@ -2117,7 +2117,8 @@ C                         subr. to write an empty cat. 2,3, or 4 level
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
       COMMON/IUBFEE/POB(255),QOB(255),TOB(255),ZOB(255),DOB(255),
-     $              SOB(255),VSG(255),OB8(255),CF8(255)
+     $              SOB(255),VSG(255),OB8(255),CF8(255),
+     $              XDR(255),YDR(255),HRDR(255)
       COMMON/IUBFFF/PQM(255),QQM(255),TQM(255),ZQM(255),WQM(255)
       COMMON/IUBFGG/PSL,STP,SDR,SSP,STM,DPD
       COMMON/IUBFHH/PSQ,SPQ,SWQ,STQ,DDQ
@@ -2298,9 +2299,10 @@ C  ----------------------------------------------------------
             RCAT(11) = MAX(NINT(WQM(N)),NINT(RCATS(11,L,KCAT)))
          ELSE
             RCAT(11) = NINT(WQM(N))
-C         RCAT(12) = MIN(NINT(XDR(N)),NINT(RCATS(12,L,KCAT)))
-C         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
-C         RCAT(14) = MIN(NINT(HRDR(N)),NINT(RCATS(14,L,KCAT)))
+         RCAT(12) = NINT(RCATS(12,L,KCAT))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
+         RCAT(14) = MIN(NINT(HRDR(N)),NINT(RCATS(14,L,KCAT)))
+         PRINT *, "RCAT121314; ", RCAT(12), RCAT(13), RCAT(14)
          END IF
       ELSEIF(ICAT.EQ.2) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
