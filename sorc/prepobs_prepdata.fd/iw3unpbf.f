@@ -2298,9 +2298,9 @@ C  ----------------------------------------------------------
             RCAT(11) = MAX(NINT(WQM(N)),NINT(RCATS(11,L,KCAT)))
          ELSE
             RCAT(11) = NINT(WQM(N))
-         RCAT(12) = MIN(NINT(XDR(N)),NINT(RCATS(12,L,KCAT)))
-         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
-         RCAT(14) = MIN(NINT(HRDR(N)),NINT(RCATS(14,L,KCAT)))
+C         RCAT(12) = MIN(NINT(XDR(N)),NINT(RCATS(12,L,KCAT)))
+C         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
+C         RCAT(14) = MIN(NINT(HRDR(N)),NINT(RCATS(14,L,KCAT)))
          END IF
       ELSEIF(ICAT.EQ.2) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
