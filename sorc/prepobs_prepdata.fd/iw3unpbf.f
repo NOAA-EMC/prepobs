@@ -2202,6 +2202,7 @@ C          ARE SET TO 0)
 C  -----------------------------------------------------------------
  
       IF(N.EQ.0) THEN
+         PRINT *, "ICAT IS: ", ICAT
          IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) RETURN
          NCAT(KCAT) = MIN(LEVLIM-1,NCAT(KCAT)+1)
          if(iprint.eq.1)  then
@@ -2269,6 +2270,7 @@ C  EACH DATA LEVEL CATEGORY NEEDS A SPECIFIC DATA ARRANGEMENT
 C  ----------------------------------------------------------
  
       IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) THEN
+         PRINT *, "ICAT 2 is: ", ICAT
          RCAT(1)  = MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
          RCAT(2)  = MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
          RCAT(3)  = MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
@@ -2299,10 +2301,10 @@ C  ----------------------------------------------------------
             RCAT(11) = MAX(NINT(WQM(N)),NINT(RCATS(11,L,KCAT)))
          ELSE
             RCAT(11) = NINT(WQM(N))
-         RCAT(12) = NINT(RCATS(12,L,KCAT))
+         RCAT(12) = MIN(NINT(XDR(N)),NINT(RCATS(12,L,KCAT)))
          RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
          RCAT(14) = MIN(NINT(HRDR(N)),NINT(RCATS(14,L,KCAT)))
-         PRINT *, "RCAT121314; ", RCAT(12), RCAT(13), RCAT(14)
+         PRINT *, "RCAT1 121314; ",RCAT(1),RCAT(12),RCAT(13),RCAT(14)
          END IF
       ELSEIF(ICAT.EQ.2) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
@@ -3457,16 +3459,13 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         XDR(L) = BMISS
-         XDR(L) = ARR(8,L)
-         YDR(L) = BMISS
-         YDR(L) = ARR(9,L)
-         HRDR(L) = BMISS
-         HRDR(L) = ARR(10,L)
+         XDR(L) = MIN(BMISS,ARR(8,L)*100000)
+         YDR(L) = MIN(BMISS,ARR(9,L)*100000)
+         HRDR(L) = MIN(BMISS,ARR(10,L))
          if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
-     $       G0,"; XOB = ",G0,"; YOB = ",G0,"; HRDR = ",G0,"; fin")', L, 
+     $       G0,"; XDR = ",G0,"; YDR = ",G0,"; HRDR = ",G0,"; fin")', L, 
      $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),xdr(L),
      $       ydr(L),hrdr(L)
          end if
