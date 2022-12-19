@@ -2301,11 +2301,11 @@ C  ----------------------------------------------------------
             RCAT(11) = MAX(NINT(WQM(N)),NINT(RCATS(11,L,KCAT)))
          ELSE
             RCAT(11) = NINT(WQM(N))
-         RCAT(12) = MIN(NINT(XDR(N)),NINT(RCATS(12,L,KCAT)))
-         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
-         RCAT(14) = MIN(NINT(HRDR(N)),NINT(RCATS(14,L,KCAT)))
-         PRINT *, "RCAT1 121314; ",RCAT(1),RCAT(12),RCAT(13),RCAT(14)
          END IF
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
+         RCAT(13) = MIN(NINT(XDR(N)),NINT(RCATS(13,L,KCAT)))
+         RCAT(14) = MIN(NINT(YDR(N)),NINT(RCATS(14,L,KCAT)))
+         PRINT *, "RCAT1 121314; ",RCAT(1),RCAT(12),RCAT(13),RCAT(14)
       ELSEIF(ICAT.EQ.2) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(TOB(N)),IMISS)
@@ -3020,7 +3020,7 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
       DATA HDSTR/'NUL  CLON CLAT HOUR MINU SELV               '/
       DATA HDSTB/'NUL CLONH CLATH HOUR MINU HBMSL HEIT        '/ ! BUFR
       DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD 
-     $ LATDH LONDH LTDS '/
+     $ LTDS LATDH LONDH '/
       DATA QMSTR/'QMPR QMAT QMDD QMGP QMWN                    '/
       DATA RCSTR/'RCHR RCMI RCTS                              '/
  
@@ -3459,15 +3459,15 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         XDR(L) = MIN(BMISS,ARR(8,L)*100000)
-         YDR(L) = MIN(BMISS,ARR(9,L)*100000)
-         HRDR(L) = MIN(BMISS,ARR(10,L))
+         HRDR(L) = MIN(BMISS,ARR(8,L))
+         XDR(L) = MIN(BMISS,ARR(9,L)*100000)
+         YDR(L) = MIN(BMISS,ARR(10,L)*100000)
          if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
      $       G0,"; XDR = ",G0,"; YDR = ",G0,"; HRDR = ",G0,"; fin")', L, 
-     $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),xdr(L),
-     $       ydr(L),hrdr(L)
+     $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),hrdr(L),
+     $       xdr(L),ydr(L)
          end if
          IF(MAX(POB(L),DOB(L),SOB(L)).LT.BMISS) PWMIN =MIN(PWMIN,POB(L))
       ENDDO
