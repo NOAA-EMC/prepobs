@@ -555,12 +555,16 @@ C       receiver aboard the sonde, are available for future development
 C       of BUFR profile processing.
 C 2021-07-14 J. Dong -- In function R04UBF, added code to encode the 
 C       cloud data for the BUFR-feed ships data.
-C 2022-09-30 C. Hill --
+C 2022-11-30 C. Hill --
 C     = Mandatory and surface vertical levels (VSIG = 32,64) are retained 
 C       from the profiles of 'uprair' dump files.  An increment is
 C       defined from the number of available vertical levels of each
 C       'uprair' profile and used to port additional vertical level
-C       data to the 255-element arrays of prepbufr.
+C       data to the 255-element arrays of prepbufr.  The increment is
+C       increased according to the number of mandatory levels present,
+C       intending to capture a sufficient number of other vertical
+C       levels, throughout the depth of a BUFR profile, to fill the
+C       prepbufr arrays.
 C
 C
 C USAGE:    II = IW3UNPBF(NUNIT, OBS, STNID, CRES1, CRES2, CBULL, OBS2,
@@ -2138,15 +2142,14 @@ cc         iprint = 1
 c     if(stnidx.eq.'89571   ')  iprint = 1
 c     if(stnidx.eq.'68906   ')  iprint = 1
 c     if(stnidx.eq.'68842   ')  iprint = 1
-      if(stnidx.eq.'10304   ')  iprint = 1
-      if(stnidx.eq.'70200   ')  iprint = 1
-      if(stnidx.eq.'72215   ')  iprint = 1
 c     if(stnidx.eq.'74794   ')  iprint = 1
 c     if(stnidx.eq.'74389   ')  iprint = 1
 c     if(stnidx.eq.'96801A  ')  iprint = 1
       if(stnidx.eq.'10304   ')  iprint = 1
+      if(stnidx.eq.'59316   ')  iprint = 1
       if(stnidx.eq.'70200   ')  iprint = 1
       if(stnidx.eq.'72214   ')  iprint = 1
+      if(stnidx.eq.'72215   ')  iprint = 1
       if(stnidx.eq.'72797   ')  iprint = 1
 cppppp-ID
 
@@ -3039,8 +3042,14 @@ C  ---------------------------------------------------------------------
       NSKP   = 0
 
       CALL UFBINT(LUNIT,RID_8,1,1,IRET,'RPID')
+      IF(IRET.EQ.0.OR.IBFMS(RPID_8).NE.0) THEN
+       CALL UFBINT(LUNIT,RID_8,1,1,IRET,'WGOSLID')
+       CALL READLC(LUNIT,SID,'WIGOSLID')
+       IF(ICBFMS(SID,8).NE.0)  SID = 'MISSING ' 
+      ELSE
       CALL READLC(LUNIT,SID,'RPID')
-
+      ENDIF
+      
 CC    ANALYZE BUHD CONTENT PRIOR TO VSIG/VSIGX READ  CH 12/18/2020
 CC    AND TO ADPUPA/UPRAIR CONTENT READ             rev 03/23/2022
       CALL UFBINT(LUNIT,BHD8,1,1,IRET,'BUHD')
@@ -3051,7 +3060,7 @@ CC    AND TO ADPUPA/UPRAIR CONTENT READ             rev 03/23/2022
        NBFLG = 9
        IF (BHD(3:3).EQ.'W') NBFLG = 1
        IF (BHD(3:3).EQ.'J') NBFLG = 2
-       IF (BHD(3:3).EQ.'D') NBFLG = 2
+       IF((BHD(3:3).EQ.'D').AND.(SID(6:6).EQ.'A')) NBFLG = 2
 CCdesc  revisit for descending radiosonde profiles
        IF (BHD(3:3).EQ.'K') NBFLG = 2
        IF((BHD(3:3).EQ.'K').AND.(IFTH.LE.5)) NBFLG = 3
@@ -3161,54 +3170,55 @@ CC                                              rev 03/23/2022
       IF(NBFLG.EQ.0)
      +CALL UFBINT(LUNIT,VSG_8,1,255,NLEV,'VSIG')
 
-      IF ((NBFLG.GT.0).AND.(NBFLG.LE.NBMX)) THEN
+      IF ((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
 CC      VSIGXs ARE READ INTO A LARGER ARRAY      CH 11/12/2020
        CALL UFBINT(LUNIT,VSGX8,1,MXLV,NLEVX,'VSIGX')
 CC
 CC      COMPUTE AN INTEGER SAMPLE INCREMENT ACCORDING TO NLEVX
        IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
-        VLINC = MAX(1.0,(REAL(NLEVX-10)/255.))
+corig   VLINC = MAX(1.0,(REAL(NLEVX)/255.))
         LS = 1
         LX = 1
+        SN = 0.
         NC = 0
         NC0 =0
         DO L2 = 1,NLEVX
+        VLINC = MAX(1.0,(REAL(NLEVX)/(255.-SN)))
         NC=INT(REAL(L2)/VLINC)
         IF (LS.LE.255) THEN
 CC     VSIG = VSIGX / 2048, INITIALLY
-        VSG_8(LS) = VSGX8(L2)/2048.
-cx      IF ((VSGX8(L2).GE.2048.).AND.(VSGX8(L2).LT.262144.)) THEN
-        IF ((VSG_8(LS).GE.1.).AND.(VSG_8(LS).LT.128)) THEN
-         DO LE = 0,6
-          LF  = 2.**LE
-          LF1 = 2.**(LE+1)
-          IF ((VSG_8(LS).GE.LF).AND.(VSG_8(LS).LT.LF1)) THEN
-           IF(LE.LE.1) VSG_8(LS) = LF1
-           IF(LE.GE.2) VSG_8(LS) = LF
-          ENDIF
-         ENDDO
-         IF ((VSG_8(LS).EQ.32).OR.(VSG_8(LS).EQ.64)) THEN
-CC        SAVE MANDATORY LEVELS
-          NUSL(L2) = 1
-          LS = LS + 1
+         VSG_8(LS) = VSGX8(L2)/2048.
+         IF (VSGX8(L2).EQ.0.) VSG_8(LS) = 128.
+         IF ((VSG_8(LS).GE.1.).AND.(VSG_8(LS).LT.128.)) THEN
+          DO LE = 0,6
+           LF  = 2.**LE
+           LF1 = 2.**(LE+1)
+           IF ((VSG_8(LS).GE.LF).AND.(VSG_8(LS).LT.LF1)) THEN
+            IF(LE.LE.1) VSG_8(LS) = LF1
+            IF(LE.GE.2) VSG_8(LS) = LF
+           ENDIF
+          ENDDO
          ENDIF
-        ENDIF
-        IF (VSGX8(L2).EQ.0) VSG_8(LS) = 2.**7
-        IF ((VSG_8(LS).NE.32).AND.(VSG_8(LS).NE.64).AND.
-     +      (NC.EQ.LX).AND.(NC.GT.NC0)) THEN
+CC       SAVE MANDATORY LEVELS
+         IF (VSG_8(LS).EQ.64.) NUSL(L2) = 1
+         IF (VSG_8(LS).EQ.32.) THEN
+          NUSL(L2) = 1
+          SN = SN + 1.
+         ENDIF
 CC       SAVE INCREMENTAL LEVELS
-         NUSL(L2) = 1
-         LS = LS + 1
-         LX = LX + 1
-         NC0=NC
-        ENDIF
+         IF ((NC.EQ.LX).AND.(NC.GT.NC0)) THEN
+          NUSL(L2) = 1
+          LX = LX + 1
+          NC0=NC
+         ENDIF
+         IF (NUSL(L2).EQ.1) LS = LS + 1
         ENDIF
 CC     STEP TO THE NEXT LEVEL
         ENDDO
         NLEV=MIN(LS,255)
        ENDIF
       ENDIF
-CC    END VSIGX ANALYSIS           CH 11/12/2020 (rev 09/30/2022)
+CC    END VSIGX ANALYSIS           CH 11/12/2020 (rev 11/30/2022)
       VSG=VSG_8
  
 C  PUT THE HEADER INFORMATION INTO UNPACKED FORMAT
@@ -3359,13 +3369,11 @@ C  -------------------------------------------------
 
 CCCCCCCCCCCCCCCCCCCv CH 11/12/2020
 
-      IF((NBFLG.GT.0).AND.(NBFLG.LE.NBMX)) THEN
+      IF((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
 CC    WITH VSIGX, VARIABLES ARE READ INTO LARGER ARRAY
        CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,LVSTR)
 C
 C
-CC
-CC     RECALL THAT VLINC = NLEVX / 255
       IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
        LS = 1
        DO L2 = 1,NLEVX
@@ -3376,9 +3384,11 @@ CC      ARRX -> ARR_8
         ENDDO
 C
 C       GNSS drift information to be added here
+C       [ ARR_8(8,LS)  <-- XDR  ]
+C       [ ARR_8(9,LS)  <-- YDR  ]
+C       [ ARR_8(10,LS) <-- HRDR ]
 C
         LS = LS + 1
-c       NC0=NC
        ENDIF
 CC     STEP TO THE NEXT LEVEL
        ENDDO
@@ -3439,12 +3449,11 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
 
 CCCCCCCCCCCCCCCCCCCv CH 11/12/2020
 
-      IF((NBFLG.GT.0).AND.(NBFLG.LE.NBMX)) THEN
+      IF((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
 CC    WITH VSIGX, VARIABLES ARE READ INTO LARGER ARRAY
        CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,QMSTR)
 CC
       IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
-CC     RECALL THAT VLINC = NLEVX / 255
        LS = 1
        DO L2 = 1,NLEVX
        IF (NUSL(L2).EQ.1) THEN
@@ -3508,7 +3517,8 @@ C   LIST Q.M.
                CALL SE01UBF(4,L)
             END IF
             VSG(L) = 0
-         ELSE  IF(NINT(VSG(L)).EQ.2)  THEN
+         ELSE IF (NBFLG.EQ.0) THEN
+         IF(NINT(VSG(L)).EQ.2)  THEN
             P2(L) = POB(L)
             INDX2 = L
             IF(INDX8.GT.0)  THEN
@@ -3593,6 +3603,7 @@ C   LIST Q.M.
             INDX16 = INDX16 + 1
             P16(INDX16) = POB(L)
          END IF
+         ENDIF    ! end check NBFLG
       ENDDO LOOP1
  
  
@@ -3624,7 +3635,9 @@ C  ----------------
                END IF
             END IF
 Ccccccc  v                                   CH 01/19/2021
-         ELSE IF (NINT(VSG(L)).EQ.128) THEN
+         ELSE IF ((NINT(VSG(L)).EQ.128).OR.
+     +           ((NBFLG.GE.1).AND.(NBFLG.LE.NBMX))) THEN
+C                PROCESS ALL VALID LEVELS FROM BUFR PROFILE  CH 11/30/2022
             IF(MIN(DOB(L),ZOB(L),TOB(L)).GE.BMISS) THEN
                   if(iprint.eq.1) then
                     print'(" ==> For lvl ",I0,"; VSG=",F4.0" & DOB,ZOB,"
@@ -3643,7 +3656,7 @@ Ccccccc  v                                   CH 01/19/2021
             END IF
 Ccccccccc   ^
 
-         ELSE  IF(NINT(VSG(L)).EQ. 4) THEN
+         ELSE  IF((NINT(VSG(L)).EQ. 4).AND.(NBFLG.EQ.0)) THEN
             if(iprint.eq.1)  then
                print'(" ==> For lvl ",I0,"; VSG= 4 --> valid cat. 2 ",
      $          "lvl")', L
@@ -3666,7 +3679,7 @@ Ccccccccc   ^
             END IF
             CALL S02UBF(2,L,*9999)
             VSG(L) = 0
-         ELSEIF(NINT(VSG(L)).EQ.16) THEN
+         ELSEIF((NINT(VSG(L)).EQ.16).AND.(NBFLG.EQ.0)) THEN
             if(iprint.eq.1)  then
                print'(" ==> For lvl ",I0,"; VSG=16 --> valid cat. 5 ",
      $          "lvl")', L
@@ -3712,7 +3725,7 @@ cc    print'("~#~# GOING INTO S02UFB, QOB(L) = ",G0)', qob(L)
 cpppppppppp
             CALL S02UBF(6,L,*9999)
             VSG(L) = 0
-         ELSEIF(NINT(VSG(L)).EQ. 2)  THEN
+         ELSEIF((NINT(VSG(L)).EQ. 2).AND.(NBFLG.EQ.0))  THEN
             IF(POB(L).LT.BMISS) THEN
                IF(MAX(SOB(L),DOB(L)).LT.BMISS)  THEN
                if(iprint.eq.1)  then
@@ -3768,7 +3781,7 @@ C  ---------------------------------------------------------------
                END IF
                VSG(L) = 0
             END IF
-         ELSEIF(NINT(VSG(L)).EQ. 8)  THEN
+         ELSEIF((NINT(VSG(L)).EQ. 8).AND.(NBFLG.EQ.0))  THEN
             IF(POB(L).LT.BMISS) THEN
                if(iprint.eq.1)  then
                   print'(" ==> For lvl ",I0,"; VSG= 8 & POB .ne. ",
