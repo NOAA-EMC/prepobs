@@ -1,0 +1,519 @@
+<HTML>
+<HEAD>
+   <TITLE>${MONTH}  ${YEAR} GDAS DATA DUMPS (RECEIVED)</TITLE> </HEAD>
+<BODY BGCOLOR="#E7FFFF" text="#000000" link="#00009C" alink="#D9D9F3" vlink="#871F78" background="backgrnd.gif" ;">
+<CENTER><H2>${MONTH} ${YEAR} GDAS DATA DUMPS (RECEIVED)</H2></CENTER>
+<table border="1" cols=8 width="100%">
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Category</FONT></TD>
+  <TD><FONT SIZE="-1">Subcategory</FONT></TD>
+  <TD><FONT SIZE="-1">T00Z</FONT></TD>
+  <TD><FONT SIZE="-1">T06Z</FONT></TD>
+  <TD><FONT SIZE="-1">T12Z</FONT></TD>
+  <TD><FONT SIZE="-1">T18Z</FONT></TD>
+  <TD><FONT SIZE="-1">Total Number</FONT></TD>
+  <TD><FONT SIZE="-1">Total Input</FONT></TD>
+  <TD><FONT SIZE="-1">% Input</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Land Sfc</FONT></TD>
+  <TD><FONT SIZE="-1">Synoptic</FONT></TD>
+  <TD><FONT SIZE="-1">${syn00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${syn06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${syn12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${syn18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${syntot}</FONT></TD>
+  <TD><FONT SIZE="-1">${syninp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">METAR</FONT></TD>
+  <TD><FONT SIZE="-1">${metar00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${metar06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${metar12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${metar18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${metartot}</FONT></TD>
+  <TD><FONT SIZE="-1">${metarinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${lz00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lz06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lz12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lz18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lztot}</FONT></TD>
+  <TD><FONT SIZE="-1">${lzinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${prcntls}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Marine Sfc</FONT></TD>
+  <TD><FONT SIZE="-1">Ship</FONT></TD>
+  <TD><FONT SIZE="-1">${ship00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${ship06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${ship12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${ship18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${shiptot}</FONT></TD>
+  <TD><FONT SIZE="-1">${shipinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Drifting Buoy</FONT></TD>
+  <TD><FONT SIZE="-1">${dbuoy00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${dbuoy06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${dbuoy12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${dbuoy18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${dbuoytot}</FONT></TD>
+  <TD><FONT SIZE="-1">${dbuoyinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Moored Buoy</FONT></TD>
+  <TD><FONT SIZE="-1">${mbuoy00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mbuoy06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mbuoy12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mbuoy18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mbuoytot}</FONT></TD>
+  <TD><FONT SIZE="-1">${mbuoyinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">CMAN</FONT></TD>
+  <TD><FONT SIZE="-1">${cman00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${cman06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${cman12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${cman18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${cmantot}</FONT></TD>
+  <TD><FONT SIZE="-1">${cmaninp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Tide Gauge</FONT></TD>
+  <TD><FONT SIZE="-1">${tideg00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${tideg06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${tideg12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${tideg18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${tidegtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${tideginp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">MSLP Bogus**</FONT></TD>
+  <TD><FONT SIZE="-1">${mslpb00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mslpb06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mslpb12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mslpb18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mslpbtot}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${mar00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mar06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mar12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mar18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${martot}</FONT></TD>
+  <TD><FONT SIZE="-1">${marinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${prcntmr}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Land Soundings</FONT></TD>
+  <TD><FONT SIZE="-1">Fixed Land RAOB</FONT></TD>
+  <TD><FONT SIZE="-1">${fxr00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${fxr06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${fxr12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${fxr18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${fxrtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${fxrinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Mobile Land RAOB</FONT></TD>
+  <TD><FONT SIZE="-1">${mlr00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mlr06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mlr12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mlr18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${mlrtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${mlrinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Ship RAOB</FONT></TD>
+  <TD><FONT SIZE="-1">${shp00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${shp06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${shp12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${shp18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${shptot}</FONT></TD>
+  <TD><FONT SIZE="-1">${shpinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Dropsonde</FONT></TD>
+  <TD><FONT SIZE="-1">${drop00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${drop06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${drop12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${drop18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${droptot}</FONT></TD>
+  <TD><FONT SIZE="-1">${dropinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Pibal</FONT></TD>
+  <TD><FONT SIZE="-1">${pibal00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pibal06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pibal12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pibal18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pibaltot}</FONT></TD>
+  <TD><FONT SIZE="-1">${pibalinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Profiler</FONT></TD>
+  <TD><FONT SIZE="-1">${prof00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${prof06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${prof12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${prof18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${proftot}</FONT></TD>
+  <TD><FONT SIZE="-1">${profinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">NEXRAD Wind</FONT></TD>
+  <TD><FONT SIZE="-1">${nexrd00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nexrd06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nexrd12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nexrd18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nexrdtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${nexrdinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${lsnd00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lsnd06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lsnd12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lsnd18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${lsndtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${lsndinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${prcntlsnd}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Aircraft</FONT></TD>
+  <TD><FONT SIZE="-1">AIREP</FONT></TD>
+  <TD><FONT SIZE="-1">${air00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${air06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${air12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${air18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${airtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${airinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">PIREP</FONT></TD>
+  <TD><FONT SIZE="-1">${pir00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pir06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pir12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pir18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${pirtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${pirinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">AMDAR</FONT></TD>
+  <TD><FONT SIZE="-1">${amdr00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${amdr06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${amdr12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${amdr18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${amdrtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${amdrinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">ACARS</FONT></TD>
+  <TD><FONT SIZE="-1">${acar00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acar06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acar12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acar18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acartot}</FONT></TD>
+  <TD><FONT SIZE="-1">${acarinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">RECCO</FONT></TD>
+  <TD><FONT SIZE="-1">${rec00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rec06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rec12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rec18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rectot}</FONT></TD>
+  <TD><FONT SIZE="-1">${recinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${acft00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acft06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acft12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acft18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${acfttot}</FONT></TD>
+  <TD><FONT SIZE="-1">${acftinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${prcntacft}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Total</FONT></TD>
+  <TD><FONT SIZE="-1">non-satellite</FONT></TD>
+  <TD><FONT SIZE="-1">${nons00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nons06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nons12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nons18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${nonstot}</FONT></TD>
+  <TD><FONT SIZE="-1">${nonsinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${prcntnsat}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Satellite Soundings</FONT></TD>
+  <TD><FONT SIZE="-1">GOES</FONT></TD>
+  <TD><FONT SIZE="-1">${goes00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${goes06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${goes12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${goes18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${goestot}</FONT></TD>
+  <TD><FONT SIZE="-1">${goesinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Ozone</FONT></TD>
+  <TD><FONT SIZE="-1">${oz00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${oz06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${oz12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${oz18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${oztot}</FONT></TD>
+  <TD><FONT SIZE="-1">${ozinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">ATOV**</FONT></TD>
+  <TD><FONT SIZE="-1">${atov00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${atov06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${atov12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${atov18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${atovtot}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${sat00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${sat06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${sat12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${sat18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${sattot}</FONT></TD>
+  <TD><FONT SIZE="-1">${satinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${prcntss}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Satellite Derived Winds</FONT></TD>
+  <TD><FONT SIZE="-1">US IR Imagery</FONT></TD>
+  <TD><FONT SIZE="-1">${usir00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usir06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usir12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usir18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usirtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${usirinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">US WV Imagery**</FONT></TD>
+  <TD><FONT SIZE="-1">${usvi00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usvi06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usvi12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usvi18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usvitot}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">US Picture Triplet</FONT></TD>
+  <TD><FONT SIZE="-1">${usp300z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usp306z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usp312z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usp318z}</FONT></TD>
+  <TD><FONT SIZE="-1">${usp3tot}</FONT></TD>
+  <TD><FONT SIZE="-1">${usp3inp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Japan IR Imagery</FONT></TD>
+  <TD><FONT SIZE="-1">${jair00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${jair06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${jair12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${jair18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${jairtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${jairinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">Japanese WV Imagery</FONT></TD>
+  <TD><FONT SIZE="-1">${javi00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${javi06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${javi12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${javi18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${javitot}</FONT></TD>
+  <TD><FONT SIZE="-1">${javiinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">European IR Imagery</FONT></TD>
+  <TD><FONT SIZE="-1">${eur00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${eur06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${eur12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${eur18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${eurtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${eurinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${swnd00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${swnd06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${swnd12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${swnd18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${swndtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${swndinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${swndprcnt}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">DMSP</FONT></TD>
+  <TD><FONT SIZE="-1">SSMI RAINFALL RATES</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmp00z}</FONT><br><FONT SIZE="-1">(${smps00z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmp06z}</FONT><br><FONT SIZE="-1">(${smps06z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmp12z}</FONT><br><FONT SIZE="-1">(${smps12z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmp18z}</FONT><br><FONT SIZE="-1">(${smps18z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmptot}</FONT><br><FONT SIZE="-1">(${smpstot})</FONT></TD>
+  <TD><FONT SIZE="-1"><br>(${smpsinp})</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">SSMI Radiances**</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmt00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmt06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmt12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmt18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmttot}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">SSMI Neural Net</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmn00z}</FONT><br><FONT SIZE="-1">(${smns00z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmn06z}</FONT><br><FONT SIZE="-1">(${smns06z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmn12z}</FONT><br><FONT SIZE="-1">(${smns12z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmp18z}</FONT><br><FONT SIZE="-1">(${smns18z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${ssmntot}<br><FONT SIZE="-1">(${smnsinp})</FONT></TD>
+  <TD><FONT SIZE="-1"><br>(${smnsinp})</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${dmsp00z}</FONT><br><FONT SIZE="-1">(${dmin00z})</FONT></TD>
+  <TD><FONT SIZE="-1">${dmsp06z}</FONT><br><FONT SIZE="-1">(${dmin06z})</FONT></TD>
+  <TD><FONT SIZE="-1">${dmsp12z}</FONT><br><FONT SIZE="-1">(${dmin12z})</FONT></TD>
+  <TD><FONT SIZE="-1">${dmsp18z}</FONT><br><FONT SIZE="-1">(${dmin18z})</FONT></TD>
+  <TD><FONT SIZE="-1">${dmsptot}</FONT><br><FONT SIZE="-1">(${dmintot})</FONT></TD>
+  <TD><FONT SIZE="-1"><br>(${dmininp})</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1"><br>${dmspprcnt}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Satellite Surface</FONT></TD>
+  <TD><FONT SIZE="-1">NASA TRMM DATA</FONT></TD>
+  <TD><FONT SIZE="-1">${trm00z}</FONT><br><FONT SIZE="-1">(${trmso00z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${trm06z}</FONT><br><FONT SIZE="-1">(${trmso06z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${trm12z}</FONT><br><FONT SIZE="-1">(${trmso12z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${trm18z}</FONT><br><FONT SIZE="-1">(${trmso18z})</FONT><br><FONT SIZE="-1">(superob)</FONT></TD>
+  <TD><FONT SIZE="-1">${trmtot}</FONT><br><FONT SIZE="-1">(${trmsoinp})</FONT></TD>
+  <TD><FONT SIZE="-1"><br>(${trmsoinp})</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">NASA Scatterometer Wind</FONT></TD>
+  <TD><FONT SIZE="-1">${qks00z}</FONT><br><FONT SIZE="-1">(${qksqc00z})</FONT><br><FONT SIZE="-1">(after-qc)</FONT></TD>
+  <TD><FONT SIZE="-1">${qks06z}</FONT><br><FONT SIZE="-1">(${qksqc06z})</FONT><br><FONT SIZE="-1">(after-qc)</FONT></TD>
+  <TD><FONT SIZE="-1">${qks12z}</FONT><br><FONT SIZE="-1">(${qksqc12z})</FONT><br><FONT SIZE="-1">(after-qc)</FONT></TD>
+  <TD><FONT SIZE="-1">${qks18z}</FONT><br><FONT SIZE="-1">(${qksqc18z})</FONT><br><FONT SIZE="-1">(after-qc)</FONT></TD>
+  <TD><FONT SIZE="-1">${qkstot}</FONT><br><FONT SIZE="-1">(${qksqcinp})</FONT></TD>
+  <TD><FONT SIZE="-1"><br>(${qksqcinp})</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${tsfc00z}</FONT><br><FONT SIZE="-1">(${ssfc00z})</FONT></TD>
+  <TD><FONT SIZE="-1">${tsfc06z}</FONT><br><FONT SIZE="-1">(${ssfc06z})</FONT></TD>
+  <TD><FONT SIZE="-1">${tsfc12z}</FONT><br><FONT SIZE="-1">(${ssfc12z})</FONT></TD>
+  <TD><FONT SIZE="-1">${tsfc18z}</FONT><br><FONT SIZE="-1">(${ssfc18z})</FONT></TD>
+  <TD><FONT SIZE="-1">${tsfctot}</FONT><br><FONT SIZE="-1">(${ssfctot})</FONT></TD>
+  <TD><FONT SIZE="-1"><br>(${ssfcinp})</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1"><br>${ssfcprcnt}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Satellite Radiances***</FONT></TD>
+  <TD><FONT SIZE="-1">HIRS2 1B</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs200z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs206z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs212z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs218z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs2tot}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs2inp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">HIRS3 1B</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs300z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs306z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs312z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs318z}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs3tot}</FONT></TD>
+  <TD><FONT SIZE="-1">${hirs3inp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">MSU 1B</FONT></TD>
+  <TD><FONT SIZE="-1">${msu00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msu06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msu12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msu18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msutot}</FONT></TD>
+  <TD><FONT SIZE="-1">${msuinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">AMSUA 1B</FONT></TD>
+  <TD><FONT SIZE="-1">${msua00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msua06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msua12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msua18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msuatot}</FONT></TD>
+  <TD><FONT SIZE="-1">${msuainp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">AMSUB 1B</FONT></TD>
+  <TD><FONT SIZE="-1">${msub00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msub06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msub12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msub18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${msubtot}</FONT></TD>
+  <TD><FONT SIZE="-1">${msubinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">GOES</FONT></TD>
+  <TD><FONT SIZE="-1">${geor00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${geor06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${geor12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${geor18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${geortot}</FONT></TD>
+  <TD><FONT SIZE="-1">${georinp}</FONT></TD>
+  <TD><FONT SIZE="-1">*</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">*</FONT></TD>
+  <TD><FONT SIZE="-1">sub-total</FONT></TD>
+  <TD><FONT SIZE="-1">${rsat00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rsat06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rsat12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rsat18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${rsattot}</FONT></TD>
+  <TD><FONT SIZE="-1">${rsatinp}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1">${prcntrad}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+<TR VALIGN="TOP"><TD><FONT SIZE="-1">Total</FONT></TD>
+  <TD><FONT SIZE="-1">Satellite Used</FONT><br><FONT SIZE="-1">Satellite Input</TD>
+  <TD><FONT SIZE="-1">${satusd00z}</FONT><br><FONT SIZE="-1">${satinp00z}</FONT></TD>
+  <TD><FONT SIZE="-1">${satusd06z}</FONT><br><FONT SIZE="-1">${satinp06z}</FONT></TD>
+  <TD><FONT SIZE="-1">${satusd12z}</FONT><br><FONT SIZE="-1">${satinp12z}</FONT></TD>
+  <TD><FONT SIZE="-1">${satusd18z}</FONT><br><FONT SIZE="-1">${satinp18z}</FONT></TD>
+  <TD><FONT SIZE="-1">${satusdtot}</FONT><br><FONT SIZE="-1">${satinptot}</FONT></TD>
+  <TD><FONT SIZE="-1"><br>${satinptot}</FONT></TD>
+<!-- Percent Input calculated replaced with **** due to innacuracy and ambiguity
+  <TD><FONT SIZE="-1"><br>${prcntsat}</FONT></TD></TR>
+-->
+  <TD><FONT SIZE="-1">****</FONT></TD></TR>
+</TABLE><BR WP="BR1"><BR WP="BR2">
+<FONT SIZE="-1">
+** &nbsp;&nbsp;&nbsp;Data is not used or included in totals.<br>
+*** &nbsp;&nbsp;Data is now dumped from BUFR database.  Previous numbers reflected thinning, which is now all done in the analysis.<br>
+**** &nbsp;% Input is no longer available due innacuracy and ambiguity.
+</FONT>
+  <BR>
+  <BR>
+  <BR>
+</BODY>
+</HTML>
+EOF
