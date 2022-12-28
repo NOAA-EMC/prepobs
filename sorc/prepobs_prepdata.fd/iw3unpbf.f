@@ -1445,7 +1445,8 @@ C --> THIS NEEDS TO BE UPDATED WHEN ADDING MORE WORDS PER CAT LEVEL
          MCAT(6)  = 11  ! Cat.  6
          MCAT(7)  = 13  ! Cat. 51
          MCAT(8)  =  4  ! Cat.  8
-         MCAT(9)  = 11  ! Cat. 10    incl. CH 01/19/2021
+C         MCAT(9)  = 11  ! Cat. 10    incl. CH 01/19/2021
+         MCAT(9)  = 14  ! Cat. 10    incl. CH 01/19/2021
 
 C  LVDX defines location in UNP holding the no. of levels for each cat.
 
@@ -2527,6 +2528,7 @@ C  ---------------------------------------------------------------------
 
       DO I=1,NCAT(1)
          IF(RCATS(1,I,1).GE.XMISS)  THEN
+            PRINT *, "NICKE NCAT1"
             RCATS(1,I,1) = PMAND(I)
             RCATS(7:11,I,1) = 2.0
          END IF
@@ -2538,6 +2540,7 @@ C  ------------------------------------------------------------------
  
       DO K=2,4
          IF(NCAT(K).GT.1) THEN
+            PRINT *, "NICKE NCAT234"
             DO J=1,NCAT(K)-1
                DO I=1,MCAT(K)
                   SCAT(I,J) = RCATS(I,J+1,K)
@@ -2618,15 +2621,18 @@ C  ------------------------------------------
  
       DO K=8,8
          IF(NCAT(K).GT.1) THEN
+            PRINT *, "NICKE NCAT8"
             CALL ORDERS(2,IWORK,RCATS(2,1,K),IORD,NCAT(K),50,LWR,2)
             DO J=1,NCAT(K)
                DO I=1,MCAT(K)
                   RCAT(I,J) = RCATS(I,IORD(J),K)
+                  PRINT *, "NICKE RCATIJ ", RCAT(I,J)
                ENDDO
             ENDDO
             DO J=1,NCAT(K)
                DO I=1,MCAT(K)
                   RCATS(I,J,K) = RCAT(I,J)
+                  PRINT *, "NICKE RCATIJK ", RCATS(I,J,K)
                ENDDO
             ENDDO
          END IF
@@ -3409,18 +3415,18 @@ CC        ARRX -> ARR_8
              ARR_8(MS,LS) = ARRX(MS,L2)
           ENDDO
 
-C          IF (L2.EQ.8) THEN  
-C            ARR_8(8,LS) = ARRX(8,L2)
-C          END IF
-C          IF (L2.EQ.9) THEN
-C            ARR_8(9,LS) = ARRX(9,L2)
-C          END IF
-C          IF (L2.EQ.10) THEN
-C            ARR_8(10,LS) = ARRX(10,L2)
-C          END IF
+          IF (L2.EQ.8) THEN  
+            ARR_8(8,LS) = ARRX(8,L2)
+          END IF
+          IF (L2.EQ.9) THEN
+            ARR_8(9,LS) = ARRX(9,L2)
+          END IF
+          IF (L2.EQ.10) THEN
+            ARR_8(10,LS) = ARRX(10,L2)
+          END IF
 
 C          PRINT *, "LVSTR: ", ARRX 
-C         PRINT *, "GNSS drift info: ", ARR_8(8,LS), ARR_8(9,LS), ARR_8(10,LS)
+         PRINT *, "GNSSdriftinfo:",ARR_8(8,LS),ARR_8(9,LS),ARR_8(10,LS)
 
 C       GNSS drift information to be added here
 C       [ ARR_8(8,LS)  <-- XDR  ]
@@ -3477,16 +3483,18 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
             DOB(L) = 0
          END IF
          HRDR(L) = BMISS
+         XDR(L) = BMISS
+         YDR(L) = BMISS
          IF(ARR(8,L).LT.BMISS) HRDR(L) = ARR(8,L)
          IF(ARR(9,L).LT.BMISS) XDR(L) = (ARR(9,L)*100000)
          IF(ARR(10,L).LT.BMISS) YDR(L) = (ARR(10,L)*100000)
-         if(iprint.eq.1)  then
+C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
-     $       G0,"; XDR = ",G0,"; YDR = ",G0,"; HRDR = ",G0,"; fin")', L, 
+     $       G0,"; HRDR = ",G0,"; XDR = ",G0,"; YDR = ",G0,"; fin")', L, 
      $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),hrdr(L),
      $       xdr(L),ydr(L)
-         end if
+C         end if
          IF(MAX(POB(L),DOB(L),SOB(L)).LT.BMISS) PWMIN =MIN(PWMIN,POB(L))
       ENDDO
 
