@@ -1754,7 +1754,8 @@ C***********************************************************************
 C***********************************************************************
       FUNCTION I02UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8,SUBSKP,IER)
  
-      PARAMETER (MAXOBS=3500)
+C      PARAMETER (MAXOBS=3500)
+      PARAMETER (MAXOBS=4500)
 
       COMMON/IUBFCC/SUBSET
       COMMON/IUBFOO/DSNAMX,IDSDAX_8,IDSDMX_8
@@ -2418,7 +2419,8 @@ C***********************************************************************
       SUBROUTINE S03UBF(UNP,SUBSET,*,*,*)
 C     ---> PACKS DATA INTO UNP ARRAY
  
-      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=3500)
+C      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=3500)
+      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=4500)
 
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
@@ -2491,7 +2493,11 @@ C  -----------------------------------------------
  
       UNP(1:12)  = HDR
       UNP(13:52) = RCAT(13:52)
- 
+      
+      DO LMNOP = 1,55
+         PRINT *, "LMNOP: ", LMNOP, UNP(LMNOP)
+      ENDDO
+
       RETURN
       END
 C***********************************************************************
@@ -3429,9 +3435,9 @@ C          PRINT *, "LVSTR: ", ARRX
          PRINT *, "GNSSdriftinfo:",ARR_8(8,LS),ARR_8(9,LS),ARR_8(10,LS)
 
 C       GNSS drift information to be added here
-C       [ ARR_8(8,LS)  <-- XDR  ]
-C       [ ARR_8(9,LS)  <-- YDR  ]
-C       [ ARR_8(10,LS) <-- HRDR ]
+C       [ ARR_8(8,LS)  <-- HRDR  ]
+C       [ ARR_8(9,LS)  <-- XDR  ]
+C       [ ARR_8(10,LS) <-- YDR ]
 C
           LS = LS + 1
         ENDIF
@@ -3482,12 +3488,12 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         HRDR(L) = BMISS
-         XDR(L) = BMISS
-         YDR(L) = BMISS
-         IF(ARR(8,L).LT.BMISS) HRDR(L) = ARR(8,L)
-         IF(ARR(9,L).LT.BMISS) XDR(L) = (ARR(9,L)*100000)
-         IF(ARR(10,L).LT.BMISS) YDR(L) = (ARR(10,L)*100000)
+         HRDR(L) = XMISS
+         XDR(L) = IMISS
+         YDR(L) = IMISS
+         IF(ARR(8,L).LT.XMISS) HRDR(L) = NINT(ARR(8,L))
+         IF(ARR(9,L).LT.IMISS) XDR(L) = NINT((ARR(9,L)*100000))
+         IF(ARR(10,L).LT.IMISS) YDR(L) = NINT((ARR(10,L)*100000))
 C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
