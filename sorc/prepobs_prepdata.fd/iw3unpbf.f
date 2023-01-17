@@ -1437,7 +1437,8 @@ C  IKAT defines the category number
 C  MCAT defines the number of parameters in a level for each category
 C --> THIS NEEDS TO BE UPDATED WHEN ADDING MORE WORDS PER CAT LEVEL
 
-         MCAT(1)  = 11  ! Cat.  1
+C         MCAT(1)  = 11  ! Cat.  1
+         MCAT(1)  = 14  ! Cat.  1   NICKE TEST CHANGE
          MCAT(2)  =  7  ! Cat.  2
          MCAT(3)  =  6  ! Cat.  3
          MCAT(4)  =  5  ! Cat.  4
@@ -2312,6 +2313,9 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
+         RCAT(13) = MIN(NINT(XDR(N)),NINT(RCATS(13,L,KCAT)))
+         RCAT(14) = MIN(NINT(YDR(N)),NINT(RCATS(14,L,KCAT)))
       ELSEIF(ICAT.EQ.10) THEN
          PRINT *, "NICKE ICAT IS 10"
          RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
@@ -2663,13 +2667,13 @@ C  ------------------------------------------
             DO J=1,NCAT(K)
                DO I=1,MCAT(K)
                   RCAT(I,J) = RCATS(I,IORD(J),K)
-                  PRINT *, "NICKE RCATIJ ", RCAT(I,J)
+C                  PRINT *, "NICKE RCATIJ ", RCAT(I,J)
                ENDDO
             ENDDO
             DO J=1,NCAT(K)
                DO I=1,MCAT(K)
                   RCATS(I,J,K) = RCAT(I,J)
-                  PRINT *, "NICKE RCATIJK ", RCATS(I,J,K)
+C                  PRINT *, "NICKE RCATIJK ", RCATS(I,J,K)
                ENDDO
             ENDDO
          END IF
@@ -3452,18 +3456,18 @@ CC        ARRX -> ARR_8
              ARR_8(MS,LS) = ARRX(MS,L2)
           ENDDO
 
-          IF (L2.EQ.8) THEN  
-            ARR_8(8,LS) = ARRX(8,L2)
-          END IF
-          IF (L2.EQ.9) THEN
-            ARR_8(9,LS) = ARRX(9,L2)
-          END IF
-          IF (L2.EQ.10) THEN
-            ARR_8(10,LS) = ARRX(10,L2)
-          END IF
+C          IF (L2.EQ.8) THEN  
+C            ARR_8(8,LS) = ARRX(8,L2)
+C          END IF
+C          IF (L2.EQ.9) THEN
+C            ARR_8(9,LS) = ARRX(9,L2)
+C          END IF
+C          IF (L2.EQ.10) THEN
+C            ARR_8(10,LS) = ARRX(10,L2)
+C          END IF
 
 C          PRINT *, "LVSTR: ", ARRX 
-         PRINT *, "GNSSdriftinfo:",ARR_8(8,LS),ARR_8(9,LS),ARR_8(10,LS)
+C         PRINT *, "GNSSdriftinfo:",ARR_8(8,LS),ARR_8(9,LS),ARR_8(10,LS)
 
 C       GNSS drift information to be added here
 C       [ ARR_8(8,LS)  <-- HRDR  ]
