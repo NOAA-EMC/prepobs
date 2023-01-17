@@ -2279,8 +2279,8 @@ C  ---------------------------------------------------------
 C  EACH DATA LEVEL CATEGORY NEEDS A SPECIFIC DATA ARRANGEMENT
 C  ----------------------------------------------------------
  
-      IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) THEN
-         PRINT *, "NICKE ICAT 2 is 1 or 10:", ICAT
+      IF(ICAT.EQ.1) THEN
+         PRINT *, "NICKE ICAT: 1" 
          RCAT(1)  = MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
          RCAT(2)  = MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
          RCAT(3)  = MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
@@ -2312,12 +2312,43 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
-         IF(ICAT.EQ.10) THEN
-           RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
-           RCAT(13) = MIN(NINT(XDR(N)),NINT(RCATS(13,L,KCAT)))
-           RCAT(14) = MIN(NINT(YDR(N)),NINT(RCATS(14,L,KCAT)))
-           PRINT *, "RCAT1 121314; ",RCAT(1),RCAT(12),RCAT(13),RCAT(14)
+      ELSEIF(ICAT.EQ.10) THEN
+         PRINT *, "NICKE ICAT IS 10"
+         RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
+         RCAT(2)= MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
+         RCAT(3)= MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
+         RCAT(4)= MIN(NINT(QOB(N)),NINT(RCATS( 4,L,KCAT)))
+         RCAT(5)= MIN(NINT(DOB(N)),NINT(RCATS( 5,L,KCAT)))
+         RCAT(6)= MIN(NINT(SOB(N)),NINT(RCATS( 6,L,KCAT)))
+         IF(RCATS(7,L,KCAT).LT.IMISS) THEN
+            RCAT(7)= MAX(NINT(PQM(N)),NINT(RCATS( 7,L,KCAT)))
+         ELSE
+            RCAT(7)= NINT(PQM(N))
          END IF
+         IF(RCATS(8,L,KCAT).LT.IMISS) THEN
+            RCAT(8)= MAX(NINT(ZQM(N)),NINT(RCATS( 8,L,KCAT)))
+         ELSE
+            RCAT(8)= NINT(ZQM(N))
+         END IF
+         IF(RCATS(9,L,KCAT).LT.IMISS) THEN 
+            RCAT(9)= MAX(NINT(TQM(N)),NINT(RCATS( 9,L,KCAT)))
+         ELSE 
+            RCAT(9)= NINT(TQM(N))
+         END IF
+         IF(RCATS(10,L,KCAT).LT.IMISS) THEN
+            RCAT(10) = MAX(NINT(QQM(N)),NINT(RCATS(10,L,KCAT)))
+         ELSE
+            RCAT(10) = NINT(QQM(N))
+         END IF
+         IF(RCATS(11,L,KCAT).LT.IMISS) THEN
+            RCAT(11) = MAX(NINT(WQM(N)),NINT(RCATS(11,L,KCAT)))
+         ELSE
+            RCAT(11) = NINT(WQM(N))
+         END IF
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
+         RCAT(13) = MIN(NINT(XDR(N)),NINT(RCATS(13,L,KCAT)))
+         RCAT(14) = MIN(NINT(YDR(N)),NINT(RCATS(14,L,KCAT)))
+         PRINT *, "RCAT1 121314; ",RCAT(1),RCAT(12),RCAT(13),RCAT(14)
       ELSEIF(ICAT.EQ.2) THEN
          PRINT *, "NICKE ICAT IS 2"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
@@ -2494,9 +2525,9 @@ C  -----------------------------------------------
       UNP(1:12)  = HDR
       UNP(13:52) = RCAT(13:52)
       
-      DO LMNOP = 1,55
-         PRINT *, "LMNOP: ", LMNOP, UNP(LMNOP)
-      ENDDO
+C      DO LMNOP = 1,55
+C         PRINT *, "LMNOP: ", LMNOP, UNP(LMNOP)
+C      ENDDO
 
       RETURN
       END
