@@ -912,6 +912,9 @@ C       8    GEOP. QUALITY MARKER (SEE $)             REAL
 C       9    TEMP. QUALITY MARKER (SEE $)             REAL
 C      10    DDPR. QUALITY MARKER (SEE $)             REAL
 C      11    WIND  QUALITY MARKER (SEE $)             REAL
+C      12    TIME PERIOD DISPLACEMENT  SECONDS        REAL
+C      13    LATITUDE DISPLACEMENT     DEGREES        REAL
+C      14    LONGITUDE DISPLACEMENT    DEGREES        REAL
 C
 C     DATA LEVEL CATEGORY 2 - TEMPERATURE AT VARIABLE PRESSURE
 C     WORD   PARAMETER            UNITS               FORMAT
@@ -923,6 +926,9 @@ C       4    PRES. QUALITY MARKER (SEE $)             REAL
 C       5    TEMP. QUALITY MARKER (SEE $)             REAL
 C       6    DDPR. QUALITY MARKER (SEE $)             REAL
 C       7    SPECIAL INDICATOR    (SEE $$)            REAL
+C       8    TIME PERIOD DISPLACEMENT  SECONDS        REAL
+C       9    LATITUDE DISPLACEMENT     DEGREES        REAL
+C      10    LONGITUDE DISPLACEMENT    DEGREES        REAL
 C
 C     DATA LEVEL CATEGORY 3 - WINDS AT VARIABLE PRESSURE
 C     WORD   PARAMETER            UNITS               FORMAT
@@ -1439,7 +1445,8 @@ C --> THIS NEEDS TO BE UPDATED WHEN ADDING MORE WORDS PER CAT LEVEL
 
 C         MCAT(1)  = 11  ! Cat.  1
          MCAT(1)  = 14  ! Cat.  1   NICKE TEST CHANGE
-         MCAT(2)  =  7  ! Cat.  2
+C         MCAT(2)  =  7  ! Cat.  2
+         MCAT(2)  =  10  ! Cat.  2  NICKE TEST CHANGE
          MCAT(3)  =  6  ! Cat.  3
          MCAT(4)  =  5  ! Cat.  4
          MCAT(5)  =  9  ! Cat.  5
@@ -2362,6 +2369,9 @@ C  ----------------------------------------------------------
          RCAT(5) = NINT(TQM(N))
          RCAT(6) = NINT(QQM(N))
          RCAT(7) = NINT(XIND(N))
+         RCAT(8) = NINT(HRDR(N))
+         RCAT(9) = NINT(XDR(N))
+         RCAT(10)= NINT(YDR(N))
       ELSEIF(ICAT.EQ.3) THEN
          PRINT *, "NICKE ICAT IS 3"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
@@ -3523,12 +3533,21 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         HRDR(L) = XMISS
-         XDR(L) = IMISS
-         YDR(L) = IMISS
-         IF(ARR(8,L).LT.XMISS) HRDR(L) = NINT(ARR(8,L))
-         IF(ARR(9,L).LT.IMISS) XDR(L) = NINT((ARR(9,L)*100000))
-         IF(ARR(10,L).LT.IMISS) YDR(L) = NINT((ARR(10,L)*100000))
+         IF(ARR(8,L).LT.IMISS) THEN 
+             HRDR(L) = NINT(ARR(8,L))
+         ELSE
+             HRDR(L) = IMISS
+         END IF
+         IF(ARR(9,L).LT.IMISS) THEN
+             XDR(L) = NINT((ARR(9,L)*100000))
+         ELSE
+             XDR(L) = IMISS
+         END IF
+         IF(ARR(10,L).LT.IMISS) THEN 
+             YDR(L) = NINT((ARR(10,L)*100000))
+         ELSE
+             YDR(L) = IMISS
+         END IF
 C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
