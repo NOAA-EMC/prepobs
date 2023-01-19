@@ -9920,11 +9920,6 @@ C IQMLIM IS PREPBUFR TBL V. LIMIT FOR ACCEPTING REPORTS (HERE SET TO 16)
       IZBEST = 99
       IWBEST = 99
       DO I = 1,NLEV
-         IF(I.EQ.5) THEN
-             PRINT *, "I EQ 5"
-             PRINT *, PP(I),ZP(I),TP(I),UP(I),VP(I) 
-             PRINT *, XP(I),YP(I),HP(I)
-         ENDIF
          IQ1 = IQ(I,1)
 C FOR NON-SAT RETR: ADD 16 TO HEIGHT PREPBUFR TABLE VAL. SO IT WILL PASS
 C  PIBAL/PROFLR/VADWND TST(ALSO TST CAT.3 IN CASE OF DUPL. LVL W/ CAT.4,
@@ -10417,7 +10412,6 @@ C$$$
       DATA   ASCRT/5.0/      ! ASCENT RATE (IN M/SEC)
       DATA   CON/8.9929E-06/ ! 180.0/(PI*RADIUS OF EARTH) (RADIUS IN M
 
-      PRINT *," NICKE NUMVAR, NUMDAT", NUMDAT, NUMDAR
       IF(LL.EQ.2)  THEN
 C COME HERE FOR FIRST LEVEL OF A NEW REPORT "PIECE" {LL = 1 IS A META-
 C  DATA LEVEL IDENTIFYING SURFACE PRESSURE (HOLDS ONLY PSFC*10)}
@@ -10460,8 +10454,8 @@ C FOR PIBALS, ACCEPT ALL NON-MISSING HEIGHTS (EVEN STD. ATMOSPHERE)
 
 
 C      NICK E PROB GOES HERE 
-C      PRINT *, "NICKE pb trial i", HP(I),XP(I),YP(I)
-C      PRINT *, "NICKE pb trial ii", HP(II),XP(II),YP(II)
+      PRINT *, "---------------NICKE NEW---------------------------"
+      PRINT *, "NICKE I II LL", I, II, LL
       PRINT *, "NICKE pb trial ll", HP(LL),XP(LL),YP(LL)
 
 C-----------------------------------------------------------------------
@@ -10489,15 +10483,15 @@ C            STANDARD ATMOSPHERE)}
      $    "proceed w/ drift time calc.")', I,PP(I)
          JJ = JJ + 1
          ZDRIFT(JJ) = ZP(I)
-         PRINT *, "NICKE HP LL is ", HP(LL)
+         PRINT *, "NICKE HP(I) is ", HP(I)
          IF(JJ.GT.1)  THEN
-          IF(HP(LL).LT.BMISS) THEN
-            TDRIFT(JJ)=HP(LL)
+          IF(HP(I).LT.BMISS) THEN
+            TDRIFT(JJ)=HP(I)
             PRINT *, "NICKE TDRIFT USED A - tdr is: ", TDRIFT(JJ)
           ELSE
             TDRIFT(JJ) = TDRIFT(JJ-1) +
      $       (ZDRIFT(JJ) - ZDRIFT(JJ-1))/ASCRT
-            PRINT *, "NICKE TDRIFT USED B"
+            PRINT *, "NICKE TDRIFT USED B", TDRIFT(JJ)
           ENDIF
             IF(IFLTIM.EQ.1)  THEN
 C .. ONE OR MORE BALLOON TIME CALCULATION TESTS HAVE FAILED ON SOME
@@ -10579,6 +10573,7 @@ C     LATER ENCODED INTO PREPBUFR FILE)
             END IF
          END IF
          IF(LL.GT.2)  THEN
+            PRINT *, "NICKE LL.GT.2 DRIFTTIME"
             DFTTIM(LL) = DFTTIM(LL-1)
             TDRIFTLL(LL) = TDRIFTLL(LL-1)
          ELSE
@@ -10586,6 +10581,7 @@ C .. IF THIS IS THE FIRST LEVEL IN THE PROFILE, BALLOON DRIFT TIME IS
 C     SIMPLY SET TO REPORTED (OR GENERATED) LAUNCH TIME
             IF(ALNCH.LT.YMISS)  DFTTIM(LL) = ALNCH
             TDRIFTLL(LL) = 0
+            PRINT *, "NICKE 1ST LVL DRIFTTIME"
          END IF
          IF(IPRT(2).EQ.1)  PRINT'(" I,LL,PP(I),ZP(I),IQ1,PSTA,",
      $    "TDRIFTLL(LL),DFTTIM(LL): ",2(I0,1X),2(G0,1X),I0,1X,
@@ -10600,6 +10596,7 @@ C-----------------------------------------------------------------------
          PRINT'(" - Level ", I0,"- perform balloon drift LAT/LON ",
      $    "calculation")', I
       END IF
+      PRINT *, "NICKEPETC", PP(I),YP(I),XP(I),HP(I)
       IF(MAX(ZP(I),UP(I),VP(I)).LT.XMISS.AND.MAX(IQ1,IQ4).LT.4)  THEN
 cfix? IF(MAX(ZP(I),UP(I),VP(I)).LT.YMISS.AND.MAX(IQ1,IQ4).LT.4)  THEN
 C .. BALLOON DRIFT LAT/LON AND TIME IS A FUNCTION OF MEASURED HEIGHT
@@ -10630,10 +10627,11 @@ C     (NOTE: DRIFT TIME IS STILL CALCULATED)
          VDRIFT(II) = VP(I)
          TDRIFT_LL(II) = TDRIFTLL(LL)
          IF(II.GT.1)  THEN
-          PRINT *, "NICKE XP YP at LL: ", XP(LL), YP(LL)
-          IF ((XP(LL).LT.BMISS).AND.(YP(LL).LT.BMISS)) THEN
-            XDRIFT(II) = RDATA(2)+XP(LL)
-            YDRIFT(II) = RDATA(1)+YP(LL)
+          PRINT *, "NICKE XP YP at I: ", XP(I), YP(I)
+          IF ((XP(I).LT.BMISS).AND.(YP(I).LT.BMISS)) THEN
+            XDRIFT(II) = RDATA(2)+XP(I)
+            YDRIFT(II) = RDATA(1)+YP(I)
+            PRINT *, "NICKE at XYDRIFT RDATA21", RDATA(2),RDATA(1)
             PRINT *, "NICKE XYDRIFT USED C: ", XDRIFT(II),YDRIFT(II)
           ELSE
             XDRIFT(II) = XDRIFT(II-1) +
@@ -10772,12 +10770,15 @@ C     PREPBUFR FILE)
      $    "has missing or bad hght or wind, set drft lat/lon to rpt ",
      $    "lat/lon (1st lvl) or to drft lat/lon from prev lvl")',
      $    I,PP(I)
+CCCCCCCCCCCC NICKEHERE  ITHINK
          IF(LL.GT.2)  THEN
+            PRINT *, "NICKE LEVEL GT2"
             DFTLON(LL) = DFTLON(LL-1)
             DFTLAT(LL) = DFTLAT(LL-1)
          ELSE
 C .. IF THIS IS THE FIRST LEVEL IN THE PROFILE, BALLOON DRIFT LAT/LON
 C     IS SET TO REPORTED LAT/LON
+            PRINT *, "NICKE 1ST LEVEL"
             DFTLON(LL) = alon_8
             DFTLAT(LL) = alat_8
          END IF
