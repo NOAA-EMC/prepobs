@@ -2321,8 +2321,8 @@ C  ----------------------------------------------------------
             RCAT(11) = NINT(WQM(N))
          END IF
          RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
-         RCAT(13) = MIN(NINT(XDR(N)),NINT(RCATS(13,L,KCAT)))
-         RCAT(14) = MIN(NINT(YDR(N)),NINT(RCATS(14,L,KCAT)))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(RCATS(14,L,KCAT)))
       ELSEIF(ICAT.EQ.10) THEN
          PRINT *, "NICKE ICAT IS 10"
          RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
@@ -2357,8 +2357,8 @@ C  ----------------------------------------------------------
             RCAT(11) = NINT(WQM(N))
          END IF
          RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
-         RCAT(13) = MIN(NINT(XDR(N)),NINT(RCATS(13,L,KCAT)))
-         RCAT(14) = MIN(NINT(YDR(N)),NINT(RCATS(14,L,KCAT)))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(RCATS(14,L,KCAT)))
          PRINT *, "RCAT1 121314; ",RCAT(1),RCAT(12),RCAT(13),RCAT(14)
       ELSEIF(ICAT.EQ.2) THEN
          PRINT *, "NICKE ICAT IS 2"
@@ -2370,8 +2370,8 @@ C  ----------------------------------------------------------
          RCAT(6) = NINT(QQM(N))
          RCAT(7) = NINT(XIND(N))
          RCAT(8) = NINT(HRDR(N))
-         RCAT(9) = NINT(XDR(N))
-         RCAT(10)= NINT(YDR(N))
+         RCAT(9) = NINT(YDR(N))
+         RCAT(10)= NINT(XDR(N))
       ELSEIF(ICAT.EQ.3) THEN
          PRINT *, "NICKE ICAT IS 3"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
@@ -3539,14 +3539,14 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
              HRDR(L) = IMISS
          END IF
          IF(ARR(9,L).LT.IMISS) THEN
-             XDR(L) = NINT((ARR(9,L)*100000))
-         ELSE
-             XDR(L) = IMISS
-         END IF
-         IF(ARR(10,L).LT.IMISS) THEN 
-             YDR(L) = NINT((ARR(10,L)*100000))
+             YDR(L) = NINT((ARR(9,L)*100000))
          ELSE
              YDR(L) = IMISS
+         END IF
+         IF(ARR(10,L).LT.IMISS) THEN 
+             XDR(L) = NINT((ARR(10,L)*100000))
+         ELSE
+             XDR(L) = IMISS
          END IF
 C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",

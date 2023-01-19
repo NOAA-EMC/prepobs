@@ -9889,7 +9889,7 @@ C$$$
       COMMON /BUFRLIB_MISSING/BMISS
       EQUIVALENCE  (DAT,PP),(DAT(1,2),ZP),(DAT(1,3),TP),(DAT(1,4),DP),
      $ (DAT(1,5),UP),(DAT(1,6),VP),(DAT(1,NUMVAR+1),IQ),
-     $ (DAT(1,12),HP),(DAT(1,13),XP),(DAT(1,14),YP),
+     $ (DAT(1,17),HP),(DAT(1,18),YP),(DAT(1,19),XP),
      $ (IDATA,RDATA)
       DATA   XMISS/99999./,YMISS/99998.8/,IMISS/99999/
       EQUIVALENCE  (DAT(1,NUMVAR+NUMQMS+1),IR)
@@ -10409,8 +10409,8 @@ C$$$
      $ UDRIFT(MXLVL),VDRIFT(MXLVL),XDRIFT(MXLVL),YDRIFT(MXLVL),
      $ TDRIFT_LL(MXLVL),KFLAG(5),LFLAG(3),PLO,IFLTIM,JJ,II
       EQUIVALENCE  (DAT,PP),(DAT(1,2),ZP),(DAT(1,3),TP),(DAT(1,4),DP),
-     $ (DAT(1,5),UP),(DAT(1,6),VP),(DAT(1,NUMVAR+1),IQ),(DAT(1,12),HP),
-     $ (DAT(1,13),XP),(DAT(1,14),YP),
+     $ (DAT(1,5),UP),(DAT(1,6),VP),(DAT(1,NUMVAR+1),IQ),(DAT(1,17),HP),
+     $ (DAT(1,18),YP),(DAT(1,19),XP),
      $ (IDATA,RDATA)
       DATA   XMISS/99999./,YMISS/99998.8/
       DATA   PI/3.141592654/
@@ -10460,9 +10460,9 @@ C FOR PIBALS, ACCEPT ALL NON-MISSING HEIGHTS (EVEN STD. ATMOSPHERE)
 
 
 C      NICK E PROB GOES HERE 
-      PRINT *, "NICKE pb trial i", XP(I),YP(I),HP(I)
-      PRINT *, "NICKE pb trial ii", XP(II),YP(II),HP(II)
-      PRINT *, "NICKE pb trial ll", XP(LL),YP(LL),HP(LL)
+C      PRINT *, "NICKE pb trial i", HP(I),XP(I),YP(I)
+C      PRINT *, "NICKE pb trial ii", HP(II),XP(II),YP(II)
+      PRINT *, "NICKE pb trial ll", HP(LL),XP(LL),YP(LL)
 
 C-----------------------------------------------------------------------
 C                  BALLOON DRIFT TIME CALCULATION
@@ -10489,7 +10489,7 @@ C            STANDARD ATMOSPHERE)}
      $    "proceed w/ drift time calc.")', I,PP(I)
          JJ = JJ + 1
          ZDRIFT(JJ) = ZP(I)
-         PRINT *, "NICKE HP i ii ll is ", HP(I),HP(II),HP(LL)
+         PRINT *, "NICKE HP LL is ", HP(LL)
          IF(JJ.GT.1)  THEN
           IF(HP(LL).LT.BMISS) THEN
             TDRIFT(JJ)=HP(LL)
@@ -10630,11 +10630,10 @@ C     (NOTE: DRIFT TIME IS STILL CALCULATED)
          VDRIFT(II) = VP(I)
          TDRIFT_LL(II) = TDRIFTLL(LL)
          IF(II.GT.1)  THEN
-          PRINT *, "NICKE XP i ii ll: ", XP(I), XP(II), XP(LL)
-          PRINT *, "NICKE YP i ii ll: ", YP(I), YP(II), YP(LL)
+          PRINT *, "NICKE XP YP at LL: ", XP(LL), YP(LL)
           IF ((XP(LL).LT.BMISS).AND.(YP(LL).LT.BMISS)) THEN
-            XDRIFT(II) = XP(LL)
-            YDRIFT(II) = YP(LL)
+            XDRIFT(II) = RDATA(2)+XP(LL)
+            YDRIFT(II) = RDATA(1)+YP(LL)
             PRINT *, "NICKE XYDRIFT USED C: ", XDRIFT(II),YDRIFT(II)
           ELSE
             XDRIFT(II) = XDRIFT(II-1) +
@@ -10685,6 +10684,7 @@ C            PREVIOUS LEVEL TIME VALUES AS WELL)
      $ '(=',F8.2,'E)'/6X,'> 1 DEG. DIFFERENT THAN DRIFT LON ON LEVEL ',
      $ 'BELOW (=',F7.2,'E) - TRANSFER DRIFT LAT/LON/TIME FROM LVL ',
      $ 'BELOW TO THIS LVL AND ALL LVLS ABOVE')
+               PRINT *, "NICKE DRIFT",XDRIFT(II),XDRIFT(II-1)
                II = II - 1
                KFLAG(3) = 1
                LFLAG(1) = 1
