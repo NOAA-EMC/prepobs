@@ -2179,8 +2179,12 @@ set -x
             [ $err != 0 ] && exit 55  # for extra measure
          fi
       elif [ $BACK = 'YES' ] ; then
-         echo 'BACK=YES'		 
-	 mpiexec -np 6 --cpu-bind verbose,core $DATA/prepthrds.sh # Keep '-np 6' > NSPLIT=4
+         echo 'BACK=YES'
+         if [ "$launcher_PREP" = mpiexec ]; then
+	   mpiexec -np 6 --cpu-bind verbose,core $DATA/prepthrds.sh # Keep '-np 6' > NSPLIT=4
+         else
+           $DATA/prepthrds.sh
+         fi	 
       fi
       totalt=$NSPLIT
    else
