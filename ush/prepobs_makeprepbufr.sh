@@ -2123,8 +2123,8 @@ set -x
          elif [ "$launcher_PREP" = mpiexec ]; then
 	    chmod 755 $DATA/prep_exec.cmd
             #mpiexec -n 6 -ppn 32 $DATA/prep_exec.cmd #IG
-            # mpiexec -n 6 $DATA/prep_exec.cmd
-            mpiexec -n $NSPLIT cfp $DATA/prep_exec.cmd  
+            #mpiexec -n 6 $DATA/prep_exec.cmd
+            $launcher_PREP -n $NSPLIT cfp $DATA/prep_exec.cmd  
 	    export err=$?; $DATA/err_chk
             [ $err != 0 ] && exit 55  # for extra measure	 
          elif [ "$launcher_PREP" = mpirun.lsf ]; then
@@ -2179,8 +2179,10 @@ set -x
             [ $err != 0 ] && exit 55  # for extra measure
          fi
       elif [ $BACK = 'YES' ] ; then
-         echo 'BACK=YES'		 
-	 mpiexec -np 6 --cpu-bind verbose,core $DATA/prepthrds.sh # Keep '-np 6' > NSPLIT=4
+         echo 'BACK=YES'
+         launcher_PREP=${launcher_PREP:-mpiexec}
+	 NPROCS=${NPROCS:-6}
+	 #mpiexec -np 6 --cpu-bind verbose,core $DATA/prepthrds.sh # Keep '-np 6' > NSPLIT=4
       fi
       totalt=$NSPLIT
    else
