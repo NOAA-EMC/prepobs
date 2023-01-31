@@ -565,6 +565,10 @@ C       increased according to the number of mandatory levels present,
 C       intending to capture a sufficient number of other vertical
 C       levels, throughout the depth of a BUFR profile, to fill the
 C       prepbufr arrays.
+C 2023-01-31  N. ESPOSITO -- WITH THE ADDITION OF GPS DATA TO UPRAIR
+C     DUMP FILES, CHANGES WERE NEEDED. DATA CATEGORY LEVELS 1, 2, AND
+C     10 NEEDED TO BE INCREASED IN SIZE BY 3 TO SAVE TIME AND LOCATION
+C     DISPLACEMENT DATA. 
 C
 C
 C USAGE:    II = IW3UNPBF(NUNIT, OBS, STNID, CRES1, CRES2, CBULL, OBS2,
