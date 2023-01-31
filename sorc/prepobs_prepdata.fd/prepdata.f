@@ -10537,6 +10537,10 @@ C            STANDARD ATMOSPHERE)}
          PRINT *, "NICKE HP(I) is ", HP(I)
          IF(JJ.GT.1)  THEN
             IF(HP(I).LT.BMISS) THEN
+C.   IF TIME DISPLACEMENT DATA WAS RETRIEVED, USE IT AND SET GPSFLAG(1)
+C    TO 1 SO THAT COMPUTATION CHECKS AFTERWARD WILL BE IGNORED. IF TIME
+C    DISPLACEMENT DATA WAS NOT RETRIEVED, KEEP GPSFLAG(1) AT 0, AND DO
+C    ALL OF THE ORIGINAL, NORMAL CHECKS.
                TDRIFT(JJ)=HP(I)
                PRINT *, "NICKE TDRIFT USED A - tdr is: ", TDRIFT(JJ)
                GPSFLAG(1) = 1
@@ -10685,24 +10689,28 @@ C     (NOTE: DRIFT TIME IS STILL CALCULATED)
          VDRIFT(II) = VP(I)
          TDRIFT_LL(II) = TDRIFTLL(LL)
          IF(II.GT.1)  THEN
-          PRINT *, "NICKE XP YP at I: ", XP(I), YP(I)
-          IF ((XP(I).LT.BMISS).AND.(YP(I).LT.BMISS)) THEN
-            XDRIFT(II) = RDATA(2)+XP(I)
-            YDRIFT(II) = RDATA(1)+YP(I)
-            GPSFLAG(2) = 1
-            PRINT *, "NICKE at XYDRIFT RDATA21", RDATA(2),RDATA(1)
-            PRINT *, "NICKE XYDRIFT USED C: ", XDRIFT(II),YDRIFT(II)
-          ELSE
-            XDRIFT(II) = XDRIFT(II-1) +
+C.   IF LOCATION DISPLACEMENT DATA WAS RETRIEVED, USE IT AND SET 
+C    GPSFLAG(2) TO 1 SO THAT COMPUTATION CHECKS AFTERWARD WILL BE
+C    IGNORED. IF LOCATION DISPLACEMENT DATA WAS NOT RETRIEVED, KEEP
+C    GPSFLAG(2) AT 0 AND DO ALL OF THE ORIGINAL CHECKS.
+            PRINT *, "NICKE XP YP at I: ", XP(I), YP(I)
+            IF ((XP(I).LT.BMISS).AND.(YP(I).LT.BMISS)) THEN
+              XDRIFT(II) = RDATA(2)+XP(I)
+              YDRIFT(II) = RDATA(1)+YP(I)
+              GPSFLAG(2) = 1
+              PRINT *, "NICKE at XYDRIFT RDATA21", RDATA(2),RDATA(1)
+              PRINT *, "NICKE XYDRIFT USED C: ", XDRIFT(II),YDRIFT(II)
+            ELSE
+              XDRIFT(II) = XDRIFT(II-1) +
      $                    (0.5 * (UDRIFT(II-1) + UDRIFT(II)) *
      $                    (TDRIFT_LL(II) - TDRIFT_LL(II-1))
      $                    * CON/(COS(PI*YDRIFT(II-1)/180.)))
-            YDRIFT(II) = YDRIFT(II-1) +
+              YDRIFT(II) = YDRIFT(II-1) +
      $                    (0.5 * (VDRIFT(II-1) + VDRIFT(II)) *
      $                    (TDRIFT_LL(II) - TDRIFT_LL(II-1)) * CON)
-            GPSFLAG(2) = 0
-            PRINT *, "NICKE XYDRIFT USED D"
-          END IF
+              GPSFLAG(2) = 0
+              PRINT *, "NICKE XYDRIFT USED D"
+            END IF
             IF((IFLTIM.EQ.1).AND.(GPSFLAG(2).EQ.0))  THEN
 C .. A PROBLEM IN THE BALLOON DRIFT TIME CALCULATION (ABOVE) MEANS THE
 C     BALLOON DRIFT LAT/LON IS ALSO SUSPECT - REVERT THIS LEVEL (AND
