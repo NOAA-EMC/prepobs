@@ -10402,7 +10402,7 @@ C$$$
       COMMON /BUFRLIB_MISSING/BMISS
       COMMON/SBDRIFT/ZDRIFT(MXLVL),TDRIFT(MXLVL),TDRIFTLL(MXLVL),
      $ UDRIFT(MXLVL),VDRIFT(MXLVL),XDRIFT(MXLVL),YDRIFT(MXLVL),
-     $ TDRIFT_LL(MXLVL),KFLAG(5),LFLAG(3),PLO,IFLTIM,JJ,II
+     $ TDRIFT_LL(MXLVL),KFLAG(5),LFLAG(3),GPSFLAG,PLO,IFLTIM,JJ,II
       EQUIVALENCE  (DAT,PP),(DAT(1,2),ZP),(DAT(1,3),TP),(DAT(1,4),DP),
      $ (DAT(1,5),UP),(DAT(1,6),VP),(DAT(1,NUMVAR+1),IQ),(DAT(1,17),HP),
      $ (DAT(1,18),YP),(DAT(1,19),XP),
@@ -10440,6 +10440,7 @@ C  DATA LEVEL IDENTIFYING SURFACE PRESSURE (HOLDS ONLY PSFC*10)}
          PLO = PSTA
          KFLAG = 0
          LFLAG = 0
+         GPSFLAG = 0
          IFLTIM = 0
          JJ = 0
          II = 0
@@ -10485,14 +10486,15 @@ C            STANDARD ATMOSPHERE)}
          ZDRIFT(JJ) = ZP(I)
          PRINT *, "NICKE HP(I) is ", HP(I)
          IF(JJ.GT.1)  THEN
-          IF(HP(I).LT.BMISS) THEN
-            TDRIFT(JJ)=HP(I)
-            PRINT *, "NICKE TDRIFT USED A - tdr is: ", TDRIFT(JJ)
-          ELSE
-            TDRIFT(JJ) = TDRIFT(JJ-1) +
-     $       (ZDRIFT(JJ) - ZDRIFT(JJ-1))/ASCRT
-            PRINT *, "NICKE TDRIFT USED B", TDRIFT(JJ)
-          ENDIF
+            IF(HP(I).LT.BMISS) THEN
+               TDRIFT(JJ)=HP(I)
+               PRINT *, "NICKE TDRIFT USED A - tdr is: ", TDRIFT(JJ)
+               GPSFLAG = 1
+            ELSE
+               TDRIFT(JJ) = TDRIFT(JJ-1) +
+     $          (ZDRIFT(JJ) - ZDRIFT(JJ-1))/ASCRT
+               PRINT *, "NICKE TDRIFT USED B", TDRIFT(JJ)
+            ENDIF
             IF(IFLTIM.EQ.1)  THEN
 C .. ONE OR MORE BALLOON TIME CALCULATION TESTS HAVE FAILED ON SOME
 C     PREVIOUS LEVEL - REVERT THIS LEVEL (AND LATER ALL ABOVE) TO
@@ -10517,7 +10519,7 @@ C               AS WELL)
      $ '(=',F8.2,'SEC)'/6X,'< DRFT TIME ON LVL BELOW (=',F8.2,'SEC) -',
      $ ' TRANSFER DRFT TIME FROM LVL BELOW TO THIS LVL & CONTINUE ',
      $ 'PROC. DRFT LAT/LON/TIME')
-                  TDRIFT(JJ) = TDRIFT(JJ-1)
+               TDRIFT(JJ) = TDRIFT(JJ-1)
                ELSE
                   PRINT 8475, STNID,RDATA(1),RDATA(2),IDATA(9),PP(I),
      $             TDRIFT(JJ),TDRIFT(JJ-1)
@@ -10561,15 +10563,16 @@ C     LATER ENCODED INTO PREPBUFR FILE)
          IF(IPRT(2).EQ.1)  PRINT'(" I,JJ,LL,PP(I),ZDRIFT(JJ),",
      $    "TDRIFT(JJ),TDRIFTLL(LL),DFTTIM(LL): ",3(I0,1X),5(G0,1X))',
      $    I,JJ,LL,PP(I),ZDRIFT(JJ),TDRIFT(JJ),TDRIFTLL(LL),DFTTIM(LL)
-      ELSE
-         IF(IPRT(2).EQ.1)  THEN
-            IF(MAX(LFLAG(1),LFLAG(2),LFLAG(3)).EQ.1)  THEN
-               PRINT'(" one of the LFLAGs = 1 - revert back to ",
-     $          "previous level drift time value")'
-            ELSE
-               PRINT'(" Lvl ",I0," at ",G0,"mb either has missing or ",
-     $          "bad hght or is < elev, set drft time to launch time ",
-     $          "(1st lvl) or to drft time from prev lvl")', I,PP(I)
+         ELSE
+            IF(IPRT(2).EQ.1)  THEN
+               IF(MAX(LFLAG(1),LFLAG(2),LFLAG(3)).EQ.1)  THEN
+                  PRINT'(" one of the LFLAGs = 1 - revert back to ",
+     $             "previous level drift time value")'
+               ELSE
+                  PRINT'(" Lvl ",I0," at ",G0,"mb either has missing ",
+     $             "or bad hght or is < elev, set drft time to launch ",
+     $             "time(1st lvl) or to drft time from prev lvl")', 
+     $             I,PP(I)
             END IF
          END IF
          IF(LL.GT.2)  THEN
@@ -10631,6 +10634,7 @@ C     (NOTE: DRIFT TIME IS STILL CALCULATED)
           IF ((XP(I).LT.BMISS).AND.(YP(I).LT.BMISS)) THEN
             XDRIFT(II) = RDATA(2)+XP(I)
             YDRIFT(II) = RDATA(1)+YP(I)
+            GPSFLAG=1
             PRINT *, "NICKE at XYDRIFT RDATA21", RDATA(2),RDATA(1)
             PRINT *, "NICKE XYDRIFT USED C: ", XDRIFT(II),YDRIFT(II)
           ELSE
@@ -10641,17 +10645,18 @@ C     (NOTE: DRIFT TIME IS STILL CALCULATED)
             YDRIFT(II) = YDRIFT(II-1) +
      $                    (0.5 * (VDRIFT(II-1) + VDRIFT(II)) *
      $                    (TDRIFT_LL(II) - TDRIFT_LL(II-1)) * CON)
+            GPSFLAG=0
             PRINT *, "NICKE XYDRIFT USED D"
           END IF
-            IF(IFLTIM.EQ.1)  THEN
+            IF((IFLTIM.EQ.1).AND.(GPSFLAG.EQ.0))  THEN
 C .. A PROBLEM IN THE BALLOON DRIFT TIME CALCULATION (ABOVE) MEANS THE
 C     BALLOON DRIFT LAT/LON IS ALSO SUSPECT - REVERT THIS LEVEL (AND
 C     LATER ALL ABOVE) TO PREVIOUS LEVEL LAT/LON VALUES
                IF(IPRT(2).EQ.1) PRINT'(" IFLTIM = 1 - revert back to ",
      $          "previous level drift lat/lon value")'
                II = II - 1
-            ELSE  IF(MAX(KFLAG(1),KFLAG(2),KFLAG(3),KFLAG(4), KFLAG(5))
-     $       .EQ.1)  THEN
+            ELSE  IF((MAX(KFLAG(1),KFLAG(2),KFLAG(3),KFLAG(4), KFLAG(5))
+     $       .EQ.1).AND.(GPSFLAG.EQ.0))  THEN
 C .. ONE OR MORE BALLOON LAT/LON CALCULATION TESTS HAVE FAILED ON THIS
 C     OR SOME PREVIOUS LEVEL - REVERT THIS LEVEL (AND LATER ALL ABOVE)
 C     TO PREVIOUS LEVEL LAT/LON VALUES
@@ -10659,7 +10664,7 @@ C     (NOTE: DRIFT TIME MAY STILL BE CALCULATED DEPENDING UPON TEST)
                IF(IPRT(2).EQ.1) PRINT'(" one of the KFLAGs = 1 - ",
      $          "revert back to previous level drift lat/lon value")'
                II = II - 1
-            ELSE  IF(STNID.EQ.'89009   ')  THEN
+            ELSE  IF((STNID.EQ.'89009   ').AND.(GPSFLAG.EQ.0))  THEN
 C .. SOUTH POLE STATION, CAN'T CALC. BALLOON DRIFT LAT/LON - REVERT THIS
 C     LEVEL (AND LATER ALL ABOVE) TO PREVIOUS LEVEL LAT/LON VALUES
 C     (NOTE: DRIFT TIME IS STILL CALCULATED)
@@ -10670,7 +10675,8 @@ C     (NOTE: DRIFT TIME IS STILL CALCULATED)
      $ 'CALCULATED)')
                II = II - 1
                KFLAG(2) = 1
-            ELSE  IF(ABS(XDRIFT(II)-XDRIFT(II-1)).GT.1.0)  THEN
+            ELSE  IF((ABS(XDRIFT(II)-XDRIFT(II-1)).GT.1.0).AND.(GPSFLAG
+     $             .EQ.0)) THEN
 C .. "UNREASONABLE" CALCULATED BALLOON DRIFT LON - REVERT THIS LEVEL
 C     (AND LATER ALL ABOVE) TO PREVIOUS LEVEL LAT/LON VALUES
 C     (NOTE: BALLOON DRIFT TIME REVERTS THIS AND ALL LEVELS ABOVE TO
@@ -20159,7 +20165,7 @@ C$$$
       COMMON/DRIFT/DFTLON(MXLVL),DFTLAT(MXLVL),DFTTIM(MXLVL)
       COMMON/SBDRIFT/ZDRIFT(MXLVL),TDRIFT(MXLVL),TDRIFTLL(MXLVL),
      $ UDRIFT(MXLVL),VDRIFT(MXLVL),XDRIFT(MXLVL),YDRIFT(MXLVL),
-     $ TDRIFT_LL(MXLVL),KFLAG(5),LFLAG(3),PLO,IFLTIM,JJ,II
+     $ TDRIFT_LL(MXLVL),KFLAG(5),LFLAG(3),GPSFLAG,PLO,IFLTIM,JJ,II
       common/pstnflg/ipstnflg
       LOGICAL TOVEDS,GOESND,SATMST,MARLND,RECCON,SWNLND,AIRLND,DROPSN,
      $ PG4243,SPCIAL,KTEMP,TR80KM,FILLZ,FILLT,FILLW,FILLM,PRFLER,
@@ -20247,6 +20253,6 @@ C$$$
      $      ZDRIFT/MXLVL*XMISS/,TDRIFT/MXLVL*XMISS/,
      $      TDRIFTLL/MXLVL*XMISS/,UDRIFT/MXLVL*XMISS/,
      $      VDRIFT/MXLVL*XMISS/,XDRIFT/MXLVL*XMISS/,YDRIFT/MXLVL*XMISS/,
-     $      TDRIFT_LL/MXLVL*XMISS/,KFLAG/5*0/,LFLAG/3*0/,PLO/XMISS/,
-     $      IFLTIM/0/,JJ/0/,II/0/,ipstnflg/0/,i2many_lvls/0/
+     $      TDRIFT_LL/MXLVL*XMISS/,KFLAG/5*0/,LFLAG/3*0/,GPSFLAG/0/,
+     $      PLO/XMISS/,IFLTIM/0/,JJ/0/,II/0/,ipstnflg/0/,i2many_lvls/0/
       END
