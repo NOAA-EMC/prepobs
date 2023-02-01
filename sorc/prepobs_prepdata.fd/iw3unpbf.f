@@ -824,6 +824,7 @@ C          532 - Tide gauge
 C          534 - Coast Guard Tide gauge
 C          540 - Mesonet surface
 C          551 - Sea-level pressure bogus
+C          560 - Saildrone data [WMO FM94 format]
 C          561 - Buoy data arriving in WMO FM13 format (fixed);
 C          562 - Buoy data arriving in WMO FM18 format (fixed or drifting);
 C          563 - Buoy data arriving in WMO FM94 format (fixed);
@@ -1906,7 +1907,11 @@ C***********************************************************************
          C01UBF = 'ADPSFC'
       ELSE  IF(SUBSET(1:5).EQ.'NC001')  THEN
          IF(SUBSET(6:8).NE.'006')  THEN
+           IF(SUBSET(6:8).EQ.'120') THEN
+            C01UBF = 'SALDRN'
+           ELSE
             C01UBF = 'SFCSHP'
+           END IF
          ELSE
             C01UBF = 'SFCBOG'
          END IF
@@ -2726,7 +2731,14 @@ C  -----------------------------------------
     
 C  BUOYS ARRIVING IN WMO FM94/BUFR FORMAT (FIXED OR DRIFTING)
 C  ----------------------------------------------------------
+
                ERTUBF = 564
+            ELSE  IF(SUBSET(6:8).EQ.'120') THEN
+
+C  SAILDRONE DATA ARRIVING IN WMO FM94/BUFR FORMAT
+C  ------------------------------------------------
+
+               ERTUBF = 560
             ELSE  IF(SUBSET(6:8).EQ.'103') THEN
     
 C  BUOYS ARRIVING IN WMO FM94/BUFR FORMAT (FIXED)
@@ -3877,7 +3889,8 @@ CDONG -- BELOW NEED TO CHANGE IN THE FUTURE
          IF(IBFMS(OBS2_8(4)).NE.0) THEN                  ! SST1 missing
 
 c -- Buoy SSTs
-            IF(SUBSET(6:8).EQ.'102'.or.SUBSET(6:8).EQ.'103') THEN ! buoys
+            IF(SUBSET(6:8).EQ.'102'.or.SUBSET(6:8).EQ.'103'
+     +     .or.SUBSET(6:8).EQ.'120') THEN          ! buoys or saildrones
 C         Retrieve field SST0 from buoy reports originating in BUFR form 
               CALL UFBINT(LUNIT,OBS2_8(4),1,1,IRET,'SST0')
             ELSE IF(SUBSET(6:8).EQ.'002') THEN
@@ -3916,6 +3929,7 @@ c -- BUFR Ships reports need ufbint() mnemonics split up
          END IF
          NOBS3(2) = IRET
          IF(SUBSET(6:6).EQ.'1') THEN   ! SFCSHP in BUFR-Feed
+          IF(SUBSET(7:8).NE.'20') THEN
             CALL UFBSEQ(LUNIT,UFBINT2_8(1,1),12,255,IRET,'GENCLOUD')
             I=1
             OBS3_8(1,I,3)=UFBINT2_8(2,I)
@@ -3927,6 +3941,7 @@ c -- BUFR Ships reports need ufbint() mnemonics split up
             NOBS3(3) = IRET
             IF(UFBINT2_8(6,I).LT.BMISS) NOBS3(3) = 2
             IF(UFBINT2_8(7,I).LT.BMISS) NOBS3(3) = 3
+          END IF  
          ELSE
             CALL UFBINT(LUNIT,OBS3_8(1,1,3),5,255,IRET,
      $       'VSSO CLAM CLTP HOCB')

@@ -27,6 +27,7 @@
 | RASSDA   | A48119 | RADIO ACOUSTIC SOUNDING SYSTEM (RASS) TEMP PROFILE RPTS  |
 | WDSATR   | A48120 | WINDSAT SCATTEROMETER DATA (REPROCESSED)                 |
 | ASCATW   | A48121 | ASCAT SCATTEROMETER DATA (REPROCESSED)                   |
+| SALDRN   | A48123 | SURFACE MARINE (SAILDRONE) REPORTS
 *                                                                              |
 *                                                                              |
 * THE FOLLOWING ARE TABLE D ENTRIES FOR SEQUENCES DEFINED IN TABLE A ENTRIES   |
@@ -626,6 +627,12 @@
 | WDSATR   | WSEQC1  PHER        SSTE        SPDE        VPRE        CLDE      |
 |          |                                                                   |
 | ASCATW   | HEADR   CAT  SAID   CTCN WVCQ   BSCD  LKCS <P___INFO>  <W___INFO> |
+|          |                                                                   |
+| SALDRN   | HEADR   CAT        <P___INFO>  <Q___INFO>  <T___INFO>  <Z___INFO> |
+| SALDRN   |        <W___INFO>  [W2_EVENT]  <PMSL_SEQ>  <SST_INFO>  <PREWXSEQ> |
+| SALDRN   |        {CLOUDSEQ}  {SWELLSEQ}  <VISB2SEQ>  <PSTWXSEQ>  <PKWNDSEQ> |
+| SALDRN   |        <GUST1SEQ>  <CLOU2SEQ>  <XWSPDSEQ>  <WAVE_SEQ>  <SHIP_SEQ> |
+| SALDRN   |        <PTENDSEQ>                                                 |
 |          |                                                                   |
 | HEADR    | SID   207003    XOB    YOB    207000    DHR    ELV    TYP    T29  |
 | HEADR    | TSB   ITP       SQN    PROCN  RPT       TCOR   <RSRD_SEQ>         |
