@@ -2166,6 +2166,7 @@ c     if(stnidx.eq.'96801A  ')  iprint = 1
       if(stnidx.eq.'72214   ')  iprint = 1
       if(stnidx.eq.'72215   ')  iprint = 1
       if(stnidx.eq.'72797   ')  iprint = 1
+      if(stnidx.eq.'07145   ')  iprint = 1
 cppppp-ID
 
       SURF = .FALSE.
@@ -2324,9 +2325,10 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
-         RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
-         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
-         RCAT(14) = MIN(NINT(XDR(N)),NINT(RCATS(14,L,KCAT)))
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
+         PRINT *, "NICKEHF4", RCAT(12),RCAT(13),RCAT(14)
       ELSEIF(ICAT.EQ.10) THEN
          PRINT *, "NICKE ICAT IS 10"
          RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
@@ -2360,10 +2362,9 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
-         RCAT(12) = MIN(NINT(HRDR(N)),NINT(RCATS(12,L,KCAT)))
-         RCAT(13) = MIN(NINT(YDR(N)),NINT(RCATS(13,L,KCAT)))
-         RCAT(14) = MIN(NINT(XDR(N)),NINT(RCATS(14,L,KCAT)))
-         PRINT *, "RCAT1 121314; ",RCAT(1),RCAT(12),RCAT(13),RCAT(14)
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.2) THEN
          PRINT *, "NICKE ICAT IS 2"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
@@ -2373,9 +2374,9 @@ C  ----------------------------------------------------------
          RCAT(5) = NINT(TQM(N))
          RCAT(6) = NINT(QQM(N))
          RCAT(7) = NINT(XIND(N))
-         RCAT(8) = NINT(HRDR(N))
-         RCAT(9) = NINT(YDR(N))
-         RCAT(10)= NINT(XDR(N))
+         RCAT(8) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(9) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(10)= MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.3) THEN
          PRINT *, "NICKE ICAT IS 3"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
@@ -3357,6 +3358,7 @@ c     if(sid.eq.'96801A  ')  iprint = 1
       if(sid.eq.'70200   ')  iprint = 1
       if(sid.eq.'72215   ')  iprint = 1
       if(sid.eq.'72786   ')  iprint = 1
+      if(sid.eq.'07145   ')  iprint = 1
       if(iprint.eq.1)
      $ print'(" @@@ START DIAGNOSTIC PRINTOUT FOR ID ",A)', sid
 cppppp-ID
@@ -3537,6 +3539,9 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
+         if(iprint.eq.1) then
+             PRINT *, "NICKEAAAAA", ARR(8,L),ARR(9,L),ARR(10,L)
+         end if
          IF(ARR(8,L).LT.IMISS) THEN 
              HRDR(L) = NINT(ARR(8,L))
          ELSE
@@ -3552,6 +3557,9 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE
              XDR(L) = IMISS
          END IF
+         if(iprint.eq.1) then
+             PRINT *, "NICKEAFTER", ARR(8,L),ARR(9,L),ARR(10,L)
+         end if
 C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
