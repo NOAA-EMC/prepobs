@@ -2164,7 +2164,6 @@ c     if(stnidx.eq.'96801A  ')  iprint = 1
       if(stnidx.eq.'72214   ')  iprint = 1
       if(stnidx.eq.'72215   ')  iprint = 1
       if(stnidx.eq.'72797   ')  iprint = 1
-      if(stnidx.eq.'07145   ')  iprint = 1
 cppppp-ID
       BMISS = GETBMISS()
 
@@ -2525,10 +2524,6 @@ C  -----------------------------------------------
  
       UNP(1:12)  = HDR
       UNP(13:52) = RCAT(13:52)
-      
-C      DO LMNOP = 1,55
-C         PRINT *, "LMNOP: ", LMNOP, UNP(LMNOP)
-C      ENDDO
 
       RETURN
       END
@@ -3335,7 +3330,6 @@ c     if(sid.eq.'96801A  ')  iprint = 1
       if(sid.eq.'70200   ')  iprint = 1
       if(sid.eq.'72215   ')  iprint = 1
       if(sid.eq.'72786   ')  iprint = 1
-      if(sid.eq.'07145   ')  iprint = 1
       if(iprint.eq.1)
      $ print'(" @@@ START DIAGNOSTIC PRINTOUT FOR ID ",A)', sid
 cppppp-ID
@@ -3448,25 +3442,6 @@ CC        ARRX -> ARR_8
           DO MS = 1,10
              ARR_8(MS,LS) = ARRX(MS,L2)
           ENDDO
-
-C          IF (L2.EQ.8) THEN  
-C            ARR_8(8,LS) = ARRX(8,L2)
-C          END IF
-C          IF (L2.EQ.9) THEN
-C            ARR_8(9,LS) = ARRX(9,L2)
-C          END IF
-C          IF (L2.EQ.10) THEN
-C            ARR_8(10,LS) = ARRX(10,L2)
-C          END IF
-
-C          PRINT *, "LVSTR: ", ARRX 
-C         PRINT *, "GNSSdriftinfo:",ARR_8(8,LS),ARR_8(9,LS),ARR_8(10,LS)
-
-C       GNSS drift information to be added here
-C       [ ARR_8(8,LS)  <-- HRDR  ]
-C       [ ARR_8(9,LS)  <-- XDR  ]
-C       [ ARR_8(10,LS) <-- YDR ]
-C
           LS = LS + 1
         ENDIF
 CC      STEP TO THE NEXT LEVEL
@@ -3476,7 +3451,6 @@ CC      STEP TO THE NEXT LEVEL
       ENDIF
 
       ARR=ARR_8
-C      PRINT *, "ARR: ", ARR
 CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
 
       PWMIN = 999999.
@@ -3536,7 +3510,7 @@ C         if(iprint.eq.1)  then
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
      $       G0,"; HRDR = ",G0,"; XDR = ",G0,"; YDR = ",G0,"; fin")', L, 
      $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),hrdr(L),
-     $       xdr(L),ydr(L)
+     $       ydr(L),xdr(L)
 C         end if
          IF(MAX(POB(L),DOB(L),SOB(L)).LT.BMISS) PWMIN =MIN(PWMIN,POB(L))
       ENDDO
