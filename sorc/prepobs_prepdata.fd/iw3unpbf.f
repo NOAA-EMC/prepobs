@@ -1447,17 +1447,14 @@ C  IKAT defines the category number
 C  MCAT defines the number of parameters in a level for each category
 C --> THIS NEEDS TO BE UPDATED WHEN ADDING MORE WORDS PER CAT LEVEL
 
-C         MCAT(1)  = 11  ! Cat.  1
-         MCAT(1)  = 14  ! Cat.  1   NICKE TEST CHANGE
-C         MCAT(2)  =  7  ! Cat.  2
-         MCAT(2)  =  10  ! Cat.  2  NICKE TEST CHANGE
+         MCAT(1)  = 14  ! Cat.  1 
+         MCAT(2)  = 10  ! Cat.  2
          MCAT(3)  =  6  ! Cat.  3
          MCAT(4)  =  5  ! Cat.  4
          MCAT(5)  =  9  ! Cat.  5
          MCAT(6)  = 11  ! Cat.  6
          MCAT(7)  = 13  ! Cat. 51
          MCAT(8)  =  4  ! Cat.  8
-C         MCAT(9)  = 11  ! Cat. 10    incl. CH 01/19/2021
          MCAT(9)  = 14  ! Cat. 10    incl. CH 01/19/2021
 
 C  LVDX defines location in UNP holding the no. of levels for each cat.
@@ -2145,6 +2142,7 @@ C                         subr. to write an empty cat. 2,3, or 4 level
       DIMENSION   RCAT(50),JCAT(50)
       EQUIVALENCE (RCAT(1),JCAT(1))
       LOGICAL     SURF
+      REAL(8)  BMISS,GETBMISS
 
       SAVE
  
@@ -2168,6 +2166,7 @@ c     if(stnidx.eq.'96801A  ')  iprint = 1
       if(stnidx.eq.'72797   ')  iprint = 1
       if(stnidx.eq.'07145   ')  iprint = 1
 cppppp-ID
+      BMISS = GETBMISS()
 
       SURF = .FALSE.
       GOTO 1
@@ -2184,7 +2183,6 @@ C   FOR A PARTICULAR CATEGORY)
 C  -----------------------------------------------------------------
  
 1     KCAT = 0
-      PRINT *, "NICKE NUMCAT IS: ", NUMCAT
       DO I = 1,NUMCAT
          IF(ICAT.EQ.IKAT(I))  THEN
             KCAT = I
@@ -2218,13 +2216,10 @@ C          ARE SET TO 0)
 C  -----------------------------------------------------------------
  
       IF(N.EQ.0) THEN
-         PRINT *, "NICKE ICAT IS: ", ICAT
          IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) THEN 
-             PRINT *, "NICKE 1 or 10"
              RETURN
          END IF
          NCAT(KCAT) = MIN(LEVLIM-1,NCAT(KCAT)+1)
-         PRINT *, "NICKE NCAT is ", NCAT
          if(iprint.eq.1)  then
             print'(" To prepare for sfc. data, write all missings on ",
      $       "lvl ",I0," for cat ",i0)', ncat(kcat),icat
@@ -2248,7 +2243,6 @@ C  FIGURE OUT WHICH LEVEL TO UPDATE AND RESET THE LEVEL COUNTER
 C  ------------------------------------------------------------
  
       IF(ICAT.EQ.1) THEN
-         PRINT *, "NICKE ICAT=1  FIGURE OUT WHICH LEVEL TO UPDATE"
          L = I04UBF(POB(N)*.1)
 
 C  MANDATORY LEVEL WITH NON-MANDATORY PRESSURE RETURNS A 999
@@ -2266,7 +2260,6 @@ C  ---------------------------------------------------------
      $    ", - total no. cat. 1 lvls processed so far = ",I0)',
      $    L,icat,ncat(kcat)
       ELSEIF(SURF) THEN
-         PRINT *, "NICKE SURF"
          L = 1
          NCAT(KCAT) = MAX(NCAT(KCAT),1)
          if(iprint.eq.1)
@@ -2274,7 +2267,6 @@ C  ---------------------------------------------------------
      $    ", - total no. cat. ",I0," lvls processed so far = ",I0)',
      $    icat,L,icat,ncat(kcat)
       ELSE
-         PRINT *, "NICKE ELSE "
          L = MIN(LEVLIM-1,NCAT(KCAT)+1)
          IF(L.EQ.LEVLIM-1) THEN
             print'(" ~~IW3UNPBF/S02UBF: ID ",A," - This cat. ",I0,
@@ -2293,7 +2285,6 @@ C  EACH DATA LEVEL CATEGORY NEEDS A SPECIFIC DATA ARRANGEMENT
 C  ----------------------------------------------------------
  
       IF(ICAT.EQ.1) THEN
-         PRINT *, "NICKE ICAT: 1" 
          RCAT(1)  = MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
          RCAT(2)  = MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
          RCAT(3)  = MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
@@ -2328,9 +2319,7 @@ C  ----------------------------------------------------------
          RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
          RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
          RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
-         PRINT *, "NICKEHF4", RCAT(12),RCAT(13),RCAT(14)
       ELSEIF(ICAT.EQ.10) THEN
-         PRINT *, "NICKE ICAT IS 10"
          RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
          RCAT(2)= MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
          RCAT(3)= MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
@@ -2366,7 +2355,6 @@ C  ----------------------------------------------------------
          RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
          RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.2) THEN
-         PRINT *, "NICKE ICAT IS 2"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(TOB(N)),IMISS)
          RCAT(3) = MIN(NINT(QOB(N)),IMISS)
@@ -2378,7 +2366,6 @@ C  ----------------------------------------------------------
          RCAT(9) = MIN(NINT(YDR(N)),NINT(BMISS))
          RCAT(10)= MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.3) THEN
-         PRINT *, "NICKE ICAT IS 3"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(DOB(N)),IMISS)
          RCAT(3) = MIN(NINT(SOB(N)),IMISS)
@@ -2393,14 +2380,12 @@ C  MARK THE MAXIMUM WIND LEVEL IN DATA LEVEL CATEGORY 3
          END IF
          RCAT(6) = NINT(XIND(N))
       ELSEIF(ICAT.EQ.4) THEN
-         PRINT *, "NICKE ICAT IS 4"
          RCAT(1) = MIN(NINT(ZOB(N)),IMISS)
          RCAT(2) = MIN(NINT(DOB(N)),IMISS)
          RCAT(3) = MIN(NINT(SOB(N)),IMISS)
          RCAT(4) = NINT(ZQM(N))
          RCAT(5) = NINT(WQM(N))
       ELSEIF(ICAT.EQ.5) THEN
-         PRINT *, "NICKE ICAT IS 5"
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(TOB(N)),IMISS)
          RCAT(3) = MIN(NINT(QOB(N)),IMISS)
@@ -2411,7 +2396,6 @@ C  MARK THE MAXIMUM WIND LEVEL IN DATA LEVEL CATEGORY 3
          RCAT(8) = NINT(QQM(N))
          RCAT(9) = NINT(WQM(N))
       ELSEIF(ICAT.EQ.6) THEN
-         PRINT *, "NICKE ICAT IS 6"
          RCAT(1)  = MIN(NINT(POB(N)),IMISS)
          RCAT(2)  = MIN(NINT(ZOB(N)),IMISS)
          RCAT(3)  = MIN(NINT(TOB(N)),IMISS)
@@ -2424,7 +2408,6 @@ C  MARK THE MAXIMUM WIND LEVEL IN DATA LEVEL CATEGORY 3
          RCAT(10) = NINT(QQM(N))
          RCAT(11) = NINT(WQM(N))
       ELSEIF(ICAT.EQ.8) THEN
-         PRINT *, "NICKE ICAT IS 8"
          RCAT(1) = MIN(OB8(N),XMISS)
 C  Allow report sequence number (code fig. 21) to be as large as 999990
          IF(NINT(CF8(N)).EQ.21) RCAT(1) = MIN(OB8(N),XMISS*10.)
@@ -2432,7 +2415,6 @@ C  Allow report sequence number (code fig. 21) to be as large as 999990
          RCAT(3) = MIN(Q81(N),XMISS)
          RCAT(4) = NINT(Q82(N))
       ELSEIF(ICAT.EQ.51) THEN
-         PRINT *, "NICKE ICAT IS 51"
          RCAT( 1) = MIN(NINT(PSL),IMISS)
          RCAT( 2) = MIN(NINT(STP),IMISS)
          RCAT( 3) = MIN(NINT(SDR),IMISS)
@@ -2584,7 +2566,6 @@ C  ---------------------------------------------------------------------
 
       DO I=1,NCAT(1)
          IF(RCATS(1,I,1).GE.XMISS)  THEN
-            PRINT *, "NICKE NCAT1"
             RCATS(1,I,1) = PMAND(I)
             RCATS(7:11,I,1) = 2.0
          END IF
@@ -2596,7 +2577,6 @@ C  ------------------------------------------------------------------
  
       DO K=2,4
          IF(NCAT(K).GT.1) THEN
-            PRINT *, "NICKE NCAT234"
             DO J=1,NCAT(K)-1
                DO I=1,MCAT(K)
                   SCAT(I,J) = RCATS(I,J+1,K)
@@ -2677,18 +2657,15 @@ C  ------------------------------------------
  
       DO K=8,8
          IF(NCAT(K).GT.1) THEN
-            PRINT *, "NICKE NCAT8"
             CALL ORDERS(2,IWORK,RCATS(2,1,K),IORD,NCAT(K),50,LWR,2)
             DO J=1,NCAT(K)
                DO I=1,MCAT(K)
                   RCAT(I,J) = RCATS(I,IORD(J),K)
-C                  PRINT *, "NICKE RCATIJ ", RCAT(I,J)
                ENDDO
             ENDDO
             DO J=1,NCAT(K)
                DO I=1,MCAT(K)
                   RCATS(I,J,K) = RCAT(I,J)
-C                  PRINT *, "NICKE RCATIJK ", RCATS(I,J,K)
                ENDDO
             ENDDO
          END IF
@@ -3539,9 +3516,6 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         if(iprint.eq.1) then
-             PRINT *, "NICKEAAAAA", ARR(8,L),ARR(9,L),ARR(10,L)
-         end if
          IF(ARR(8,L).LT.IMISS) THEN 
              HRDR(L) = NINT(ARR(8,L))
          ELSE
@@ -3557,9 +3531,6 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE
              XDR(L) = IMISS
          END IF
-         if(iprint.eq.1) then
-             PRINT *, "NICKEAFTER", ARR(8,L),ARR(9,L),ARR(10,L)
-         end if
 C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",

@@ -6203,14 +6203,16 @@ C NN IS NO. OF LEVELS THAT WILL BE CONSIDERED
 C NM IS NO. OF MANDATORY DATA LEVELS (CAT. 1) ACTUALLY COLLECTED
       NM = 0
       NN = IDATA(13)
-C      II = IDATA(14) - 11
+C     THE 14 BELOW IS EQUIVALENT TO MCAT(1) FROM IW3UNPBF. CHANGE 14 IF
+C     THAT VALUE CHANGES DUE TO INCREASE OR DECREASE IN VARS SAVED. 
       II = IDATA(14) - 14
       NN = MIN(NN,LEVPM)
       IZBEST = 99
       IF(NN.LE.0)  GO TO 11
       DO N = 1,NN
-         PRINT *, "NICKE DLC1 on N of NN:", N, NN
-C         II = II + 11
+C        THE 14 BELOW IS EQUIVALENT TO MCAT(1) FROM IW3UNPBF. CHANGE 14
+C        IF THAT VALUE CHANGES DUE TO INCREASE OR DECREASE IN VARS
+C        SAVED.
          II = II + 14
 C GET PREPBUFR TABLE VALUES FOR PRESSURE, HGHT, TEMP., MOISTURE, & WIND
          IPM = NINT(RDATA(II+ 6))
@@ -6218,13 +6220,10 @@ C GET PREPBUFR TABLE VALUES FOR PRESSURE, HGHT, TEMP., MOISTURE, & WIND
          ITM = NINT(RDATA(II+ 8))
          IQM = NINT(RDATA(II+ 9))
          IVM = NINT(RDATA(II+10))
-         TEST1 = NINT(RDATA(II+11))
-C         IS(NL,1) = NINT(RDATA(II+11))
-         TEST2 = (NINT(RDATA(II+12))/100000.)
-C         IS(NL,2) = (NINT(RDATA(II+12))/100000.)
-         TEST3 = (NINT(RDATA(II+13))/100000.)
-C         IS(NL,3) = (NINT(RDATA(II+13))/100000.)
-         PRINT *, "NICKE-DLC1-B:",RDATA(II),IS(NL,1),IS(NL,2)
+C        GET GPS DATA IF AVAILABLE
+         GPST = NINT(RDATA(II+11))
+         GPSX = (NINT(RDATA(II+12))/100000.)
+         GPSY = (NINT(RDATA(II+13))/100000.)
          IBTEST = 0
          IF(IZM.GT.3)  IBTEST = 1
          IBLIZ1 = MIN(IBLIZ1,IBTEST)
@@ -6263,12 +6262,10 @@ C PROCESS NON-MSG WIND REGARDLESS OF PREPBUFR TABLE VALUE
             DAT(NL,6) = NINT(RDATA(II+5)) * 0.1
             IQ(NL,4) = IVM
          END IF
-         IS(NL,1) = TEST1 
-         IS(NL,2) = TEST2
-         IS(NL,3) = TEST3
-         PRINT *, "NICKE-DLC1-E",DAT(NL,1),IS(NL,1),IS(NL,2),IS(NL,3)
+         IS(NL,1) = GPST 
+         IS(NL,2) = GPSX
+         IS(NL,3) = GPSY
       ENDDO
-      PRINT *, "NICKE FINAL DLC1"
       DO T = 1,NL
          PRINT *, (DAT(T,K),K=1,NUMDAT)
       ENDDO
@@ -6282,21 +6279,22 @@ C NN IS NO. OF LEVELS THAT WILL BE CONSIDERED
 C NSIG IS NO. OF SIGNIFICANT DATA (CAT. 2) LEVELS ACTUALLY COLLECTED
       NSIG = 0
       NN = IDATA(15)
-C      II = IDATA(16) - 7
+C     THE 10 BELOW IS EQUIVALENT TO MCAT(2) FROM IW3UNPBF. CHANGE WHEN
+C     THERE IS A CHANGE IN NUMBER OF VARIABLES SAVED.
       II = IDATA(16) - 10
       NP1VLD = 0
       IF(NN.EQ.0)  GO TO 5694
       DO N = 1,NN
-         PRINT *, "NICKE DLC2 on N of NN: ", N, NN
 C         II = II + 7
          II = II + 10
 C GET PREPBUFR TBL VALUES FOR PRESS., TEMP., AND MOISTURE AT THIS LEVEL
          IPM = NINT(RDATA(II+3))
          ITM = NINT(RDATA(II+4))
          IQM = NINT(RDATA(II+5))
-         TEST1 = NINT(RDATA(II+7))
-         TEST2 = NINT(RDATA(II+8))
-         TEST3 = NINT(RDATA(II+9))
+C SAVE GPS DATA
+         GPST = NINT(RDATA(II+7))
+         GPSX = NINT(RDATA(II+8))
+         GPSY = NINT(RDATA(II+9))
 C IF PRESSURE IS MISSING, SKIP PROCESSING OF THIS LEVEL
         IF(NINT(RDATA(II)).GE.32750.OR.(NINT(RDATA(II))*0.1).LT.STOP.OR.
      $    IPM.GE.IQMLIM)  CYCLE
@@ -6380,10 +6378,9 @@ C PROCESS NON-MSG MOISTURE REGARDLESS OF PREPBUFR TBL VAL
                IF(MAX(IQM,ITM).LT.IQMLIM)  DAT(NL,4) = DEWPT
             END IF
          END IF
-         IS(NL,1) = TEST1
-         IS(NL,2) = TEST2
-         IS(NL,3) = TEST3
-         PRINT *, "NICKE DLC2: ", DAT(NL,1)
+         IS(NL,1) = GPST
+         IS(NL,2) = GPSX
+         IS(NL,3) = GPSY
       ENDDO
 C RESET IDATA(15) TO NUMBER OF 'GOOD' CAT. 2 LEVELS ACTUALLY PROCESSED
       IDATA(15) = NSIG
@@ -6400,7 +6397,6 @@ C N5 IS NO. OF TROPOPAUSE (CAT. 5) LEVELS ACTUALLY COLLECTED
       II = IDATA(22) - 9
       IF(NN.EQ.0)  GO TO 21
       DO N = 1,NN
-         PRINT *, "NICKE DLC5 on N of NN: ", N, NN
          II = II + 9
 C GET PREPBUFR TABLE VALUES FOR TEMP., MOISTURE AND WIND AT THIS LEVEL
          IPM = NINT(RDATA(II+5))
@@ -6466,7 +6462,6 @@ C x   NN = MIN(NN,LEVPM)
       IZBEST = 99
       IF(NN.LE.0)  GO TO 5695
       DO N = 1,NN
-         PRINT *, "NICKE DLC10 on N of NN: ", N, NN
 C         II = II + 11
          II = II + 14
 C GET PREPBUFR TABLE VALUES FOR PRESSURE, HGHT, TEMP., MOISTURE, & WIND
@@ -6475,12 +6470,9 @@ C GET PREPBUFR TABLE VALUES FOR PRESSURE, HGHT, TEMP., MOISTURE, & WIND
          ITM = NINT(RDATA(II+ 8))
          IQM = NINT(RDATA(II+ 9))
          IVM = NINT(RDATA(II+10))
-         TEST1 = RDATA(II+11)
-         TEST2 = (NINT(RDATA(II+12))*0.00001)
-         TEST3 = (NINT(RDATA(II+13))*0.00001)
-C         IS(NL,1) = RDATA(II+11)
-C         IS(NL,2) = (NINT(RDATA(II+12))*0.00001)
-C         IS(NL,3) = (NINT(RDATA(II+13))*0.00001)
+         GPST = RDATA(II+11)
+         GPSX = (NINT(RDATA(II+12))*0.00001)
+         GPSY = (NINT(RDATA(II+13))*0.00001)
          IBTEST = 0
          IF(IZM.GT.3)  IBTEST = 1
          IBLIZ1 = MIN(IBLIZ1,IBTEST)
@@ -6528,14 +6520,9 @@ C PROCESS NON-MSG WIND REGARDLESS OF PREPBUFR TABLE VALUE
             DAT(NL,6) = NINT(RDATA(II+5)) * 0.1
             IQ(NL,4) = IVM
          END IF
-         IS(NL,1) = RDATA(II+11)
-         IS(NL,1) = TEST1 
-         IS(NL,2) = (NINT(RDATA(II+12))*0.00001)
-         IS(NL,2) = TEST2 
-         IS(NL,3) = (NINT(RDATA(II+13))*0.00001)
-         IS(NL,3) = TEST3 
-         PRINT *, "NICKE IS1:",DAT(NL,1),IS(NL,1),IS(NL,2),IS(NL,3)
-         PRINT *, "NICKE NEW BLOCK"
+         IS(NL,1) = GPST 
+         IS(NL,2) = GPSX 
+         IS(NL,3) = GPSY 
       ENDDO
       DO T = 1,NL
          PRINT *, (DAT(T,K),K=1,NUMDAT)
@@ -6557,7 +6544,6 @@ C NP IS NO. OF CAT.3 & "SPECIAL" 25 OR 50 MB LVL DATA ACTUALLY COLLECTED
       II = IDATA(18) - 6
       IF(NN.EQ.0)  GO TO 31
       DO N = 1,NN
-         PRINT *, "NICKE DLC3 for N of NN: ", N, NN
          II = II + 6
 C GET PREPBUFR TABLE VALUES FOR PRESSURE AND WIND AT THIS LEVEL
          IPM = NINT(RDATA(II+3))
@@ -6641,10 +6627,6 @@ C PROCESS NON-MSG WIND REGARDLESS OF PREPBUFR TABLE VALUE
             DAT(NL,6) = NINT(RDATA(II+2)) * 0.1
             IQ(NL,4) = IVM
          END IF
-C         PRINT *, "NICKE PRL3 E", DAT(NL,1)
-C         DO T = 1,NP
-C            PRINT *, NP, (DAT(T,K),K=1,NUMDAT)
-C         ENDDO
    30    CONTINUE
       ENDDO
 C RESET IDATA(17) TO NUMBER OF 'GOOD' CAT. 3 LEVELS ACTUALLY PROCESSED
@@ -6701,7 +6683,6 @@ C N15 IS NO. OF TEMP. BY HEIGHT (CAT. 15) LEVELS ACTUALLY COLLECTED
       II = IDATA(46) - 3
       IF(NN.EQ.0)  GO TO 4141
       DO N = 1,NN
-         PRINT *, "NICKE DLC15 for N of NN: ", N, NN
          II = II + 3
 C GET PREPBUFR TABLE VALUES FOR HEIGHT AND TEMP. AT THIS HEIGHT LEVEL
          IZM = 2
@@ -6814,7 +6795,6 @@ C NH IS NO. OF CAT. 4 HEIGHT LEVELS ACTUALLY COLLECTED
       II = IDATA(ISUBS+1) - NUMLVL
       IF(NN.EQ.0)  GO TO 41
       DO N = 1,NN
-         PRINT *, "NICKE DLC4/11 for N of NN: ", N, NN
          II = II + NUMLVL
 C GET PREPBUFR TABLE VALUES FOR HEIGHT AND WIND AT THIS HEIGHT LEVEL
          IF(IDATA(37).EQ.0)  THEN ! Data level category 4
@@ -6889,7 +6869,6 @@ C  IS ALREADY STORED IN M/SEC
                IQ(NL,4) = IVM
             END IF
          END IF
-         PRINT *, "NICKE DLC4/11 E", DAT(NL,1)
       ENDDO
 C RESET IDATA(19) TO NUMBER OF 'GOOD' CAT. 4 LVLS ACTUALLY PROCESSED
       IDATA(19) = NH
@@ -6931,23 +6910,18 @@ C     $  IPRT(2) = 1
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C DETAILED PRINT FOR SPECIFIED REPORT(S) -- IF ENTERED IN DATA CARDS
 C      IF(IPRT(2).EQ.1.AND.NUMVAR.LT.11.AND.NUMQMS.LT.9)  THEN
-         PRINT *, "NICKE GETUPA: ALL CAT. GATHERED, PRIOR TO SMERGE"
          PRINT 902, STNID
   902 FORMAT(/' GETUPA: ',A8,', ALL CAT. GATHERED, PRIOR TO "SMERGE"')
          DO N = 1,NL
             PRINT 900, (DAT(N,K),K=1,NUMVAR)
             PRINT 905, (IQ(N,L),L=1,NUMQMS)
             PRINT 910, (IS(N,QQ),QQ=1,NUMGPS)
-            PRINT 918, (DAT(N,K),K=1,NUMDAT)
-            PRINT 917, (DAT(N,K),K=1,NUMDAT)
          ENDDO
          PRINT 901
 C      END IF
   900 FORMAT(1X,10F10.2)
   905 FORMAT('+',102X,8I3)
   910 FORMAT('+',F13.5,F13.5,F13.5)
-  918 FORMAT('NICKEAH',20F13.5)
-  917 FORMAT('NICKEAH2',20I3)
   901 FORMAT('0',//)
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C MERGE DATA LEVEL CATEGORIES INTO SINGLE PROFILE, ACCORDING TO DECR.
@@ -6980,11 +6954,9 @@ C IF NLEV IS ZERO, SKIP REPORT AND PRINT DIAGNOSTIC
      $    I5,'/',I3,I5,'/',I3,I7,'/',I3,F13.5,F13.5,F13.5)
          PRINT 7902
  7902    FORMAT(//)
-         PRINT *, "NICKE AFTER ENDS MERGE, BEFORE STOROB" 
       END IF
 C CALL SUBR. 'STOROB' TO WRITE REPORT PIECES IN MOBS ARRAY
       CALL STOROB(NLEV,PSTA,INDIAN,IPRT,*2090)
-      PRINT *, "NICKE JUST END STOROB"
       RETURN 1
  2090 CONTINUE
       RETURN 2
@@ -7235,7 +7207,6 @@ C KLVL IS NUMBER OF CAT. 1, 2, 5, AND 10 LEVELS COMBINED
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C DETAILED PRINT FOR SPECIFIED REPORT(S) -- IF ENTERED IN DATA CARDS
       IF(IPRT(2).EQ.1.AND.NUMVAR.LT.11.AND.NUMQMS.LT.9)  THEN
-         PRINT *, "NICKE SMERGE: CAT. 1,2,5,10 LVLS PRIOR TO DUPL. CHK"
          PRINT 902, STNID
   902 FORMAT(/' SMERGE: ',A8,', CAT. 1,2,5,10 LVLS PRIOR TO DUPL. CHK')
          IF(KLVL.GT.0)  THEN
@@ -7243,7 +7214,6 @@ C DETAILED PRINT FOR SPECIFIED REPORT(S) -- IF ENTERED IN DATA CARDS
                PRINT 900, (DAT(N,K),K=1,NUMVAR)
                PRINT 905, (IQ(N,L),L=1,NUMQMS)
                PRINT 910, (IS(N,QQ),QQ=1,NUMGPS)
-               PRINT 918, (DAT(N,ZZ),ZZ=1,NUMDAT)
             ENDDO
          END IF
          PRINT 901
@@ -7252,7 +7222,6 @@ C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   900 FORMAT(1X,10F10.2)
   905 FORMAT('+',102X,8I3)
   910 FORMAT('+',F13.5,F13.5,F13.5)
-  918 FORMAT('NICKEAH1',20F13.5)
   901 FORMAT('0',//)
 C LASTP IS HIGHEST CAT. 2 OR CAT. 5 LVL WITH MASS INFO. (DEF = 1050 MB)
       LASTP = 1050 * NINT(SCALE)
@@ -9944,7 +9913,6 @@ C FCNS BELOW CONVERT TEMP/TD (K) & PRESS (MB) INTO SAT./ SPEC. HUM.(G/G)
          PRINT'(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")'
          PRINT'(1X)'
       END IF
-C      PRINT *, "NICKE STOROB NUMDAT NUMVAR", NUMDAT, NUMVAR
       LL_MASS=0
       LL_WIND=0
       IF(NFILE.EQ.IUNIT(5).OR.NFILE.EQ.IUNIT(5)+7)
@@ -10504,11 +10472,6 @@ C FOR PIBALS, ACCEPT ALL NON-MISSING HEIGHTS (EVEN STD. ATMOSPHERE)
       IF(IQ(I,4).EQ.16)  IQ4 = 3
 
 
-C      NICK E PROB GOES HERE 
-      PRINT *, "---------------NICKE NEW---------------------------"
-      PRINT *, "NICKE I II LL", I, II, LL
-      PRINT *, "NICKE pb trial ll", HP(LL),XP(LL),YP(LL)
-
 C-----------------------------------------------------------------------
 C                  BALLOON DRIFT TIME CALCULATION
 C-----------------------------------------------------------------------
@@ -10534,7 +10497,6 @@ C            STANDARD ATMOSPHERE)}
      $    "proceed w/ drift time calc.")', I,PP(I)
          JJ = JJ + 1
          ZDRIFT(JJ) = ZP(I)
-         PRINT *, "NICKE HP(I) is ", HP(I)
          IF(JJ.GT.1)  THEN
             IF(HP(I).LT.BMISS) THEN
 C.   IF TIME DISPLACEMENT DATA WAS RETRIEVED, USE IT AND SET GPSFLAG(1)
@@ -10542,12 +10504,12 @@ C    TO 1 SO THAT COMPUTATION CHECKS AFTERWARD WILL BE IGNORED. IF TIME
 C    DISPLACEMENT DATA WAS NOT RETRIEVED, KEEP GPSFLAG(1) AT 0, AND DO
 C    ALL OF THE ORIGINAL, NORMAL CHECKS.
                TDRIFT(JJ)=HP(I)
-               PRINT *, "NICKE TDRIFT USED A - tdr is: ", TDRIFT(JJ)
+               PRINT *, "TDRIFT FROM GPS: ", TDRIFT(JJ)
                GPSFLAG(1) = 1
             ELSE
                TDRIFT(JJ) = TDRIFT(JJ-1) +
      $          (ZDRIFT(JJ) - ZDRIFT(JJ-1))/ASCRT
-               PRINT *, "NICKE TDRIFT USED B", TDRIFT(JJ)
+               PRINT *, "TDRIFT FROM WIND: ", TDRIFT(JJ)
                GPSFLAG(1) = 0
             ENDIF
             IF((IFLTIM.EQ.1).AND.(GPSFLAG(1).EQ.0))  THEN
@@ -10633,7 +10595,6 @@ C     LATER ENCODED INTO PREPBUFR FILE)
             END IF
          END IF
          IF(LL.GT.2)  THEN
-            PRINT *, "NICKE LL.GT.2 DRIFTTIME"
             DFTTIM(LL) = DFTTIM(LL-1)
             TDRIFTLL(LL) = TDRIFTLL(LL-1)
          ELSE
@@ -10641,7 +10602,6 @@ C .. IF THIS IS THE FIRST LEVEL IN THE PROFILE, BALLOON DRIFT TIME IS
 C     SIMPLY SET TO REPORTED (OR GENERATED) LAUNCH TIME
             IF(ALNCH.LT.YMISS)  DFTTIM(LL) = ALNCH
             TDRIFTLL(LL) = 0
-            PRINT *, "NICKE 1ST LVL DRIFTTIME"
          END IF
          IF(IPRT(2).EQ.1)  PRINT'(" I,LL,PP(I),ZP(I),IQ1,PSTA,",
      $    "TDRIFTLL(LL),DFTTIM(LL): ",2(I0,1X),2(G0,1X),I0,1X,
@@ -10656,7 +10616,6 @@ C-----------------------------------------------------------------------
          PRINT'(" - Level ", I0,"- perform balloon drift LAT/LON ",
      $    "calculation")', I
       END IF
-      PRINT *, "NICKEPETC", PP(I),YP(I),XP(I),HP(I)
       IF(MAX(ZP(I),UP(I),VP(I)).LT.XMISS.AND.MAX(IQ1,IQ4).LT.4)  THEN
 cfix? IF(MAX(ZP(I),UP(I),VP(I)).LT.YMISS.AND.MAX(IQ1,IQ4).LT.4)  THEN
 C .. BALLOON DRIFT LAT/LON AND TIME IS A FUNCTION OF MEASURED HEIGHT
@@ -10691,13 +10650,11 @@ C.   IF LOCATION DISPLACEMENT DATA WAS RETRIEVED, USE IT AND SET
 C    GPSFLAG(2) TO 1 SO THAT COMPUTATION CHECKS AFTERWARD WILL BE
 C    IGNORED. IF LOCATION DISPLACEMENT DATA WAS NOT RETRIEVED, KEEP
 C    GPSFLAG(2) AT 0 AND DO ALL OF THE ORIGINAL CHECKS.
-            PRINT *, "NICKE XP YP at I: ", XP(I), YP(I)
             IF ((XP(I).LT.BMISS).AND.(YP(I).LT.BMISS)) THEN
               XDRIFT(II) = RDATA(2)+XP(I)
               YDRIFT(II) = RDATA(1)+YP(I)
               GPSFLAG(2) = 1
-              PRINT *, "NICKE at XYDRIFT RDATA21", RDATA(2),RDATA(1)
-              PRINT *, "NICKE XYDRIFT USED C: ", XDRIFT(II),YDRIFT(II)
+              PRINT *, "X/Y DRIFT FROM GPS: ", XDRIFT(II),YDRIFT(II)
             ELSE
               XDRIFT(II) = XDRIFT(II-1) +
      $                    (0.5 * (UDRIFT(II-1) + UDRIFT(II)) *
@@ -10707,7 +10664,7 @@ C    GPSFLAG(2) AT 0 AND DO ALL OF THE ORIGINAL CHECKS.
      $                    (0.5 * (VDRIFT(II-1) + VDRIFT(II)) *
      $                    (TDRIFT_LL(II) - TDRIFT_LL(II-1)) * CON)
               GPSFLAG(2) = 0
-              PRINT *, "NICKE XYDRIFT USED D"
+              PRINT *, "X/Y DRIFT FROM WIND: ", XDRIFT(II), YDRIFT(II)
             END IF
             IF((IFLTIM.EQ.1).AND.(GPSFLAG(2).EQ.0))  THEN
 C .. A PROBLEM IN THE BALLOON DRIFT TIME CALCULATION (ABOVE) MEANS THE
@@ -10749,7 +10706,6 @@ C            PREVIOUS LEVEL TIME VALUES AS WELL)
      $ '(=',F8.2,'E)'/6X,'> 1 DEG. DIFFERENT THAN DRIFT LON ON LEVEL ',
      $ 'BELOW (=',F7.2,'E) - TRANSFER DRIFT LAT/LON/TIME FROM LVL ',
      $ 'BELOW TO THIS LVL AND ALL LVLS ABOVE')
-               PRINT *, "NICKE DRIFT",XDRIFT(II),XDRIFT(II-1)
                II = II - 1
                KFLAG(3) = 1
                LFLAG(1) = 1
@@ -10837,15 +10793,12 @@ C     PREPBUFR FILE)
      $    "has missing or bad hght or wind, set drft lat/lon to rpt ",
      $    "lat/lon (1st lvl) or to drft lat/lon from prev lvl")',
      $    I,PP(I)
-CCCCCCCCCCCC NICKEHERE  ITHINK
          IF(LL.GT.2)  THEN
-            PRINT *, "NICKE LEVEL GT2"
             DFTLON(LL) = DFTLON(LL-1)
             DFTLAT(LL) = DFTLAT(LL-1)
          ELSE
 C .. IF THIS IS THE FIRST LEVEL IN THE PROFILE, BALLOON DRIFT LAT/LON
 C     IS SET TO REPORTED LAT/LON
-            PRINT *, "NICKE 1ST LEVEL"
             DFTLON(LL) = alon_8
             DFTLAT(LL) = alat_8
          END IF
