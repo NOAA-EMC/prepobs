@@ -7327,7 +7327,6 @@ C DETAILED PRINT FOR SPECIFIED REPORT(S) -- IF ENTERED IN DATA CARDS
                PRINT 900, (DAT(N,K),K=1,NUMVAR)
                PRINT 905, (IQ(N,L),L=1,NUMQMS)
                PRINT 910, (IS(N,QQ),QQ=1,NUMGPS)
-               PRINT 918, (DAT(N,ZZ),ZZ=1,NUMDAT)
             ENDDO
          END IF
          PRINT 901
