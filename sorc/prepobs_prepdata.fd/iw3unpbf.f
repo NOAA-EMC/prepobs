@@ -2152,18 +2152,18 @@ cppppp-ID
       iprint = 0
 cc         iprint = 1
 
-c     if(stnidx.eq.'89571   ')  iprint = 1
-c     if(stnidx.eq.'68906   ')  iprint = 1
-c     if(stnidx.eq.'68842   ')  iprint = 1
-c     if(stnidx.eq.'74794   ')  iprint = 1
-c     if(stnidx.eq.'74389   ')  iprint = 1
-c     if(stnidx.eq.'96801A  ')  iprint = 1
-      if(stnidx.eq.'10304   ')  iprint = 1
-      if(stnidx.eq.'59316   ')  iprint = 1
-      if(stnidx.eq.'70200   ')  iprint = 1
-      if(stnidx.eq.'72214   ')  iprint = 1
-      if(stnidx.eq.'72215   ')  iprint = 1
-      if(stnidx.eq.'72797   ')  iprint = 1
+c      if(stnidx.eq.'89571   ')  iprint = 1
+c      if(stnidx.eq.'68906   ')  iprint = 1
+c      if(stnidx.eq.'68842   ')  iprint = 1
+c      if(stnidx.eq.'74794   ')  iprint = 1
+c      if(stnidx.eq.'74389   ')  iprint = 1
+c      if(stnidx.eq.'96801A  ')  iprint = 1
+c      if(stnidx.eq.'10304   ')  iprint = 1
+c      if(stnidx.eq.'59316   ')  iprint = 1
+c      if(stnidx.eq.'70200   ')  iprint = 1
+c      if(stnidx.eq.'72214   ')  iprint = 1
+c      if(stnidx.eq.'72215   ')  iprint = 1
+c      if(stnidx.eq.'72797   ')  iprint = 1
 cppppp-ID
       BMISS = GETBMISS()
 
@@ -3316,20 +3316,20 @@ cxxxx
 cppppp-ID
       iprint = 0
 cc         iprint = 1
-c     if(sid.eq.'89571   ')  iprint = 1
-c     if(sid.eq.'68906   ')  iprint = 1
-c     if(sid.eq.'68842   ')  iprint = 1
-c     if(sid.eq.'59362   ')  iprint = 1
-c     if(sid.eq.'57957   ')  iprint = 1
-c     if(sid.eq.'74794   ')  iprint = 1
-c     if(sid.eq.'74389   ')  iprint = 1
-c     if(sid.eq.'96801A  ')  iprint = 1
-      if(sid.eq.'10304   ')  iprint = 1
-      if(sid.eq.'57461   ')  iprint = 1
-      if(sid.eq.'71811   ')  iprint = 1
-      if(sid.eq.'70200   ')  iprint = 1
-      if(sid.eq.'72215   ')  iprint = 1
-      if(sid.eq.'72786   ')  iprint = 1
+c      if(sid.eq.'89571   ')  iprint = 1
+c      if(sid.eq.'68906   ')  iprint = 1
+c      if(sid.eq.'68842   ')  iprint = 1
+c      if(sid.eq.'59362   ')  iprint = 1
+c      if(sid.eq.'57957   ')  iprint = 1
+c      if(sid.eq.'74794   ')  iprint = 1
+c      if(sid.eq.'74389   ')  iprint = 1
+c      if(sid.eq.'96801A  ')  iprint = 1
+c      if(sid.eq.'10304   ')  iprint = 1
+c      if(sid.eq.'57461   ')  iprint = 1
+c      if(sid.eq.'71811   ')  iprint = 1
+c      if(sid.eq.'70200   ')  iprint = 1
+c      if(sid.eq.'72215   ')  iprint = 1
+c      if(sid.eq.'72786   ')  iprint = 1
       if(iprint.eq.1)
      $ print'(" @@@ START DIAGNOSTIC PRINTOUT FOR ID ",A)', sid
 cppppp-ID
