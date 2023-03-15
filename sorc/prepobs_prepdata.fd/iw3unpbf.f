@@ -565,6 +565,10 @@ C       increased according to the number of mandatory levels present,
 C       intending to capture a sufficient number of other vertical
 C       levels, throughout the depth of a BUFR profile, to fill the
 C       prepbufr arrays.
+C 2023-01-31  N. ESPOSITO -- WITH THE ADDITION OF GPS DATA TO UPRAIR
+C     DUMP FILES, CHANGES WERE NEEDED. DATA CATEGORY LEVELS 1, 2, AND
+C     10 NEEDED TO BE INCREASED IN SIZE BY 3 TO SAVE TIME AND LOCATION
+C     DISPLACEMENT DATA. 
 C
 C
 C USAGE:    II = IW3UNPBF(NUNIT, OBS, STNID, CRES1, CRES2, CBULL, OBS2,
@@ -912,6 +916,9 @@ C       8    GEOP. QUALITY MARKER (SEE $)             REAL
 C       9    TEMP. QUALITY MARKER (SEE $)             REAL
 C      10    DDPR. QUALITY MARKER (SEE $)             REAL
 C      11    WIND  QUALITY MARKER (SEE $)             REAL
+C      12    TIME PERIOD DISPLACEMENT  SECONDS        REAL
+C      13    LATITUDE DISPLACEMENT     DEGREES        REAL
+C      14    LONGITUDE DISPLACEMENT    DEGREES        REAL
 C
 C     DATA LEVEL CATEGORY 2 - TEMPERATURE AT VARIABLE PRESSURE
 C     WORD   PARAMETER            UNITS               FORMAT
@@ -923,6 +930,9 @@ C       4    PRES. QUALITY MARKER (SEE $)             REAL
 C       5    TEMP. QUALITY MARKER (SEE $)             REAL
 C       6    DDPR. QUALITY MARKER (SEE $)             REAL
 C       7    SPECIAL INDICATOR    (SEE $$)            REAL
+C       8    TIME PERIOD DISPLACEMENT  SECONDS        REAL
+C       9    LATITUDE DISPLACEMENT     DEGREES        REAL
+C      10    LONGITUDE DISPLACEMENT    DEGREES        REAL
 C
 C     DATA LEVEL CATEGORY 3 - WINDS AT VARIABLE PRESSURE
 C     WORD   PARAMETER            UNITS               FORMAT
@@ -1437,15 +1447,15 @@ C  IKAT defines the category number
 C  MCAT defines the number of parameters in a level for each category
 C --> THIS NEEDS TO BE UPDATED WHEN ADDING MORE WORDS PER CAT LEVEL
 
-         MCAT(1)  = 11  ! Cat.  1
-         MCAT(2)  =  7  ! Cat.  2
+         MCAT(1)  = 14  ! Cat.  1 
+         MCAT(2)  = 10  ! Cat.  2
          MCAT(3)  =  6  ! Cat.  3
          MCAT(4)  =  5  ! Cat.  4
          MCAT(5)  =  9  ! Cat.  5
          MCAT(6)  = 11  ! Cat.  6
          MCAT(7)  = 13  ! Cat. 51
          MCAT(8)  =  4  ! Cat.  8
-         MCAT(9)  = 11  ! Cat. 10    incl. CH 01/19/2021
+         MCAT(9)  = 14  ! Cat. 10    incl. CH 01/19/2021
 
 C  LVDX defines location in UNP holding the no. of levels for each cat.
 
@@ -1753,7 +1763,8 @@ C***********************************************************************
 C***********************************************************************
       FUNCTION I02UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8,SUBSKP,IER)
  
-      PARAMETER (MAXOBS=3500)
+C      PARAMETER (MAXOBS=3500)
+      PARAMETER (MAXOBS=4500)
 
       COMMON/IUBFCC/SUBSET
       COMMON/IUBFOO/DSNAMX,IDSDAX_8,IDSDMX_8
@@ -2117,7 +2128,8 @@ C                         subr. to write an empty cat. 2,3, or 4 level
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
       COMMON/IUBFEE/POB(255),QOB(255),TOB(255),ZOB(255),DOB(255),
-     $              SOB(255),VSG(255),OB8(255),CF8(255)
+     $              SOB(255),VSG(255),OB8(255),CF8(255),
+     $              XDR(255),YDR(255),HRDR(255)
       COMMON/IUBFFF/PQM(255),QQM(255),TQM(255),ZQM(255),WQM(255)
       COMMON/IUBFGG/PSL,STP,SDR,SSP,STM,DPD
       COMMON/IUBFHH/PSQ,SPQ,SWQ,STQ,DDQ
@@ -2130,6 +2142,7 @@ C                         subr. to write an empty cat. 2,3, or 4 level
       DIMENSION   RCAT(50),JCAT(50)
       EQUIVALENCE (RCAT(1),JCAT(1))
       LOGICAL     SURF
+      REAL(8)  BMISS,GETBMISS
 
       SAVE
  
@@ -2139,19 +2152,20 @@ cppppp-ID
       iprint = 0
 cc         iprint = 1
 
-c     if(stnidx.eq.'89571   ')  iprint = 1
-c     if(stnidx.eq.'68906   ')  iprint = 1
-c     if(stnidx.eq.'68842   ')  iprint = 1
-c     if(stnidx.eq.'74794   ')  iprint = 1
-c     if(stnidx.eq.'74389   ')  iprint = 1
-c     if(stnidx.eq.'96801A  ')  iprint = 1
-      if(stnidx.eq.'10304   ')  iprint = 1
-      if(stnidx.eq.'59316   ')  iprint = 1
-      if(stnidx.eq.'70200   ')  iprint = 1
-      if(stnidx.eq.'72214   ')  iprint = 1
-      if(stnidx.eq.'72215   ')  iprint = 1
-      if(stnidx.eq.'72797   ')  iprint = 1
+c      if(stnidx.eq.'89571   ')  iprint = 1
+c      if(stnidx.eq.'68906   ')  iprint = 1
+c      if(stnidx.eq.'68842   ')  iprint = 1
+c      if(stnidx.eq.'74794   ')  iprint = 1
+c      if(stnidx.eq.'74389   ')  iprint = 1
+c      if(stnidx.eq.'96801A  ')  iprint = 1
+c      if(stnidx.eq.'10304   ')  iprint = 1
+c      if(stnidx.eq.'59316   ')  iprint = 1
+c      if(stnidx.eq.'70200   ')  iprint = 1
+c      if(stnidx.eq.'72214   ')  iprint = 1
+c      if(stnidx.eq.'72215   ')  iprint = 1
+c      if(stnidx.eq.'72797   ')  iprint = 1
 cppppp-ID
+      BMISS = GETBMISS()
 
       SURF = .FALSE.
       GOTO 1
@@ -2201,7 +2215,9 @@ C          ARE SET TO 0)
 C  -----------------------------------------------------------------
  
       IF(N.EQ.0) THEN
-         IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) RETURN
+         IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) THEN 
+             RETURN
+         END IF
          NCAT(KCAT) = MIN(LEVLIM-1,NCAT(KCAT)+1)
          if(iprint.eq.1)  then
             print'(" To prepare for sfc. data, write all missings on ",
@@ -2267,7 +2283,7 @@ C  ---------------------------------------------------------
 C  EACH DATA LEVEL CATEGORY NEEDS A SPECIFIC DATA ARRANGEMENT
 C  ----------------------------------------------------------
  
-      IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) THEN
+      IF(ICAT.EQ.1) THEN
          RCAT(1)  = MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
          RCAT(2)  = MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
          RCAT(3)  = MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
@@ -2299,6 +2315,44 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
+      ELSEIF(ICAT.EQ.10) THEN
+         RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
+         RCAT(2)= MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
+         RCAT(3)= MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
+         RCAT(4)= MIN(NINT(QOB(N)),NINT(RCATS( 4,L,KCAT)))
+         RCAT(5)= MIN(NINT(DOB(N)),NINT(RCATS( 5,L,KCAT)))
+         RCAT(6)= MIN(NINT(SOB(N)),NINT(RCATS( 6,L,KCAT)))
+         IF(RCATS(7,L,KCAT).LT.IMISS) THEN
+            RCAT(7)= MAX(NINT(PQM(N)),NINT(RCATS( 7,L,KCAT)))
+         ELSE
+            RCAT(7)= NINT(PQM(N))
+         END IF
+         IF(RCATS(8,L,KCAT).LT.IMISS) THEN
+            RCAT(8)= MAX(NINT(ZQM(N)),NINT(RCATS( 8,L,KCAT)))
+         ELSE
+            RCAT(8)= NINT(ZQM(N))
+         END IF
+         IF(RCATS(9,L,KCAT).LT.IMISS) THEN 
+            RCAT(9)= MAX(NINT(TQM(N)),NINT(RCATS( 9,L,KCAT)))
+         ELSE 
+            RCAT(9)= NINT(TQM(N))
+         END IF
+         IF(RCATS(10,L,KCAT).LT.IMISS) THEN
+            RCAT(10) = MAX(NINT(QQM(N)),NINT(RCATS(10,L,KCAT)))
+         ELSE
+            RCAT(10) = NINT(QQM(N))
+         END IF
+         IF(RCATS(11,L,KCAT).LT.IMISS) THEN
+            RCAT(11) = MAX(NINT(WQM(N)),NINT(RCATS(11,L,KCAT)))
+         ELSE
+            RCAT(11) = NINT(WQM(N))
+         END IF
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.2) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(TOB(N)),IMISS)
@@ -2307,6 +2361,9 @@ C  ----------------------------------------------------------
          RCAT(5) = NINT(TQM(N))
          RCAT(6) = NINT(QQM(N))
          RCAT(7) = NINT(XIND(N))
+         RCAT(8) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(9) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(10)= MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.3) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(DOB(N)),IMISS)
@@ -2384,7 +2441,7 @@ C  TRANSFER THE LEVEL DATA INTO THE HOLDING ARRAY AND EXIT
 C  -------------------------------------------------------
  
       RCATS(1:MCAT(KCAT),L,KCAT) = RCAT(1:MCAT(KCAT))
- 
+      
       RETURN
       END
 C***********************************************************************
@@ -2393,7 +2450,8 @@ C***********************************************************************
       SUBROUTINE S03UBF(UNP,SUBSET,*,*,*)
 C     ---> PACKS DATA INTO UNP ARRAY
  
-      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=3500)
+C      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=3500)
+      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=4500)
 
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
@@ -2466,7 +2524,7 @@ C  -----------------------------------------------
  
       UNP(1:12)  = HDR
       UNP(13:52) = RCAT(13:52)
- 
+
       RETURN
       END
 C***********************************************************************
@@ -2988,7 +3046,8 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
       COMMON/IUBFEE/POB(255),QOB(255),TOB(255),ZOB(255),DOB(255),
-     $              SOB(255),VSG(255),OB8(255),CF8(255)
+     $              SOB(255),VSG(255),OB8(255),CF8(255),
+     $              XDR(255),YDR(255),HRDR(255)
       COMMON/IUBFFF/PQM(255),QQM(255),TQM(255),ZQM(255),WQM(255)
       COMMON/IUBFII/PWMIN
       COMMON/IUBFLL/Q81(255),Q82(255)
@@ -3011,7 +3070,8 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
  
       DATA HDSTR/'NUL  CLON CLAT HOUR MINU SELV               '/
       DATA HDSTB/'NUL CLONH CLATH HOUR MINU HBMSL HEIT        '/ ! BUFR
-      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD          '/
+      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD 
+     $ LTDS LATDH LONDH '/
       DATA QMSTR/'QMPR QMAT QMDD QMGP QMWN                    '/
       DATA RCSTR/'RCHR RCMI RCTS                              '/
  
@@ -3256,20 +3316,20 @@ cxxxx
 cppppp-ID
       iprint = 0
 cc         iprint = 1
-c     if(sid.eq.'89571   ')  iprint = 1
-c     if(sid.eq.'68906   ')  iprint = 1
-c     if(sid.eq.'68842   ')  iprint = 1
-c     if(sid.eq.'59362   ')  iprint = 1
-c     if(sid.eq.'57957   ')  iprint = 1
-c     if(sid.eq.'74794   ')  iprint = 1
-c     if(sid.eq.'74389   ')  iprint = 1
-c     if(sid.eq.'96801A  ')  iprint = 1
-      if(sid.eq.'10304   ')  iprint = 1
-      if(sid.eq.'57461   ')  iprint = 1
-      if(sid.eq.'71811   ')  iprint = 1
-      if(sid.eq.'70200   ')  iprint = 1
-      if(sid.eq.'72215   ')  iprint = 1
-      if(sid.eq.'72786   ')  iprint = 1
+c      if(sid.eq.'89571   ')  iprint = 1
+c      if(sid.eq.'68906   ')  iprint = 1
+c      if(sid.eq.'68842   ')  iprint = 1
+c      if(sid.eq.'59362   ')  iprint = 1
+c      if(sid.eq.'57957   ')  iprint = 1
+c      if(sid.eq.'74794   ')  iprint = 1
+c      if(sid.eq.'74389   ')  iprint = 1
+c      if(sid.eq.'96801A  ')  iprint = 1
+c      if(sid.eq.'10304   ')  iprint = 1
+c      if(sid.eq.'57461   ')  iprint = 1
+c      if(sid.eq.'71811   ')  iprint = 1
+c      if(sid.eq.'70200   ')  iprint = 1
+c      if(sid.eq.'72215   ')  iprint = 1
+c      if(sid.eq.'72786   ')  iprint = 1
       if(iprint.eq.1)
      $ print'(" @@@ START DIAGNOSTIC PRINTOUT FOR ID ",A)', sid
 cppppp-ID
@@ -3371,28 +3431,22 @@ CCCCCCCCCCCCCCCCCCCv CH 11/12/2020
 
       IF((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
 CC    WITH VSIGX, VARIABLES ARE READ INTO LARGER ARRAY
-       CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,LVSTR)
+        CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,LVSTR)
 C
 C
-      IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
-       LS = 1
-       DO L2 = 1,NLEVX
-       IF (NUSL(L2).EQ.1) THEN
-CC      ARRX -> ARR_8
-        DO MS = 1,10
-         ARR_8(MS,LS) = ARRX(MS,L2)
+        IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
+        LS = 1
+        DO L2 = 1,NLEVX
+        IF (NUSL(L2).EQ.1) THEN
+CC        ARRX -> ARR_8
+          DO MS = 1,10
+             ARR_8(MS,LS) = ARRX(MS,L2)
+          ENDDO
+          LS = LS + 1
+        ENDIF
+CC      STEP TO THE NEXT LEVEL
         ENDDO
-C
-C       GNSS drift information to be added here
-C       [ ARR_8(8,LS)  <-- XDR  ]
-C       [ ARR_8(9,LS)  <-- YDR  ]
-C       [ ARR_8(10,LS) <-- HRDR ]
-C
-        LS = LS + 1
-       ENDIF
-CC     STEP TO THE NEXT LEVEL
-       ENDDO
-       NLEV=MIN(LS,255)
+        NLEV=MIN(LS,255)
       ENDIF
       ENDIF
 
@@ -3436,11 +3490,28 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         if(iprint.eq.1)  then
+         IF(ARR(8,L).LT.IMISS) THEN 
+             HRDR(L) = NINT(ARR(8,L))
+         ELSE
+             HRDR(L) = IMISS
+         END IF
+         IF(ARR(9,L).LT.IMISS) THEN
+             YDR(L) = NINT((ARR(9,L)*100000))
+         ELSE
+             YDR(L) = IMISS
+         END IF
+         IF(ARR(10,L).LT.IMISS) THEN 
+             XDR(L) = NINT((ARR(10,L)*100000))
+         ELSE
+             XDR(L) = IMISS
+         END IF
+C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
-     $       G0)', L,vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L)
-         end if
+     $       G0,"; HRDR = ",G0,"; XDR = ",G0,"; YDR = ",G0,"; fin")', L, 
+     $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),hrdr(L),
+     $       ydr(L),xdr(L)
+C         end if
          IF(MAX(POB(L),DOB(L),SOB(L)).LT.BMISS) PWMIN =MIN(PWMIN,POB(L))
       ENDDO
 
