@@ -93,6 +93,12 @@ net=$NET
 [[ $RUN == rap_p ]]  &&  net=rap_p
 [[ $RUN == rap_e ]]  &&  net=rap_e
 
+# Imported variable cycM, if it exists, contains cycle time minutes
+#  If cycM is imported, reset cycle in this script only (cycle_here) to 4-digit
+#   value t<HHMM>z
+cycle_here=$cycle
+[ -n "$cycM" ]  &&  cycle_here=t${cyc}${cycM}z
+
 net_uc=$(echo $net | tr [a-z] [A-Z])
 set +u
 [ -n "$cycM" ]  &&  net_uc=RTMA_RU
@@ -195,114 +201,114 @@ EOFparm
 REMX=${REMX:-$EXECobsproc/bufr_remorest}
 REMC=${REMC:-bufr_remorest.prepbufr.parm}
 
-if [ -f $COMIN/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
-   if [ ! -f $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.nr ]; then
-      cp $COMIN/$RUN.$cycle.prepbufr${dot_tmmark} \
-       $RUN.$cycle.prepbufr${dot_tmmark}
+if [ -f $COMIN/$RUN.$cycle_here.prepbufr${dot_tmmark} ]; then
+   if [ ! -f $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.nr ]; then
+      cp $COMIN/$RUN.$cycle_here.prepbufr${dot_tmmark} \
+       $RUN.$cycle_here.prepbufr${dot_tmmark}
       $USHobsproc/bufr_remorest.sh \
-       $RUN.$cycle.prepbufr${dot_tmmark}
+       $RUN.$cycle_here.prepbufr${dot_tmmark}
       errsc=$?
       [ "$errsc" -ne '0' ]  &&  exit $errsc
-      cp $RUN.$cycle.prepbufr${dot_tmmark} \
-       $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.nr
-      chmod 664 $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.nr
-      msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr successfully created"
+      cp $RUN.$cycle_here.prepbufr${dot_tmmark} \
+       $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.nr
+      chmod 664 $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.nr
+      msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.nr successfully created"
       $DATA/postmsg "$jlogfile" "$msg"
       if test "$SENDDBN" = "YES"; then
          if test "$net" = "gdas"; then
             $DBNROOT/bin/dbn_alert MODEL ${RUN_uc}_BUFR_PREPda_nr $job \
-             $COMOUT/$RUN.$cycle.prepbufr.nr
+             $COMOUT/$RUN.$cycle_here.prepbufr.nr
          elif test "$net" = "nam"; then
             $DBNROOT/bin/dbn_alert MODEL NAM_BUFR_PREPda_nr $job \
-             $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+             $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.nr
          elif test "$net" = "gfs"; then
             $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_nr $job \
-             $COMOUT/$RUN.$cycle.prepbufr.nr
+             $COMOUT/$RUN.$cycle_here.prepbufr.nr
          elif test "$net" = "rap" -o "$net" = "rap_e" -o "$net" = "rap_p"; then
             $DBNROOT/bin/dbn_alert MODEL ${net_uc}_BUFR_PREPda_nr $job \
-             $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+             $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.nr
          fi
       fi
    else
-      msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr NOT created because it \
+      msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.nr NOT created because it \
 already exists"
       $DATA/postmsg "$jlogfile" "$msg"
    fi
    # Remove the following logic to create unblocked nr prepbufr files once we
    #   know it is definitely no longer needed.
    if [ "${PROCESS_UNBLKBUFR:-YES}" = 'YES' ]; then
-      if [   -f $COMIN/$RUN.$cycle.prepbufr${dot_tmmark}.unblok -a \
-           ! -f $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr ]; then
+      if [   -f $COMIN/$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok -a \
+           ! -f $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr ]; then
 # make unblocked unrestricted prebufr file
 #  ---> ON WCOSS prepbufr is already unblocked, so for now just copy it to the
 #       unblok file location used before on CCS - hopefully this can be removed
 #       someday!
-         cp -p $RUN.$cycle.prepbufr${dot_tmmark} \
-$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr 
+         cp -p $RUN.$cycle_here.prepbufr${dot_tmmark} \
+$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr 
          err_cp=$?
          if [ $err_cp -eq 0 ]; then
-            cp $RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr \
-             $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
-            chmod 664 $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
-            msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr successfully created"
+            cp $RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr \
+             $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr
+            chmod 664 $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr
+            msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr successfully created"
             $DATA/postmsg "$jlogfile" "$msg"
             if test "$SENDDBN" = "YES"; then
                if test "$net" = "gdas"; then
                   $DBNROOT/bin/dbn_alert MODEL ${RUN_uc}_BUFR_PREPda_unblok_nr \
-                   $job $COMOUT/$RUN.$cycle.prepbufr.unblok.nr
+                   $job $COMOUT/$RUN.$cycle_here.prepbufr.unblok.nr
                elif test "$net" = "gfs"; then
                   $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_unblok_nr $job \
-                   $COMOUT/$RUN.$cycle.prepbufr.unblok.nr
+                   $COMOUT/$RUN.$cycle_here.prepbufr.unblok.nr
                fi
             fi
          else
-            msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr NOT created \
+            msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr NOT created \
 because cp command had return code $err_cp"
          $DATA/postmsg "$jlogfile" "$msg"
          fi
       else
-         if [ ! -f $COMIN/$RUN.$cycle.prepbufr${dot_tmmark}.unblok ]; then
-            msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr NOT created \
+         if [ ! -f $COMIN/$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok ]; then
+            msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr NOT created \
 because unblocked prepbufr file does not exist"
             $DATA/postmsg "$jlogfile" "$msg"
          else
-            msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr NOT created \
+            msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr NOT created \
 because it already exists"
             $DATA/postmsg "$jlogfile" "$msg"
          fi
       fi
    fi
 else
-   msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr NOT created because \
+   msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.nr NOT created because \
 prepbufr file does not exist"
    $DATA/postmsg "$jlogfile" "$msg"
-   if [   -f $COMIN/$RUN.$cycle.prepbufr${dot_tmmark}.unblok -a \
-        ! -f $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr ]; then
-      msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr NOT created \
+   if [   -f $COMIN/$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok -a \
+        ! -f $COMOUT/$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr ]; then
+      msg="$RUN.$cycle_here.prepbufr${dot_tmmark}.unblok.nr NOT created \
 because prepbufr file does not exist"
    fi
 fi
 
-if [   -f $COMIN/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} -a \
-     ! -f $COMOUT/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr ]; then
-   cp $COMIN/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
-    $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
+if [   -f $COMIN/$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark} -a \
+     ! -f $COMOUT/$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}.nr ]; then
+   cp $COMIN/$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark} \
+    $RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}
    $USHobsproc/bufr_remorest.sh \
-    $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
+    $RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
-   cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
-    $COMOUT/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
-   chmod 664 $COMOUT/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
-   msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr successfully created"
+   cp $RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark} \
+    $COMOUT/$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}.nr
+   chmod 664 $COMOUT/$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}.nr
+   msg="$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}.nr successfully created"
    $DATA/postmsg "$jlogfile" "$msg"
 else
-   if [ ! -f $COMIN/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} ]; then
-      msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr NOT created \
+   if [ ! -f $COMIN/$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark} ]; then
+      msg="$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}.nr NOT created \
 because prepbufr_pre-qc file does not exist"
       $DATA/postmsg "$jlogfile" "$msg"
    else
-      msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr NOT created because \
+      msg="$RUN.$cycle_here.prepbufr_pre-qc${dot_tmmark}.nr NOT created because \
 it already exists"
       $DATA/postmsg "$jlogfile" "$msg"
    fi
