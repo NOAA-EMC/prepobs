@@ -502,9 +502,12 @@ if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
     $RUN.$cycle.prepbufr${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
+#   cp $RUN.$cycle.prepbufr${dot_tmmark} \
+#    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+#   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
    cp $RUN.$cycle.prepbufr${dot_tmmark} \
-    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
-   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur #IG - do not overwrite
+   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
    msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago successfully \
 created -- overwrite existing file made 2-days ago"
    $DATA/postmsg "$jlogfile" "$msg"
@@ -575,9 +578,12 @@ if [ -f $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} ]; then
     $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
+#   cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
+#    $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
+#   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
    cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
-    $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
-   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
+    $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.ur
+   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.ur
    msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr from 2-days ago \
 successfully created -- overwrite existing file made 2-days ago"
    $DATA/postmsg "$jlogfile" "$msg"
