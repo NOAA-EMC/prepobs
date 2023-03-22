@@ -389,9 +389,12 @@ fi
 
 fi # test for PROCESS_REMOREST=YES
 
+# PROCESS_REMOREST_dm2 = YES runs only on demand, on dev machines
+# Unrestrict 48h old aircraft obs(exc. TAMDAR), add *.ur file to $COMOUTm2
+dev_m=$(grep backup /lfs/h1/ops/prod/config/prodmachinefile | cut -d: -f2)
+this_m=$(cat /etc/cluster_name)
 
-if [ "$PROCESS_REMOREST_dm2" = 'YES' ]; then
-
+if [ "$PROCESS_REMOREST_dm2" = 'YES' -a $this_m = $dev_m ]; then
   cdate10M2=`$NDATE -$tmhr $PDYm2$cyc`
 
   msg="REMOVE OR MASK RESTRICTED DATA FROM $tmmark_uc $net_uc PREPBUFR files \
@@ -502,11 +505,8 @@ if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
     $RUN.$cycle.prepbufr${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
-#   cp $RUN.$cycle.prepbufr${dot_tmmark} \
-#    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
-#   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
    cp $RUN.$cycle.prepbufr${dot_tmmark} \
-    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur #IG - do not overwrite
+    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur 
    chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
    msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago successfully \
 created -- overwrite existing file made 2-days ago"
