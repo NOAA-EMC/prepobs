@@ -2315,9 +2315,11 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
+         PRINT *,"hryxdr1a",HRDR(N),YDR(N),XDR(N)
          RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
          RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
          RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
+         PRINT *,"hryxdr1b",RCAT(12),RCAT(13),RCAT(14)
       ELSEIF(ICAT.EQ.10) THEN
          RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
          RCAT(2)= MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
@@ -2350,9 +2352,11 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
+         PRINT *,"hryxdr10a",HRDR(N),YDR(N),XDR(N)
          RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
          RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
          RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
+         PRINT *,"hryxdr10b",RCAT(12),RCAT(13),RCAT(14)
       ELSEIF(ICAT.EQ.2) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(TOB(N)),IMISS)
@@ -2361,9 +2365,11 @@ C  ----------------------------------------------------------
          RCAT(5) = NINT(TQM(N))
          RCAT(6) = NINT(QQM(N))
          RCAT(7) = NINT(XIND(N))
+         PRINT *,"hryxdr2a",HRDR(N),YDR(N),XDR(N)
          RCAT(8) = MIN(NINT(HRDR(N)),NINT(BMISS))
          RCAT(9) = MIN(NINT(YDR(N)),NINT(BMISS))
          RCAT(10)= MIN(NINT(XDR(N)),NINT(BMISS))
+         PRINT *,"hryxdr2b",RCAT(8),RCAT(9),RCAT(10)
       ELSEIF(ICAT.EQ.3) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(DOB(N)),IMISS)
@@ -3490,21 +3496,23 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         IF(ARR(8,L).LT.IMISS) THEN 
+         PRINT *,"ARR890a",ARR(8,L),ARR(9,L),ARR(10,L)
+         IF(ARR(8,L).LT.BMISS) THEN 
              HRDR(L) = NINT(ARR(8,L))
          ELSE
-             HRDR(L) = IMISS
+             HRDR(L) = BMISS
          END IF
-         IF(ARR(9,L).LT.IMISS) THEN
+         IF(ARR(9,L).LT.BMISS) THEN
              YDR(L) = NINT((ARR(9,L)*100000))
          ELSE
-             YDR(L) = IMISS
+             YDR(L) = BMISS
          END IF
-         IF(ARR(10,L).LT.IMISS) THEN 
+         IF(ARR(10,L).LT.BMISS) THEN 
              XDR(L) = NINT((ARR(10,L)*100000))
          ELSE
-             XDR(L) = IMISS
+             XDR(L) = BMISS
          END IF
+         PRINT *,"ARR890b",ARR(8,L),ARR(9,L),ARR(10,L)
 C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
