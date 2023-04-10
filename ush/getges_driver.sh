@@ -189,9 +189,7 @@ fi
 #######################################################################################################
 elif [[ `echo $bn_COMINgdas | cut -c1` != g && `echo $bn_COMINgfs | cut -c1` != g ]];then
 
-# This runs the GFSv15 version with cycle time directory in the suffix of $COMINgdas and $COMINgfs
-# -or-
-# This runs the GFSv16+ version with cycle time and atmos directory in the suffix of 
+# This runs GFS v15+ by replacing ${PDY}/${cyc} with new values.
 # $COMINGgdas and $COMINgfs
 
 
@@ -200,15 +198,8 @@ elif [[ `echo $bn_COMINgdas | cut -c1` != g && `echo $bn_COMINgfs | cut -c1` != 
 #  rinse and repeat until you've gone back 24 hours - if still no luck give up
 # ------------------------------------------------------------------------------------
 
-COMINgdas_root=`dirname $COMINgdas`
-COMINgdas_root=`dirname $COMINgdas_root`
-COMINgfs_root=`dirname $COMINgfs`
-COMINgfs_root=`dirname $COMINgfs_root`
-if [[ `echo $bn_COMINgdas | cut -c1` = a && `echo $bn_COMINgfs | cut -c1` = a ]];then
-   # if atmos suffix, run dirname additional time
-   COMINgdas_root=`dirname $COMINgdas_root`
-   COMINgfs_root=`dirname $COMINgfs_root`
-fi
+COMINgdas_orig="${COMINgdas}"
+COMINgfs_orig="${COMINgfs}"
 
 PDY_this_try=$PDY
 cyc_this_try=$cyc
@@ -219,14 +210,8 @@ modhr=`expr $cyc_this_try % 6`
 PDY_this_try=`$NDATE -$modhr ${PDY_this_try}${cyc_this_try} | cut -c1-8`
 cyc_this_try=`$NDATE -$modhr ${PDY_this_try}${cyc_this_try} | cut -c9-10`
 
-if [[ `echo $bn_COMINgdas | cut -c1` = a && `echo $bn_COMINgfs | cut -c1` = a ]];then
-   # if atmos suffix, define $COMINgdas and $COMINgfs accordingly 
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-else
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}
-fi
+COMINgdas=${COMINgdas_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
+COMINgfs=${COMINgfs_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
 fhend=12
 
 if [ $fhr = "-3" -o $fhr = "+3" ]; then
@@ -258,14 +243,8 @@ fi
 PDY_this_try=`$NDATE -6 ${PDY_this_try}${cyc_this_try} | cut -c1-8`
 cyc_this_try=`$NDATE -6 ${PDY_this_try}${cyc_this_try} | cut -c9-10`
 
-if [[ `echo $bn_COMINgdas | cut -c1` = a && `echo $bn_COMINgfs | cut -c1` = a ]];then
-   # if atmos suffix, define $COMINgdas and $COMINgfs accordingly 
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-else
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}
-fi
+COMINgdas=${COMINgdas_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
+COMINgfs=${COMINgfs_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
 fhend=12
 
 if [ $fhr = "-3" -o $fhr = "+3" ]; then
@@ -297,14 +276,8 @@ fi
 PDY_this_try=`$NDATE -6 ${PDY_this_try}${cyc_this_try} | cut -c1-8`
 cyc_this_try=`$NDATE -6 ${PDY_this_try}${cyc_this_try} | cut -c9-10`
 
-if [[ `echo $bn_COMINgdas | cut -c1` = a && `echo $bn_COMINgfs | cut -c1` = a ]];then
-   # if atmos suffix, define $COMINgdas and $COMINgfs accordingly 
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-else
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}
-fi
+COMINgdas=${COMINgdas_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
+COMINgfs=${COMINgfs_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
 fhend=18
 
 if [ $fhr = "-3" -o $fhr = "+3" ]; then
@@ -336,14 +309,8 @@ fi
 PDY_this_try=`$NDATE -6 ${PDY_this_try}${cyc_this_try} | cut -c1-8`
 cyc_this_try=`$NDATE -6 ${PDY_this_try}${cyc_this_try} | cut -c9-10`
 
-if [[ `echo $bn_COMINgdas | cut -c1` = a && `echo $bn_COMINgfs | cut -c1` = a ]];then
-   # if atmos suffix, define $COMINgdas and $COMINgfs accordingly 
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}/${COMPONENT}
-else
-   export COMINgdas=$COMINgdas_root/gdas.${PDY_this_try}/${cyc_this_try}
-   export COMINgfs=$COMINgfs_root/gfs.${PDY_this_try}/${cyc_this_try}
-fi
+COMINgdas=${COMINgdas_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
+COMINgfs=${COMINgfs_orig/${PDY}\/${cyc}/${PDY_this_try}/${cyc_this_try}}
 fhend=384
 
 if [ $fhr = "-3" -o $fhr = "+3" ]; then
