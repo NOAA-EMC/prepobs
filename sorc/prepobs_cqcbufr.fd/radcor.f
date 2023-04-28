@@ -82,7 +82,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE RADEVN
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       PARAMETER (NRID=800) ! max # of raob ids listed per inst. type
 
       REAL(8) BMISS
@@ -166,7 +166,6 @@ C  ---------------------------------------------------------
 
 C  INITIALIZE ALL UNCORRECTED HEIGHTS AND TEMPS AS MISSING
 C  -------------------------------------------------------
-
       KMIN  = LEVRAD
       KMAX  = 16
       DHT   = 0
@@ -179,14 +178,12 @@ C  -------------------------------------------------------
       IN    = BMISS
       INM   = 0
 
-
       ALON  = MOD(720.+360.-XOB(IS),360.)
       JTYPE = ITP(IS)
       IF(JTYPE.LE.0 .OR. (JTYPE.GE.255.AND.JTYPE.NE.20000)) JTYPE = 255
       IF(JTYPE.NE.20000)  CALL TAB(JTYPE) ! (inst. type may be set to
                                           !  20000 for special cases in
                                           !  cqcbufr.f)
-
       IF(IRCTBL.EQ.1)  THEN
 
 C  COME HERE FOR IRCTBL=1 CORRECTIONS (OLDEST TABLES)
@@ -194,7 +191,6 @@ C  --------------------------------------------------
 
 C     NEW CHECKS FOR THE NEW RADIOSONDE TYPES
 C     ---------------------------------------
-
          IF(JTYPE.EQ.14)  JTYPE =  4  ! VAISALA (IN/OUT OF FINLAND)
 
          IF(JTYPE.EQ.20)  JTYPE = 12  ! RUSSIAN RKZ
@@ -207,14 +203,12 @@ C        EXCLUDE CHINESE (WMO BLOCKS 50-59) FROM RUSSIAN TYPE
 C        ----------------------------------------------------
 
          IF(SID(IS)(1:1).EQ.'5')  JTYPE = 19
-
       ENDIF
 
       BAL_DRIFT = .TRUE.
 
 C  FILL THE MANDATORY LEVEL EVENT AND CORRECTION ARRAYS FOR THIS REPORT
 C  --------------------------------------------------------------------
-
       DO L=1,NLV
          M = MANLEV(POB(L))
          IF(M.GT.0 .AND. M.LE.KMAX) THEN
@@ -225,7 +219,6 @@ C  --------------------------------------------------------------------
      $       BAL_DRIFT = .FALSE.
          ENDIF
       ENDDO
-
       WRITE (68,*)
       IF(.NOT.BAL_DRIFT) THEN
          WRITE(68,'(" Report ",A," does not have balloon drift ",
@@ -235,7 +228,6 @@ C  --------------------------------------------------------------------
          WRITE(68,'(" Report ",A," has balloon drift coordinates - use",
      &    " ""new"" method for determining sun angle")') SID(IS)
       END IF
-
 C  CALL APPROPRIATE SUBROUTINE TO APPLY CORRECTIONS - SAVE DELTAS
 C  --------------------------------------------------------------
 

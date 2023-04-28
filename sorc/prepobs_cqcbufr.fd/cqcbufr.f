@@ -409,6 +409,7 @@ C  ---------------------------------------------
         CALL TMPCHK              ! Perform temporal check
       ELSE
         CALL SETTMP
+
       ENDIF
       CALL HORRES                ! Calculate horizontal residuals
       CALL STAT(ITIME)           ! Calculate & print statistics
@@ -482,9 +483,7 @@ C  -------------------
       CALL WTISO
       CALL CLOSBF(NFIN)
       CALL CLOSBF(NFOUT)
-
       CALL W3TAGE('PREPOBS_CQCBUFR')
-
       STOP
       END
 C**********************************************************************
@@ -927,7 +926,7 @@ C
 C$$$
 
       SUBROUTINE AUXLEVS(SKIP,SAME,WIND,SINGLE,ANYS)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -1127,7 +1126,7 @@ C$$$
       REAL(8) BMISS
 
       SAVE IEVOLD
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
      &                 NEV, ISF(NST), NLVM, NLVW
@@ -1691,7 +1690,7 @@ C
 C$$$
 
       SUBROUTINE CKPS
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -1790,7 +1789,7 @@ C
 C$$$
 
       SUBROUTINE COMPER(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -2280,7 +2279,7 @@ C$$$
       REAL(8) BMISS
 
       SAVE IEVOLD
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /MANRES/  ZIM(21,NST),TIM(21,NST),TDIM(21,NST),QIM(21,NST),
      &                 ZHM(21,NST),THM(21,NST),TDHM(21,NST),QHM(21,NST),
      &                 ZVM(21,NST),TVM(21,NST),TDVM(21,NST),QVM(21,NST),
@@ -2408,7 +2407,7 @@ C$$$
       
       SUBROUTINE DISTR(X,MSK,XLIM,XMSG,NX,N,NDIV,DDIV,
      &  NZERO,DZERO,NS,X1,SD,SK,XK)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       INTEGER N(23), MSK(NST)
       REAL X(NST),XLIM(2)
@@ -2517,7 +2516,7 @@ C
 C$$$
 
       SUBROUTINE DMA(ANY,OBS)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
      &                 NEV, ISF(NST), NLVM, NLVW
@@ -2752,7 +2751,7 @@ C
 C$$$
 
       SUBROUTINE ERR123(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -3289,7 +3288,7 @@ C
 C$$$
 
       SUBROUTINE ERR5(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -3583,7 +3582,7 @@ C
 C$$$
 
       SUBROUTINE ERR710(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -4211,7 +4210,7 @@ C
 C$$$
 
       SUBROUTINE ERRTYP
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -4569,7 +4568,7 @@ C
 C$$$
 
       SUBROUTINE EVPROC(I1,I2,ICALL)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /EVENTS/  STN(2000),    SEQN(2000),  ISCAN(2000),
      &                 LEVL(2000),   PRES(2000),  LTYP(2000),
@@ -4831,7 +4830,7 @@ C
 C$$$
 
       SUBROUTINE FILALL(SAME,WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -5260,7 +5259,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE FULVAL(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -5613,7 +5612,7 @@ C
 C$$$
 
       SUBROUTINE GETINC(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -5799,7 +5798,7 @@ C         = .FALSE. OTHERWISE
 C
 
       SUBROUTINE GETLEV(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6194,7 +6193,7 @@ C
 C$$$
 
       SUBROUTINE HOLES
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6287,7 +6286,7 @@ C
 C$$$
 
       SUBROUTINE HORRES
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6540,7 +6539,7 @@ C
 C$$$
 
       SUBROUTINE HSC
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6809,7 +6808,7 @@ C
 C$$$
 
       SUBROUTINE INCR(ITIME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -7037,7 +7036,7 @@ C
 C$$$
 
       SUBROUTINE INCRW
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -7128,7 +7127,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE INIT
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -7211,7 +7210,7 @@ C$$$
 
       SUBROUTINE INPUT(START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN)
       SAVE
-      PARAMETER (NST=999)      ! maximum number of stations
+      PARAMETER (NST=2499)      ! maximum number of stations
       PARAMETER (MVO=5)        ! p,T,z,q,Td
       PARAMETER (MLV=255)      ! number of possible levels
       PARAMETER (MEV=13)       ! number of possible programs/events
@@ -7786,7 +7785,7 @@ C
 C$$$
 
       SUBROUTINE INPUT2
-      PARAMETER(NST=999)
+      PARAMETER(NST=2499)
 
       REAL(8) BMISS,RIT_8,HDR_8(10),UPA_8(10,255)
 
@@ -7990,7 +7989,7 @@ C
 C$$$
 
       SUBROUTINE ISGOOD
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -8236,7 +8235,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE ISOLAT(ID)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
 C
 C     COLLECT LIST OF ISOLATED STATIONS.
@@ -8297,7 +8296,7 @@ C
 C     SORT IA ACCORDING TO THE ORDER SPECIFIED BY THE
 C     INDICES IN INDX.
 
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       DIMENSION IA(*), IKSP(NST)
       INTEGER INDX(*)
       DO J=1,N
@@ -8336,7 +8335,7 @@ C
 C$$$
 
       SUBROUTINE LAPSE
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -8458,7 +8457,7 @@ C
 C$$$
 
       SUBROUTINE LEVTYPS
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -8761,7 +8760,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE MASEVN
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -9172,7 +9171,7 @@ C
 C$$$
 
       SUBROUTINE NOBERR
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -9397,7 +9396,7 @@ C
 C$$$
 
       SUBROUTINE OBERR
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -9989,7 +9988,7 @@ C
 C$$$
 
       SUBROUTINE POBERR
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -10257,7 +10256,7 @@ C
 C$$$
       
       SUBROUTINE PRNTOUT(SEQLP,ICALL)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -10559,7 +10558,7 @@ C
 C$$$
  
       SUBROUTINE PRSTNS(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
      &                 NEV, ISF(NST), NLVM, NLVW
@@ -10727,7 +10726,7 @@ C
 C$$$
 C-----------------------------------------------------------------------
       SUBROUTINE QCOI(LDIM,IDIM,L0,IV0,NOB1,NOB2,IDH,OINC,HRES,HSTD,WTS)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -10757,7 +10756,8 @@ C-----------------------------------------------------------------------
 
       DATA MAXDIM /4/
       DATA MINDIM /2/
-      DATA MAXOBS /1000/
+C      DATA MAXOBS /1000/
+      DATA MAXOBS /2500/
       DATA NFT    /1/
 
 C-----------------------------------------------------------------------
@@ -10982,7 +10982,7 @@ C
 C$$$
 
       SUBROUTINE RBLOCKS(SKIP,WIND,ENDIN)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -11292,7 +11292,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE SEARCH(LDIM,IDIM,L0,IV0,NOB1,NOB2,IDH,OINC,OG)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -11492,7 +11492,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE SETTMP
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -11752,7 +11752,7 @@ C
 C$$$
 
       SUBROUTINE SIGERR(LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -12090,7 +12090,7 @@ C
 C     SORT RA ACCORDING TO THE ORDER SPECIFIED BY THE
 C     INDICES IN INDX.
 C
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       DIMENSION RA(*), WKSP(NST)
       INTEGER INDX(*)
@@ -12139,7 +12139,7 @@ C
 C$$$
 
       SUBROUTINE STAT(ITIME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
 C
 C     CALCULATE STATISTICS:
@@ -13069,7 +13069,7 @@ C
 C$$$
 
       SUBROUTINE STYPE
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13212,7 +13212,7 @@ C
 C$$$
  
       SUBROUTINE T120(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13319,7 +13319,7 @@ C
 C$$$
 
       SUBROUTINE T121(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13394,7 +13394,7 @@ C
 C$$$
 
       SUBROUTINE T130(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13528,7 +13528,7 @@ C
 C$$$
 
       SUBROUTINE T140(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13612,7 +13612,7 @@ C
 C$$$
 
       SUBROUTINE T220(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13770,7 +13770,7 @@ C
 C$$$
 
       SUBROUTINE T240(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14194,7 +14194,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE TMPCHK
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14326,7 +14326,7 @@ C
 C$$$
 
       SUBROUTINE VOI(ITIME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14796,7 +14796,7 @@ C   MACHINE:  NCEP WCOSS
 C         
 C$$$     
       SUBROUTINE VTPEVN(DOVTMP)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14936,7 +14936,7 @@ C
 C$$$
 
       SUBROUTINE WBLOCKS
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -15039,7 +15039,7 @@ C
 C$$$
 
       SUBROUTINE WINDATZ(SAME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -15279,7 +15279,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE WTISO
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /ISO/ IDISO(NST),NUM,ISISO
       LOGICAL ISISO
       WRITE(6,600)
@@ -15413,7 +15413,7 @@ C
 C$$$
 
       SUBROUTINE XHORRES
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -15505,7 +15505,7 @@ C
 C$$$
 
       SUBROUTINE ZDIF
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
