@@ -334,6 +334,7 @@ C$$$
      &                  WRT23
 
       CALL W3TAGB('PREPOBS_CQCBUFR',2020,0009,0067,'NP22')
+      print *, "NNNEEE W3TAGB done"
 
       TEST   = .TRUE.          ! Set .T. for tests to give more print
                         !!!  #### BE CAREFUL ##### in subr. POBERR,
@@ -358,11 +359,15 @@ C   overflow when either an INTEGER*4 variable is set to BMISS or a
 C   REAL*8 (or REAL*4) variable that is missing is NINT'd
 C  -------------------------------------------------------------------
       CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 08/31/21
+      print *, "NNNEEE ISETPRM done"
       CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 08/31/21
+      print *, "NNNEEE ISETPRM2 done"
 ccccc CALL SETBMISS(10E10_8)
       CALL SETBMISS(10E8_8)
+      print *, "NNNEEE SETBMISS done"
       BMISS=GETBMISS()
       CALL MAXOUT(50000)                 ! CH 08/31/21
+      print *, "NNNEEE MAXOUT(50000) done"
       XMISS=BMISS
       IMISS=10E8
       print *
@@ -370,6 +375,7 @@ ccccc CALL SETBMISS(10E10_8)
       print *
 
       CALL ACCUM
+      print *, "NNNEEE ACCUM done"
       START  = .TRUE.          ! Input opens data file when START=.T.
       ENDIN  = .FALSE.         ! Initialize
       SKIP   = .FALSE.         ! Initialize
@@ -383,6 +389,7 @@ ccccc CALL SETBMISS(10E10_8)
 
       IF(SINGLE) THEN
         CALL SETTMP
+        print *, "NNNEEE SETTMP done"
         GOTO 300
       ENDIF
 
@@ -390,29 +397,43 @@ C  TOP OF LOOP TO READ DATA FOR HORIZONTAL CHECK
 C  ---------------------------------------------
 
   100 CONTINUE
+      print *, "NNNEEE 100 BEGINS"
       ITIME = 1
       WRITE(60,520) START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN
   520 FORMAT(' MAIN--START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN: ',
      &  5(L2,2X),I5,2X,L2)
       CALL INPUT(START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN)
+      print *, "NNNEEE INPUT DONE"
                                  ! Read data for 1 station
       IF(ENDIN) GOTO 200
       IF(SKIP .OR. WIND) GOTO 100
       CALL RESIDS(ITIME)         ! Calculate all but horizontal resids
+      print *, "NNNEEE RESIDS DONE"
       CALL ISGOOD                ! Preliminary quality assessment
+      print *, "NNNEEE ISGOOD DONE"
       GOTO 100
 
   200 CONTINUE
+      print *, "NNNEEE 200 BEGINS"
 
       IF(DOTMP) THEN
+        print *, "NNNEEE DOTMP BEGINS"
         CALL INPUT2              ! Read data for temporal check
+        print *, "NNNEEE DOTMP INPUT2 done"
         CALL TMPCHK              ! Perform temporal check
+        print *, "NNNEEE DOTMP TMPCHK done"
       ELSE
+        print *, "NNNEEE NOTDOTMP BEGINS"
         CALL SETTMP
+        print *, "NNNEEE SETTMP done"
+
       ENDIF
       CALL HORRES                ! Calculate horizontal residuals
+      print *, "NNNEEE HORRES done"
       CALL STAT(ITIME)           ! Calculate & print statistics
+      print *, "NNNEEE STAT done"
       CALL XHORRES               ! Calc normalized horizontal residuals
+      print *, "NNNEEE XHORRES done"
 
       START = .TRUE.
 
@@ -420,6 +441,7 @@ C  TOP OF LOOP FOR ALL OTHER CHECKS AND DMA
 C  ----------------------------------------
 
   300 CONTINUE
+      print *, "NNNEEE 300 BEGINS"
       ITIME = 2
       ISC = 0
       LAST = 0
@@ -428,63 +450,91 @@ C  ----------------------------------------
       IF(.NOT.SINGLE) THEN
         CALL INPUT(START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN)
                                  ! Read data a 2nd time, 1 rpt at a time
+        print *, "NNNEEE NOT SINGLE INPUT done"
       ELSE
         CALL RBLOCKS(SKIP,WIND,ENDIN)
+        print *, "NNNEEE RBLOCKS done"
       ENDIF
       IF(ENDIN) GOTO 600
       IF(SKIP) GOTO 500
       IF(WIND) THEN
+        print *, "NNNEEE WIND BEGINS"
         CALL INCRW
+        print *, "NNNEEE WIND INCRW done"
         CALL PRSTNS(WIND)
+        print *, "NNNEEE WIND PRSTNS done"
         GOTO 500
       ENDIF
       CALL CKPS
+      print *, "NNNEEE CKPS done"
       CALL RESIDS(ITIME)
+      print *, "NNNEEE RESIDS done"
       CALL PRSTNS(WIND)
+      print *, "NNNEEE ANOTHER PRSTNS done"
       ICALL = 3
       CALL PRNTOUT(SEQQ,ICALL)
+      print *, "NNNEEE PRNTOUT done"
 
 C  LOOP THROUGH LEVELS UNTIL TOP IS REACHED
 C  ----------------------------------------
 
   400 CONTINUE
       ISC = ISC + 1
+      print *, "NNNEEE 400 begins"
       CALL DMA(ANY,OBS)          ! Decision Making Algorithm
+      print *, "NNNEEE DMS DONE"
       CALL CHANGE(ANY,SINGLE,SEQQ) ! Apply corrs to the data
+      print *, "NNNEEE CHANGE DONE"
       IF(ANY) ANYS = .TRUE.
       CALL RESIDS(ITIME)
+      print *, "NNNEEE ANOTHER RESIDS done"
       IF(ANY) CALL DHOR          ! Calculate changes to hor resids
       IF((ANY .OR. .NOT.OBS .OR. LAST.LT.NLEV) .AND. ISC.LT.30) GOTO 400
       CALL STEVNTS               ! Print BUFR events for single stn
+      print *, "NNNEEE STEVNTS done"
       ICALL = 1
       IF(ANYS .AND. OBS) CALL PRNTOUT(SEQQ,ICALL)
       CALL MASEVN                ! Write CQC mass events
+      print *, "NNNEEE MASEVN done"
   500 CONTINUE
       CALL AUXLEVS(SKIP,SAME,WIND,SINGLE,ANYS)
+      print *, "NNNEEE AUXLEVS done"
       IF(.NOT.WIND) THEN
+        print *, "NNNEEE NOT WIND AA begins"
         CALL RADEVN              ! Write radiation correction events
+        print *, "NNNEEE NOT WIND RADEVN done"
         CALL VTPEVN(DOVTMP)      ! Write virtual temperature events
+        print *, "NNNEEE NOT WIND VTPEVN(DOVTMP) done"
       ENDIF
       CALL OUTPUT(ENDIN,SINGLE)
+      print *, "NNNEEE OUTPUT AAAA  ends"
       GOTO 300                   ! Go back for the next report
 
 C  END OF DATA REACHED
 C  -------------------
 
   600 CONTINUE
+      print *, "NNNEEE 600 BEGINS"
       CALL STAT(ITIME)
+      print *, "NNNEEE STAT done"
       CALL PEVENTS               ! Print events
+      print *, "NNNEEE PEVENTS done"
       IF(.NOT.SINGLE) CALL STNCNT  ! Print counts by WMO block
+      print *, "NNNEEE STNCNT done"
       I2 = IEVENT
       ICALL = 2
       CALL EVPROC(1,I2,ICALL)    ! Generate, print BUFR events
+      print *, "NNNEEE EVPROC done"
       CALL WTSTATS               ! Write statistics for RADCOR
+      print *, "NNNEEE WTSTATS done"
       CALL WTISO
+      print *, "NNNEEE WTISO done"
       CALL CLOSBF(NFIN)
+      print *, "NNNEEE CLOSBF done"
       CALL CLOSBF(NFOUT)
-
+      print *, "NNNEEE CLOSBF2 done"
       CALL W3TAGE('PREPOBS_CQCBUFR')
-
+      print *, "NNNEEE W3TAGE2 done"
       STOP
       END
 C**********************************************************************
@@ -927,7 +977,7 @@ C
 C$$$
 
       SUBROUTINE AUXLEVS(SKIP,SAME,WIND,SINGLE,ANYS)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -1127,7 +1177,7 @@ C$$$
       REAL(8) BMISS
 
       SAVE IEVOLD
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
      &                 NEV, ISF(NST), NLVM, NLVW
@@ -1691,7 +1741,7 @@ C
 C$$$
 
       SUBROUTINE CKPS
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -1790,7 +1840,7 @@ C
 C$$$
 
       SUBROUTINE COMPER(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -2280,7 +2330,7 @@ C$$$
       REAL(8) BMISS
 
       SAVE IEVOLD
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /MANRES/  ZIM(21,NST),TIM(21,NST),TDIM(21,NST),QIM(21,NST),
      &                 ZHM(21,NST),THM(21,NST),TDHM(21,NST),QHM(21,NST),
      &                 ZVM(21,NST),TVM(21,NST),TDVM(21,NST),QVM(21,NST),
@@ -2408,7 +2458,7 @@ C$$$
       
       SUBROUTINE DISTR(X,MSK,XLIM,XMSG,NX,N,NDIV,DDIV,
      &  NZERO,DZERO,NS,X1,SD,SK,XK)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       INTEGER N(23), MSK(NST)
       REAL X(NST),XLIM(2)
@@ -2517,7 +2567,7 @@ C
 C$$$
 
       SUBROUTINE DMA(ANY,OBS)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
      &                 NEV, ISF(NST), NLVM, NLVW
@@ -2752,7 +2802,7 @@ C
 C$$$
 
       SUBROUTINE ERR123(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -3289,7 +3339,7 @@ C
 C$$$
 
       SUBROUTINE ERR5(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -3583,7 +3633,7 @@ C
 C$$$
 
       SUBROUTINE ERR710(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -4211,7 +4261,7 @@ C
 C$$$
 
       SUBROUTINE ERRTYP
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -4569,7 +4619,7 @@ C
 C$$$
 
       SUBROUTINE EVPROC(I1,I2,ICALL)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /EVENTS/  STN(2000),    SEQN(2000),  ISCAN(2000),
      &                 LEVL(2000),   PRES(2000),  LTYP(2000),
@@ -4831,7 +4881,7 @@ C
 C$$$
 
       SUBROUTINE FILALL(SAME,WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -5260,7 +5310,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE FULVAL(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -5613,7 +5663,7 @@ C
 C$$$
 
       SUBROUTINE GETINC(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -5799,7 +5849,7 @@ C         = .FALSE. OTHERWISE
 C
 
       SUBROUTINE GETLEV(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6194,7 +6244,7 @@ C
 C$$$
 
       SUBROUTINE HOLES
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6287,7 +6337,7 @@ C
 C$$$
 
       SUBROUTINE HORRES
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6540,7 +6590,7 @@ C
 C$$$
 
       SUBROUTINE HSC
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -6809,7 +6859,7 @@ C
 C$$$
 
       SUBROUTINE INCR(ITIME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -7037,7 +7087,7 @@ C
 C$$$
 
       SUBROUTINE INCRW
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -7128,7 +7178,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE INIT
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -7211,7 +7261,7 @@ C$$$
 
       SUBROUTINE INPUT(START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN)
       SAVE
-      PARAMETER (NST=999)      ! maximum number of stations
+      PARAMETER (NST=2499)      ! maximum number of stations
       PARAMETER (MVO=5)        ! p,T,z,q,Td
       PARAMETER (MLV=255)      ! number of possible levels
       PARAMETER (MEV=13)       ! number of possible programs/events
@@ -7414,6 +7464,7 @@ C  ------------------------------------------------------
         ENDIF
 
         IF(IS+1.GT.NST) THEN
+            PRINT *, "NNNEEE IS= ", IS
             PRINT *, 'MAXOBS (NST) EXCEEDED IN INPUT - STOP 99'
             CALL W3TAGE('PREPOBS_CQCBUFR')
             CALL ERREXIT(99)
@@ -7786,7 +7837,7 @@ C
 C$$$
 
       SUBROUTINE INPUT2
-      PARAMETER(NST=999)
+      PARAMETER(NST=2499)
 
       REAL(8) BMISS,RIT_8,HDR_8(10),UPA_8(10,255)
 
@@ -7990,7 +8041,7 @@ C
 C$$$
 
       SUBROUTINE ISGOOD
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -8236,7 +8287,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE ISOLAT(ID)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
 C
 C     COLLECT LIST OF ISOLATED STATIONS.
@@ -8297,7 +8348,7 @@ C
 C     SORT IA ACCORDING TO THE ORDER SPECIFIED BY THE
 C     INDICES IN INDX.
 
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       DIMENSION IA(*), IKSP(NST)
       INTEGER INDX(*)
       DO J=1,N
@@ -8336,7 +8387,7 @@ C
 C$$$
 
       SUBROUTINE LAPSE
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -8458,7 +8509,7 @@ C
 C$$$
 
       SUBROUTINE LEVTYPS
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -8761,7 +8812,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE MASEVN
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -9172,7 +9223,7 @@ C
 C$$$
 
       SUBROUTINE NOBERR
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -9397,7 +9448,7 @@ C
 C$$$
 
       SUBROUTINE OBERR
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -9989,7 +10040,7 @@ C
 C$$$
 
       SUBROUTINE POBERR
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -10257,7 +10308,7 @@ C
 C$$$
       
       SUBROUTINE PRNTOUT(SEQLP,ICALL)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -10559,7 +10610,7 @@ C
 C$$$
  
       SUBROUTINE PRSTNS(WIND)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
      &                 NEV, ISF(NST), NLVM, NLVW
@@ -10727,7 +10778,7 @@ C
 C$$$
 C-----------------------------------------------------------------------
       SUBROUTINE QCOI(LDIM,IDIM,L0,IV0,NOB1,NOB2,IDH,OINC,HRES,HSTD,WTS)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -10757,7 +10808,8 @@ C-----------------------------------------------------------------------
 
       DATA MAXDIM /4/
       DATA MINDIM /2/
-      DATA MAXOBS /1000/
+C      DATA MAXOBS /1000/
+      DATA MAXOBS /2500/
       DATA NFT    /1/
 
 C-----------------------------------------------------------------------
@@ -10982,7 +11034,7 @@ C
 C$$$
 
       SUBROUTINE RBLOCKS(SKIP,WIND,ENDIN)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -11292,7 +11344,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE SEARCH(LDIM,IDIM,L0,IV0,NOB1,NOB2,IDH,OINC,OG)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -11492,7 +11544,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE SETTMP
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -11752,7 +11804,7 @@ C
 C$$$
 
       SUBROUTINE SIGERR(LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -12090,7 +12142,7 @@ C
 C     SORT RA ACCORDING TO THE ORDER SPECIFIED BY THE
 C     INDICES IN INDX.
 C
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       DIMENSION RA(*), WKSP(NST)
       INTEGER INDX(*)
@@ -12139,7 +12191,7 @@ C
 C$$$
 
       SUBROUTINE STAT(ITIME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
 C
 C     CALCULATE STATISTICS:
@@ -13069,7 +13121,7 @@ C
 C$$$
 
       SUBROUTINE STYPE
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13212,7 +13264,7 @@ C
 C$$$
  
       SUBROUTINE T120(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13319,7 +13371,7 @@ C
 C$$$
 
       SUBROUTINE T121(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13394,7 +13446,7 @@ C
 C$$$
 
       SUBROUTINE T130(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13528,7 +13580,7 @@ C
 C$$$
 
       SUBROUTINE T140(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13612,7 +13664,7 @@ C
 C$$$
 
       SUBROUTINE T220(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -13770,7 +13822,7 @@ C
 C$$$
 
       SUBROUTINE T240(L,LM)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14194,7 +14246,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE TMPCHK
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14326,7 +14378,7 @@ C
 C$$$
 
       SUBROUTINE VOI(ITIME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14796,7 +14848,7 @@ C   MACHINE:  NCEP WCOSS
 C         
 C$$$     
       SUBROUTINE VTPEVN(DOVTMP)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -14936,7 +14988,7 @@ C
 C$$$
 
       SUBROUTINE WBLOCKS
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       COMMON /HEADER/  SID(NST), DHR(NST), XOB(NST), YOB(NST),
      &                 ELV(NST), SQN(NST), ITP(NST), NLV,
@@ -15039,7 +15091,7 @@ C
 C$$$
 
       SUBROUTINE WINDATZ(SAME)
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -15279,7 +15331,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE WTISO
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       COMMON /ISO/ IDISO(NST),NUM,ISISO
       LOGICAL ISISO
       WRITE(6,600)
@@ -15413,7 +15465,7 @@ C
 C$$$
 
       SUBROUTINE XHORRES
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
@@ -15505,7 +15557,7 @@ C
 C$$$
 
       SUBROUTINE ZDIF
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
 
       REAL(8) BMISS
 
