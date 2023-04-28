@@ -334,7 +334,6 @@ C$$$
      &                  WRT23
 
       CALL W3TAGB('PREPOBS_CQCBUFR',2020,0009,0067,'NP22')
-      print *, "NNNEEE W3TAGB done"
 
       TEST   = .TRUE.          ! Set .T. for tests to give more print
                         !!!  #### BE CAREFUL ##### in subr. POBERR,
@@ -359,15 +358,11 @@ C   overflow when either an INTEGER*4 variable is set to BMISS or a
 C   REAL*8 (or REAL*4) variable that is missing is NINT'd
 C  -------------------------------------------------------------------
       CALL ISETPRM ( 'MXMSGL', 600000 )  ! CH 08/31/21
-      print *, "NNNEEE ISETPRM done"
       CALL ISETPRM ( 'MAXSS',  600000 )  ! CH 08/31/21
-      print *, "NNNEEE ISETPRM2 done"
 ccccc CALL SETBMISS(10E10_8)
       CALL SETBMISS(10E8_8)
-      print *, "NNNEEE SETBMISS done"
       BMISS=GETBMISS()
       CALL MAXOUT(50000)                 ! CH 08/31/21
-      print *, "NNNEEE MAXOUT(50000) done"
       XMISS=BMISS
       IMISS=10E8
       print *
@@ -375,7 +370,6 @@ ccccc CALL SETBMISS(10E10_8)
       print *
 
       CALL ACCUM
-      print *, "NNNEEE ACCUM done"
       START  = .TRUE.          ! Input opens data file when START=.T.
       ENDIN  = .FALSE.         ! Initialize
       SKIP   = .FALSE.         ! Initialize
@@ -389,7 +383,6 @@ ccccc CALL SETBMISS(10E10_8)
 
       IF(SINGLE) THEN
         CALL SETTMP
-        print *, "NNNEEE SETTMP done"
         GOTO 300
       ENDIF
 
@@ -397,43 +390,30 @@ C  TOP OF LOOP TO READ DATA FOR HORIZONTAL CHECK
 C  ---------------------------------------------
 
   100 CONTINUE
-      print *, "NNNEEE 100 BEGINS"
       ITIME = 1
       WRITE(60,520) START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN
   520 FORMAT(' MAIN--START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN: ',
      &  5(L2,2X),I5,2X,L2)
       CALL INPUT(START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN)
-      print *, "NNNEEE INPUT DONE"
                                  ! Read data for 1 station
       IF(ENDIN) GOTO 200
       IF(SKIP .OR. WIND) GOTO 100
       CALL RESIDS(ITIME)         ! Calculate all but horizontal resids
-      print *, "NNNEEE RESIDS DONE"
       CALL ISGOOD                ! Preliminary quality assessment
-      print *, "NNNEEE ISGOOD DONE"
       GOTO 100
 
   200 CONTINUE
-      print *, "NNNEEE 200 BEGINS"
 
       IF(DOTMP) THEN
-        print *, "NNNEEE DOTMP BEGINS"
         CALL INPUT2              ! Read data for temporal check
-        print *, "NNNEEE DOTMP INPUT2 done"
         CALL TMPCHK              ! Perform temporal check
-        print *, "NNNEEE DOTMP TMPCHK done"
       ELSE
-        print *, "NNNEEE NOTDOTMP BEGINS"
         CALL SETTMP
-        print *, "NNNEEE SETTMP done"
 
       ENDIF
       CALL HORRES                ! Calculate horizontal residuals
-      print *, "NNNEEE HORRES done"
       CALL STAT(ITIME)           ! Calculate & print statistics
-      print *, "NNNEEE STAT done"
       CALL XHORRES               ! Calc normalized horizontal residuals
-      print *, "NNNEEE XHORRES done"
 
       START = .TRUE.
 
@@ -441,7 +421,6 @@ C  TOP OF LOOP FOR ALL OTHER CHECKS AND DMA
 C  ----------------------------------------
 
   300 CONTINUE
-      print *, "NNNEEE 300 BEGINS"
       ITIME = 2
       ISC = 0
       LAST = 0
@@ -450,91 +429,61 @@ C  ----------------------------------------
       IF(.NOT.SINGLE) THEN
         CALL INPUT(START,ENDIN,SKIP,SAME,WIND,ITIME,USESQN)
                                  ! Read data a 2nd time, 1 rpt at a time
-        print *, "NNNEEE NOT SINGLE INPUT done"
       ELSE
         CALL RBLOCKS(SKIP,WIND,ENDIN)
-        print *, "NNNEEE RBLOCKS done"
       ENDIF
       IF(ENDIN) GOTO 600
       IF(SKIP) GOTO 500
       IF(WIND) THEN
-        print *, "NNNEEE WIND BEGINS"
         CALL INCRW
-        print *, "NNNEEE WIND INCRW done"
         CALL PRSTNS(WIND)
-        print *, "NNNEEE WIND PRSTNS done"
         GOTO 500
       ENDIF
       CALL CKPS
-      print *, "NNNEEE CKPS done"
       CALL RESIDS(ITIME)
-      print *, "NNNEEE RESIDS done"
       CALL PRSTNS(WIND)
-      print *, "NNNEEE ANOTHER PRSTNS done"
       ICALL = 3
       CALL PRNTOUT(SEQQ,ICALL)
-      print *, "NNNEEE PRNTOUT done"
 
 C  LOOP THROUGH LEVELS UNTIL TOP IS REACHED
 C  ----------------------------------------
 
   400 CONTINUE
       ISC = ISC + 1
-      print *, "NNNEEE 400 begins"
       CALL DMA(ANY,OBS)          ! Decision Making Algorithm
-      print *, "NNNEEE DMS DONE"
       CALL CHANGE(ANY,SINGLE,SEQQ) ! Apply corrs to the data
-      print *, "NNNEEE CHANGE DONE"
       IF(ANY) ANYS = .TRUE.
       CALL RESIDS(ITIME)
-      print *, "NNNEEE ANOTHER RESIDS done"
       IF(ANY) CALL DHOR          ! Calculate changes to hor resids
       IF((ANY .OR. .NOT.OBS .OR. LAST.LT.NLEV) .AND. ISC.LT.30) GOTO 400
       CALL STEVNTS               ! Print BUFR events for single stn
-      print *, "NNNEEE STEVNTS done"
       ICALL = 1
       IF(ANYS .AND. OBS) CALL PRNTOUT(SEQQ,ICALL)
       CALL MASEVN                ! Write CQC mass events
-      print *, "NNNEEE MASEVN done"
   500 CONTINUE
       CALL AUXLEVS(SKIP,SAME,WIND,SINGLE,ANYS)
-      print *, "NNNEEE AUXLEVS done"
       IF(.NOT.WIND) THEN
-        print *, "NNNEEE NOT WIND AA begins"
         CALL RADEVN              ! Write radiation correction events
-        print *, "NNNEEE NOT WIND RADEVN done"
         CALL VTPEVN(DOVTMP)      ! Write virtual temperature events
-        print *, "NNNEEE NOT WIND VTPEVN(DOVTMP) done"
       ENDIF
       CALL OUTPUT(ENDIN,SINGLE)
-      print *, "NNNEEE OUTPUT AAAA  ends"
       GOTO 300                   ! Go back for the next report
 
 C  END OF DATA REACHED
 C  -------------------
 
   600 CONTINUE
-      print *, "NNNEEE 600 BEGINS"
       CALL STAT(ITIME)
-      print *, "NNNEEE STAT done"
       CALL PEVENTS               ! Print events
-      print *, "NNNEEE PEVENTS done"
       IF(.NOT.SINGLE) CALL STNCNT  ! Print counts by WMO block
-      print *, "NNNEEE STNCNT done"
       I2 = IEVENT
       ICALL = 2
       CALL EVPROC(1,I2,ICALL)    ! Generate, print BUFR events
-      print *, "NNNEEE EVPROC done"
       CALL WTSTATS               ! Write statistics for RADCOR
-      print *, "NNNEEE WTSTATS done"
       CALL WTISO
-      print *, "NNNEEE WTISO done"
       CALL CLOSBF(NFIN)
-      print *, "NNNEEE CLOSBF done"
       CALL CLOSBF(NFOUT)
-      print *, "NNNEEE CLOSBF2 done"
       CALL W3TAGE('PREPOBS_CQCBUFR')
-      print *, "NNNEEE W3TAGE2 done"
       STOP
       END
 C**********************************************************************
@@ -7464,7 +7413,6 @@ C  ------------------------------------------------------
         ENDIF
 
         IF(IS+1.GT.NST) THEN
-            PRINT *, "NNNEEE IS= ", IS
             PRINT *, 'MAXOBS (NST) EXCEEDED IN INPUT - STOP 99'
             CALL W3TAGE('PREPOBS_CQCBUFR')
             CALL ERREXIT(99)

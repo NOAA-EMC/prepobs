@@ -166,7 +166,6 @@ C  ---------------------------------------------------------
 
 C  INITIALIZE ALL UNCORRECTED HEIGHTS AND TEMPS AS MISSING
 C  -------------------------------------------------------
-      PRINT *, "NNNEEE RADCOR INIT1"
       KMIN  = LEVRAD
       KMAX  = 16
       DHT   = 0
@@ -179,14 +178,12 @@ C  -------------------------------------------------------
       IN    = BMISS
       INM   = 0
 
-      PRINT *, "NNNEEE RADCOR INIT2"
       ALON  = MOD(720.+360.-XOB(IS),360.)
       JTYPE = ITP(IS)
       IF(JTYPE.LE.0 .OR. (JTYPE.GE.255.AND.JTYPE.NE.20000)) JTYPE = 255
       IF(JTYPE.NE.20000)  CALL TAB(JTYPE) ! (inst. type may be set to
                                           !  20000 for special cases in
                                           !  cqcbufr.f)
-      PRINT *, "NNNEEE RADCOR 3"
       IF(IRCTBL.EQ.1)  THEN
 
 C  COME HERE FOR IRCTBL=1 CORRECTIONS (OLDEST TABLES)
@@ -194,7 +191,6 @@ C  --------------------------------------------------
 
 C     NEW CHECKS FOR THE NEW RADIOSONDE TYPES
 C     ---------------------------------------
-         PRINT *, "NNNEEE RC TYPES"
          IF(JTYPE.EQ.14)  JTYPE =  4  ! VAISALA (IN/OUT OF FINLAND)
 
          IF(JTYPE.EQ.20)  JTYPE = 12  ! RUSSIAN RKZ
@@ -207,29 +203,22 @@ C        EXCLUDE CHINESE (WMO BLOCKS 50-59) FROM RUSSIAN TYPE
 C        ----------------------------------------------------
 
          IF(SID(IS)(1:1).EQ.'5')  JTYPE = 19
-         PRINT *, "NNNEEE RC TYPES END"
       ENDIF
 
       BAL_DRIFT = .TRUE.
 
 C  FILL THE MANDATORY LEVEL EVENT AND CORRECTION ARRAYS FOR THIS REPORT
 C  --------------------------------------------------------------------
-      PRINT *, "NNNEEE RC MANDATORY LEVELS"
       DO L=1,NLV
-         PRINT *, "NNNEEE RC L NLV =,", L, NLV
          M = MANLEV(POB(L))
-         PRINT *, "NNN RC MANLEV M= ", M 
          IF(M.GT.0 .AND. M.LE.KMAX) THEN
-            PRINT *, "NNNEEE RC M>=0, M<KMAX"
             TMP(M) = TOB(L)
             HGT(M) = ZOB(L)
             INM(M)  = L
             IF(MAX(HRDR(INM(M)),XDR(INM(M)),YDR(INM(M))).GE.BMISS)
      $       BAL_DRIFT = .FALSE.
-            PRINT *, "NNNEEE RC BAL_DRIFT = ", BAL_DRIFT
          ENDIF
       ENDDO
-      PRINT *, "NNNEEE next thing"
       WRITE (68,*)
       IF(.NOT.BAL_DRIFT) THEN
          WRITE(68,'(" Report ",A," does not have balloon drift ",
@@ -239,7 +228,6 @@ C  --------------------------------------------------------------------
          WRITE(68,'(" Report ",A," has balloon drift coordinates - use",
      &    " ""new"" method for determining sun angle")') SID(IS)
       END IF
-      PRINT *, "NNNEEE END WRITE 68" 
 C  CALL APPROPRIATE SUBROUTINE TO APPLY CORRECTIONS - SAVE DELTAS
 C  --------------------------------------------------------------
 
