@@ -2182,7 +2182,11 @@ set -x
          echo 'BACK=YES'
          launcher_PREP=${launcher_PREP:-mpiexec}
 	 NPROCS=${NPROCS:-6}
-	 #mpiexec -np 6 --cpu-bind verbose,core $DATA/prepthrds.sh # Keep '-np 6' > NSPLIT=4
+         if [ "$launcher_PREP" = mpiexec ]; then
+	   $launcher_PREP -np $NPROCS --cpu-bind verbose,core $DATA/prepthrds.sh # Keep '-np 6' > NSPLIT=4
+         else
+           $DATA/prepthrds.sh
+         fi	 
       fi
       totalt=$NSPLIT
    else
