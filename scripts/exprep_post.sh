@@ -394,7 +394,8 @@ fi # test for PROCESS_REMOREST=YES
 dev_m=$(grep backup /lfs/h1/ops/prod/config/prodmachinefile | cut -d: -f2)
 this_m=$(cat /etc/cluster_name)
 
-if [ "$PROCESS_REMOREST_dm2" = 'YES' -a $this_m = $dev_m ]; then
+ if [ "$PROCESS_REMOREST_dm2" = 'YES' -a $this_m = $dev_m ]; then
+#BAD if [ "$PROCESS_REMOREST_dm2" = 'YES' -a "$RUN_ENVIR" != nco ]; then
   cdate10M2=`$NDATE -$tmhr $PDYm2$cyc`
 
   msg="REMOVE OR MASK RESTRICTED DATA FROM $tmmark_uc $net_uc PREPBUFR files \
