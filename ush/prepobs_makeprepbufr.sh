@@ -421,9 +421,9 @@
 #                   Default is "tm00"
 #     BUFRLIST      String indicating list of BUFR data dump file names to
 #                   process
-#                   Default is "adpupa proflr aircar aircft satwnd adpsfc \
-#                   sfcshp sfcbog vadwnd goesnd spssmi erscat qkswnd msonet \
-#                   gpsipw rassda wdsatr ascatw"
+#                   Default is "uprair proflr aircar aircft satwnd adpupa \
+#                   adpsfc sfcshp sfcbog vadwnd goesnd spssmi erscat qkswnd \
+#                   msonet gpsipw rassda wdsatr ascatw"
 #     POE           String indicating whether or not to use a poe-like launcher
 #                   to spread instances of the PREPBUFR processing herefile 
 #                   MP_PREPDATA over multiple pes in parallel. (= "NO" - 
@@ -1013,9 +1013,9 @@ pgmout=${pgmout:-/dev/null}
 tstsp=${tstsp:-/tmp/null/}
 tmmark=${tmmark:-tm00}
 
-BUFRLIST=${BUFRLIST:-"adpupa proflr aircar aircft satwnd adpsfc sfcshp \
- sfcbog vadwnd goesnd spssmi erscat qkswnd msonet gpsipw rassda wdsatr \
- ascatw"}
+BUFRLIST=${BUFRLIST:-"uprair proflr aircar aircft satwnd adpupa adpsfc \
+ sfcshp sfcbog vadwnd goesnd spssmi erscat qkswnd msonet gpsipw rassda \
+ wdsatr ascatw"}
 
 PREPDATA=${PREPDATA:-YES}
 
@@ -1634,20 +1634,24 @@ echo
       grp_adpsfc=$?
       echo $BUFRLIST | grep adpupa
       grp_adpupa=$?
+      echo $BUFRLIST | grep uprair
+      grp_uprair=$?
       if [ \( ! -f ${COMSP}adpsfc.${tmmark}.bufr_d -a \
               ! -f ${tstsp}adpsfc.${tmmark}.bufr_d -a $grp_adpsfc -eq 0 \) -o \
            \( ! -f ${COMSP}adpupa.${tmmark}.bufr_d -a \
-              ! -f ${tstsp}adpupa.${tmmark}.bufr_d -a $grp_adpupa -eq 0 \) ]
+              ! -f ${tstsp}adpupa.${tmmark}.bufr_d -a $grp_adpupa -eq 0 -a \
+              ! -f ${COMSP}uprair.${tmmark}.bufr_d -a \
+              ! -f ${tstsp}uprair.${tmmark}.bufr_d -a $grp_uprair -eq 0 \) ]
       then
 
-#  problem: either adpsfc (surface land) or adpupa (raob/pibal/recco) file, or
-#           both, not found for requested time - this is unacceptable; EXIT
+#  problem: adpsfc (surface land), adpupa (raob/pibal/recco), or uprair
+#           (alt raob/pibal) file, OR ALL, not found for requested time ==> EXIT
 #           (unless the culprit file was not included in the $BUFRLIST)
 #  ---------------------------------------------------------------------------
 
          set +x
 echo
-echo "ADPSFC and/or ADPUPA BUFR data dump was not produced for requested"
+echo "ADPSFC and/or ADPUPA or UPRAIR BUFR data dump was not produced for requested"
 echo " time (but is in BUFRLIST); ABNORMAL EXIT!!!!!!!!!!!"
 echo
          set -x
@@ -1910,8 +1914,9 @@ set -u
 echo " &task mp_process=$multi /" >>prepdata.stdin
 cat $DATA/prepdata.stdin >> prepdata.stdin
 
-BUFRLIST_all="adpupa aircar aircft satwnd proflr vadwnd rassda adpsfc sfcshp \
- sfcbog msonet spssmi erscat qkswnd wdsatr ascatw rtovs atovs goesnd gpsipw"
+BUFRLIST_all="uprair aircar aircft satwnd proflr vadwnd rassda adpupa adpsfc \
+ sfcshp sfcbog msonet spssmi erscat qkswnd wdsatr ascatw rtovs atovs goesnd \
+ gpsipw"
 ###BUFRLIST_all_array=($BUFRLIST_all) # this does not work on all platforms
 set -A BUFRLIST_all_array `echo $BUFRLIST_all` # this works on all platforms
 
@@ -1946,19 +1951,20 @@ export FORT24=$dump_dir/${BUFRLIST_all_array[3]}
 export FORT25=$dump_dir/${BUFRLIST_all_array[4]}
 export FORT26=$dump_dir/${BUFRLIST_all_array[5]}
 export FORT27=$dump_dir/${BUFRLIST_all_array[6]}
-export FORT31=$dump_dir/${BUFRLIST_all_array[7]}
-export FORT32=$dump_dir/${BUFRLIST_all_array[8]}
-export FORT33=$dump_dir/${BUFRLIST_all_array[9]}
-export FORT34=$dump_dir/${BUFRLIST_all_array[10]}
-export FORT35=$dump_dir/${BUFRLIST_all_array[11]}
-export FORT36=$dump_dir/${BUFRLIST_all_array[12]}
-export FORT37=$dump_dir/${BUFRLIST_all_array[13]}
-export FORT38=$dump_dir/${BUFRLIST_all_array[14]}
-export FORT39=$dump_dir/${BUFRLIST_all_array[15]}
-export FORT41=$dump_dir/${BUFRLIST_all_array[16]}
-export FORT42=$dump_dir/${BUFRLIST_all_array[17]}
-export FORT46=$dump_dir/${BUFRLIST_all_array[18]}
-export FORT48=$dump_dir/${BUFRLIST_all_array[19]}
+export FORT28=$dump_dir/${BUFRLIST_all_array[7]}
+export FORT31=$dump_dir/${BUFRLIST_all_array[8]}
+export FORT32=$dump_dir/${BUFRLIST_all_array[9]}
+export FORT33=$dump_dir/${BUFRLIST_all_array[10]}
+export FORT34=$dump_dir/${BUFRLIST_all_array[11]}
+export FORT35=$dump_dir/${BUFRLIST_all_array[12]}
+export FORT36=$dump_dir/${BUFRLIST_all_array[13]}
+export FORT37=$dump_dir/${BUFRLIST_all_array[14]}
+export FORT38=$dump_dir/${BUFRLIST_all_array[15]}
+export FORT39=$dump_dir/${BUFRLIST_all_array[16]}
+export FORT41=$dump_dir/${BUFRLIST_all_array[17]}
+export FORT42=$dump_dir/${BUFRLIST_all_array[18]}
+export FORT46=$dump_dir/${BUFRLIST_all_array[19]}
+export FORT48=$dump_dir/${BUFRLIST_all_array[20]}
 export FORT51=prepda
 export FORT52=prevents.filtering.prepdata
 
@@ -1971,6 +1977,38 @@ export FORT52=prevents.filtering.prepdata
 # The following improves performance on Cray-XC40 if $PRPX was
 #    linked to the IOBUF i/o buffering library
 export IOBUF_PARAMS='*prevents.filtering.prepdata:verbose'
+
+###  Concatenate UPRAIR ID file among nodes before prepdata is executed
+if [ "$PARALLEL" = 'YES' ]
+then
+  sleep 2
+  mq=0
+  nq=0
+  while [ $mq -lt $NSPLIT ]
+  do
+  if [ -s $DATA/multi$mq/fort.91 ]
+  then
+   nq=`expr $nq + 1`
+  fi
+  mq=`expr $mq + 1`
+  done
+  if [ $nq -eq $NSPLIT ]
+  then
+   cat $DATA/multi*/fort.91 | sort -k 1,1n -k 2,2n | uniq > $data/uprairids
+   ln -sf $data/uprairids $data/fort.92
+  else
+   echo "" > $data/fort.92
+  fi
+else
+ if [ -s $DATA/fort.91 ]
+ then
+  cat $DATA/fort.91 > $DATA/uprairids
+  ln -sf $DATA/uprairids $DATA/fort.92
+ else
+  echo "" > $DATA/fort.92
+ fi
+fi
+###
 
 #$TIMEIT $PRPX <prepdata.stdin >>$mp_pgmout 2>&1
 $TIMEIT $PRPX  >>$mp_pgmout 2>&1
@@ -2295,7 +2333,8 @@ echo
       if [ "$errPREPDATA" -eq '4' ]; then
          set +x
          echo
-   echo "WARNING: PREPOBS_PREPDATA FOUND EITHER NO ADPUPA OR NO ADPSFC DATA"
+   echo "WARNING: PREPOBS_PREPDATA FOUND EITHER NO ADPUPA, NO UPRAIR, \
+OR NO ADPSFC DATA"
    echo "-------- THESE DATA WILL NOT BE AVAILABLE TO ANALYSES"
          echo
          set -x

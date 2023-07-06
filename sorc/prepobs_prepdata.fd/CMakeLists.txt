@@ -23,7 +23,7 @@ target_include_directories(${exe_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(
   ${exe_name}
   gblevents
-  bufr::bufr_4)
+  bufr::bufr_4_DA)
 
 if(MKL_FOUND)
   target_link_libraries(

@@ -520,16 +520,55 @@ C       new WMO BUFR format Meteosat AMV data from subsets: 005067,
 C       005068, 005069. 
 c 2020-10-15 JWhiting -- added trap to pull dump mnemonics specific to 
 c       BUFR feed buoy data streams so as to properly encode prepbufr 
-c       wave height & frequecy mnemonics (HOWV POWV).  
-c 2021-03-30 JWhiting - 
+c       wave height & frequency mnemonics (HOWV POWV). 
+c 2021-03-30 JWhiting -
 C     - Fixed ambiguity in trap for buoy SST values (msg types 102-3)
-C     - Assigned input report type values of 524-5 to BUFR-feed ships 
-c       data, for named and unnamed obs, respectively (TAC-feeds remain 
+C     - Assigned input report type values of 524-5 to BUFR-feed ships
+c       data, for named and unnamed obs, respectively (TAC-feeds remain
 c       as 522-3).
 C     - Assigned input report type value of 530 to BUFR-feed C-MAN
 C       reports.
+C 2021-04-15 C. Hill --
+C     = This routine is updated to allow the reading and unpacking of
+C       radiosonde and dropsonde profile data from the 'uprair' dump
+C       files. The profiles originate from BUFR files, and typically
+C       feature many hundreds of additional vertical levels.
+C       - Dynamic memory allocation is invoked with the BUFR library
+C         (within prepdata.f) to accommodate the greater volume of data
+C         with each profile.
+C       - A new data category (ICAT=10) is introduced for paired
+C         observations of temperature, humidity, and wind that are
+C         not otherwise associated with a mandatory (ICAT=1) vertical
+C         level. NUMCAT is increased to 9. VSIG=128 is dedicated for
+C         data with ICAT=10 within this routine.
+C       - NBFLG is introduced in R03UBF to determine format origin
+C         of sonde data (0 - TAC | 1/2 - BUFR | 9 - experimental),
+C         and is used to determine procedure in processing sonde data.
+C         VLINC is the increment of NLEVX levels to be captured for
+C         the 255-element output array; the arrays of the VSIGX, LVSTR,
+C         and QMSTR fields are reduced accordingly.
+C       - 16-bit values of VSIGX are translated to 8-bit values of VSIG.
+C       - HBMSL or HEIT is read in place of SELV. HOUR and MINU are read
+C         in place of UALNHR and UALNMN, respectively.
+C     = Time and position displacement data, derived from the GNSS
+C       receiver aboard the sonde, are available for future development
+C       of BUFR profile processing.
 C 2021-07-14 J. Dong -- In function R04UBF, added code to encode the 
 C       cloud data for the BUFR-feed ships data.
+C 2022-11-30 C. Hill --
+C     = Mandatory and surface vertical levels (VSIG = 32,64) are retained 
+C       from the profiles of 'uprair' dump files.  An increment is
+C       defined from the number of available vertical levels of each
+C       'uprair' profile and used to port additional vertical level
+C       data to the 255-element arrays of prepbufr.  The increment is
+C       increased according to the number of mandatory levels present,
+C       intending to capture a sufficient number of other vertical
+C       levels, throughout the depth of a BUFR profile, to fill the
+C       prepbufr arrays.
+C 2023-01-31  N. ESPOSITO -- WITH THE ADDITION OF GPS DATA TO UPRAIR
+C     DUMP FILES, CHANGES WERE NEEDED. DATA CATEGORY LEVELS 1, 2, AND
+C     10 NEEDED TO BE INCREASED IN SIZE BY 3 TO SAVE TIME AND LOCATION
+C     DISPLACEMENT DATA. 
 C
 C
 C USAGE:    II = IW3UNPBF(NUNIT, OBS, STNID, CRES1, CRES2, CBULL, OBS2,
@@ -723,7 +762,9 @@ C    27    CATEGORY  8, NO. LEVELS   COUNT                INTEGER
 C    28    CATEGORY  8, DATA INDEX   COUNT                INTEGER
 C    29    CATEGORY 51, NO. LEVELS   COUNT                INTEGER
 C    30    CATEGORY 51, DATA INDEX   COUNT                INTEGER
-C 31-52    ZEROED OUT - NOT USED                          INTEGER
+C    31    CATEGORY 10, NO. LEVELS   COUNT                INTEGER
+C    32    CATEGORY 10, DATA INDEX   COUNT                INTEGER
+C 33-52    ZEROED OUT - NOT USED                          INTEGER
 C
 C 53-END   UNPACKED DATA GROUPS      (SEE BELOW)          MIXED
 C
@@ -875,6 +916,9 @@ C       8    GEOP. QUALITY MARKER (SEE $)             REAL
 C       9    TEMP. QUALITY MARKER (SEE $)             REAL
 C      10    DDPR. QUALITY MARKER (SEE $)             REAL
 C      11    WIND  QUALITY MARKER (SEE $)             REAL
+C      12    TIME PERIOD DISPLACEMENT  SECONDS        REAL
+C      13    LATITUDE DISPLACEMENT     DEGREES        REAL
+C      14    LONGITUDE DISPLACEMENT    DEGREES        REAL
 C
 C     DATA LEVEL CATEGORY 2 - TEMPERATURE AT VARIABLE PRESSURE
 C     WORD   PARAMETER            UNITS               FORMAT
@@ -886,6 +930,9 @@ C       4    PRES. QUALITY MARKER (SEE $)             REAL
 C       5    TEMP. QUALITY MARKER (SEE $)             REAL
 C       6    DDPR. QUALITY MARKER (SEE $)             REAL
 C       7    SPECIAL INDICATOR    (SEE $$)            REAL
+C       8    TIME PERIOD DISPLACEMENT  SECONDS        REAL
+C       9    LATITUDE DISPLACEMENT     DEGREES        REAL
+C      10    LONGITUDE DISPLACEMENT    DEGREES        REAL
 C
 C     DATA LEVEL CATEGORY 3 - WINDS AT VARIABLE PRESSURE
 C     WORD   PARAMETER            UNITS               FORMAT
@@ -960,6 +1007,24 @@ C      10    STN-P QUALITY MARKER (SEE $)             REAL
 C      11    WIND  QUALITY MARKER (SEE $)             REAL
 C      12    ATEMP QUALITY MARKER (SEE $)             REAL
 C      13    DDPR. QUALITY MARKER (SEE $)             REAL
+C
+C     DATA LEVEL CATEGORY 10 - BUFR VERTICAL LEVEL DATA
+C     WORD   PARAMETER            UNITS               FORMAT
+C     ----   ---------            -----------------   -------------
+C       1    PRESSURE             0.1 MILLIBARS       REAL
+C       2    GEOPOTENTIAL         METERS              REAL
+C       3    TEMPERATURE          0.1 DEGREES C       REAL
+C       4    DEWPOINT DEPRESSION  0.1 DEGREES C       REAL
+C       5    WIND DIRECTION       DEGREES             REAL
+C       6    WIND SPEED           0.1 METERS/SEC      REAL
+C       7    PRES. QUALITY MARKER (SEE $)             REAL
+C       8    GEOP. QUALITY MARKER (SEE $)             REAL
+C       9    TEMP. QUALITY MARKER (SEE $)             REAL
+C      10    DDPR. QUALITY MARKER (SEE $)             REAL
+C      11    WIND  QUALITY MARKER (SEE $)             REAL
+C      12    TIME PERIOD DISPLACEMENT  SECONDS        REAL
+C      13    LATITUDE DISPLACEMENT     DEGREES        REAL
+C      14    LONGITUDE DISPLACEMENT    DEGREES        REAL
 C
 C    $ - QUALITY MARKER CODE TABLE:
 C             0. - MONITOR KEEP
@@ -1296,7 +1361,7 @@ C$$$
       FUNCTION IW3UNPBF(LUNIT,OBS,STNID,CRES1,CRES2,CBULL,OBS2,OBS3,
      $ NOBS3,obs8_8,DSNAME,IDSDAT,IDSDMP_8,SUBSET_r,SUBSKP,IER)
  
-      PARAMETER (NUMCAT=8, LEVLIM=300)
+      PARAMETER (NUMCAT=9, LEVLIM=300)
 
       COMMON/IUBFAA/BMISS
       COMMON/IUBFBB/KNDX,KSKACF(8),KSKUPA,KSKSFC,KSKSAT,KFLSAT(12),
@@ -1377,18 +1442,20 @@ C  IKAT defines the category number
          IKAT(6)  =  6
          IKAT(7)  = 51
          IKAT(8)  =  8
+         IKAT(9)  = 10  !            incl. CH 01/19/2021
 
 C  MCAT defines the number of parameters in a level for each category
 C --> THIS NEEDS TO BE UPDATED WHEN ADDING MORE WORDS PER CAT LEVEL
 
-         MCAT(1)  = 11  ! Cat.  1
-         MCAT(2)  =  7  ! Cat.  2
+         MCAT(1)  = 14  ! Cat.  1 
+         MCAT(2)  = 10  ! Cat.  2
          MCAT(3)  =  6  ! Cat.  3
          MCAT(4)  =  5  ! Cat.  4
          MCAT(5)  =  9  ! Cat.  5
          MCAT(6)  = 11  ! Cat.  6
          MCAT(7)  = 13  ! Cat. 51
          MCAT(8)  =  4  ! Cat.  8
+         MCAT(9)  = 14  ! Cat. 10    incl. CH 01/19/2021
 
 C  LVDX defines location in UNP holding the no. of levels for each cat.
 
@@ -1400,6 +1467,7 @@ C  LVDX defines location in UNP holding the no. of levels for each cat.
          LVDX(6)  = 23  ! Cat.  6
          LVDX(7)  = 29  ! Cat. 51
          LVDX(8)  = 27  ! Cat.  8
+         LVDX(9)  = 31  ! Cat. 10    incl. CH 01/19/2021
 
          ISET  = 0
       END IF
@@ -1695,7 +1763,8 @@ C***********************************************************************
 C***********************************************************************
       FUNCTION I02UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8,SUBSKP,IER)
  
-      PARAMETER (MAXOBS=3500)
+C      PARAMETER (MAXOBS=3500)
+      PARAMETER (MAXOBS=4500)
 
       COMMON/IUBFCC/SUBSET
       COMMON/IUBFOO/DSNAMX,IDSDAX_8,IDSDMX_8
@@ -1911,7 +1980,11 @@ C***********************************************************************
             C01UBF = 'SFCBOG'
          END IF
       ELSE  IF(SUBSET(1:5).EQ.'NC002')  THEN
-         C01UBF = 'ADPUPA'
+         IF(SUBSET(6:6).EQ.'1')  THEN
+            C01UBF = 'UPRAIR'
+         ELSE
+            C01UBF = 'ADPUPA'
+         END IF
       ELSE  IF(SUBSET(1:5).EQ.'NC004')  THEN
          IF(SUBSET(6:8).EQ.'004' .OR. SUBSET(6:8).EQ.'007')  THEN
             C01UBF = 'AIRCAR'
@@ -1950,7 +2023,7 @@ C  -------------------------------------------------------
  
       R01UBF = 4
       ADPSUB = C01UBF(SUBSET)
-      IF(ADPSUB .EQ. 'ADPUPA')  THEN
+      IF(ADPSUB .EQ. 'ADPUPA' .OR. ADPSUB .EQ. 'UPRAIR')  THEN
          R01UBF = R03UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
       ELSE  IF(ADPSUB(1:3).EQ.'AIR')  THEN
          R01UBF = R05UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
@@ -1971,7 +2044,7 @@ C***********************************************************************
      $ RTP,RSTP,IDS)
 C     ---> PROCESSES HEADER
  
-      PARAMETER (NUMCAT=8, LEVLIM=300)
+      PARAMETER (NUMCAT=9, LEVLIM=300)
 
       COMMON/IUBFAA/BMISS
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
@@ -2046,16 +2119,17 @@ C***********************************************************************
       SUBROUTINE S02UBF(ICAT,N,*)
 C     ---> PROCESSES DATA LEVEL CATEGORIES
 
-      PARAMETER (NUMCAT=8, LEVLIM=300)
+      PARAMETER (NUMCAT=9, LEVLIM=300)
 
-C      Input argument ICAT - the category number (1,2,3,4,5,6,8,51)
+C      Input argument ICAT - the category number (1,2,3,4,5,6,8,10,51)
 C      Input argument N - level indicator (unless = 0, then signals
 C                         subr. to write an empty cat. 2,3, or 4 level
  
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
       COMMON/IUBFEE/POB(255),QOB(255),TOB(255),ZOB(255),DOB(255),
-     $              SOB(255),VSG(255),OB8(255),CF8(255)
+     $              SOB(255),VSG(255),OB8(255),CF8(255),
+     $              XDR(255),YDR(255),HRDR(255)
       COMMON/IUBFFF/PQM(255),QQM(255),TQM(255),ZQM(255),WQM(255)
       COMMON/IUBFGG/PSL,STP,SDR,SSP,STM,DPD
       COMMON/IUBFHH/PSQ,SPQ,SWQ,STQ,DDQ
@@ -2068,6 +2142,7 @@ C                         subr. to write an empty cat. 2,3, or 4 level
       DIMENSION   RCAT(50),JCAT(50)
       EQUIVALENCE (RCAT(1),JCAT(1))
       LOGICAL     SURF
+      REAL(8)  BMISS,GETBMISS
 
       SAVE
  
@@ -2077,13 +2152,20 @@ cppppp-ID
       iprint = 0
 cc         iprint = 1
 
-c     if(stnidx.eq.'89571   ')  iprint = 1
-c     if(stnidx.eq.'68906   ')  iprint = 1
-c     if(stnidx.eq.'68842   ')  iprint = 1
-c     if(stnidx.eq.'74794   ')  iprint = 1
-c     if(stnidx.eq.'74389   ')  iprint = 1
-c     if(stnidx.eq.'96801A  ')  iprint = 1
+c      if(stnidx.eq.'89571   ')  iprint = 1
+c      if(stnidx.eq.'68906   ')  iprint = 1
+c      if(stnidx.eq.'68842   ')  iprint = 1
+c      if(stnidx.eq.'74794   ')  iprint = 1
+c      if(stnidx.eq.'74389   ')  iprint = 1
+c      if(stnidx.eq.'96801A  ')  iprint = 1
+c      if(stnidx.eq.'10304   ')  iprint = 1
+c      if(stnidx.eq.'59316   ')  iprint = 1
+c      if(stnidx.eq.'70200   ')  iprint = 1
+c      if(stnidx.eq.'72214   ')  iprint = 1
+c      if(stnidx.eq.'72215   ')  iprint = 1
+c      if(stnidx.eq.'72797   ')  iprint = 1
 cppppp-ID
+      BMISS = GETBMISS()
 
       SURF = .FALSE.
       GOTO 1
@@ -2126,13 +2208,16 @@ C  -----------------------------------------------------
          RETURN 1
       END IF
  
-C  MAKE A MISSING LEVEL AND RETURN WHEN N=0 (NOT ALLOWED FOR CAT 01)
+C  MAKE A MISSING LEVEL AND RETURN WHEN N=0
+C  (NOT ALLOWED FOR CAT 01 OR 10)
 C   (NOTE: QUALITY MARKERS ARE SET TO 2 AND SPECIAL LEVEL INDICATORS
 C          ARE SET TO 0)
 C  -----------------------------------------------------------------
  
       IF(N.EQ.0) THEN
-         IF(ICAT.EQ.1) RETURN
+         IF((ICAT.EQ.1).OR.(ICAT.EQ.10)) THEN 
+             RETURN
+         END IF
          NCAT(KCAT) = MIN(LEVLIM-1,NCAT(KCAT)+1)
          if(iprint.eq.1)  then
             print'(" To prepare for sfc. data, write all missings on ",
@@ -2230,6 +2315,44 @@ C  ----------------------------------------------------------
          ELSE
             RCAT(11) = NINT(WQM(N))
          END IF
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
+      ELSEIF(ICAT.EQ.10) THEN
+         RCAT(1)= MIN(NINT(POB(N)),NINT(RCATS( 1,L,KCAT)))
+         RCAT(2)= MIN(NINT(ZOB(N)),NINT(RCATS( 2,L,KCAT)))
+         RCAT(3)= MIN(NINT(TOB(N)),NINT(RCATS( 3,L,KCAT)))
+         RCAT(4)= MIN(NINT(QOB(N)),NINT(RCATS( 4,L,KCAT)))
+         RCAT(5)= MIN(NINT(DOB(N)),NINT(RCATS( 5,L,KCAT)))
+         RCAT(6)= MIN(NINT(SOB(N)),NINT(RCATS( 6,L,KCAT)))
+         IF(RCATS(7,L,KCAT).LT.IMISS) THEN
+            RCAT(7)= MAX(NINT(PQM(N)),NINT(RCATS( 7,L,KCAT)))
+         ELSE
+            RCAT(7)= NINT(PQM(N))
+         END IF
+         IF(RCATS(8,L,KCAT).LT.IMISS) THEN
+            RCAT(8)= MAX(NINT(ZQM(N)),NINT(RCATS( 8,L,KCAT)))
+         ELSE
+            RCAT(8)= NINT(ZQM(N))
+         END IF
+         IF(RCATS(9,L,KCAT).LT.IMISS) THEN 
+            RCAT(9)= MAX(NINT(TQM(N)),NINT(RCATS( 9,L,KCAT)))
+         ELSE 
+            RCAT(9)= NINT(TQM(N))
+         END IF
+         IF(RCATS(10,L,KCAT).LT.IMISS) THEN
+            RCAT(10) = MAX(NINT(QQM(N)),NINT(RCATS(10,L,KCAT)))
+         ELSE
+            RCAT(10) = NINT(QQM(N))
+         END IF
+         IF(RCATS(11,L,KCAT).LT.IMISS) THEN
+            RCAT(11) = MAX(NINT(WQM(N)),NINT(RCATS(11,L,KCAT)))
+         ELSE
+            RCAT(11) = NINT(WQM(N))
+         END IF
+         RCAT(12) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(13) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(14) = MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.2) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(TOB(N)),IMISS)
@@ -2238,6 +2361,9 @@ C  ----------------------------------------------------------
          RCAT(5) = NINT(TQM(N))
          RCAT(6) = NINT(QQM(N))
          RCAT(7) = NINT(XIND(N))
+         RCAT(8) = MIN(NINT(HRDR(N)),NINT(BMISS))
+         RCAT(9) = MIN(NINT(YDR(N)),NINT(BMISS))
+         RCAT(10)= MIN(NINT(XDR(N)),NINT(BMISS))
       ELSEIF(ICAT.EQ.3) THEN
          RCAT(1) = MIN(NINT(POB(N)),IMISS)
          RCAT(2) = MIN(NINT(DOB(N)),IMISS)
@@ -2315,7 +2441,7 @@ C  TRANSFER THE LEVEL DATA INTO THE HOLDING ARRAY AND EXIT
 C  -------------------------------------------------------
  
       RCATS(1:MCAT(KCAT),L,KCAT) = RCAT(1:MCAT(KCAT))
- 
+      
       RETURN
       END
 C***********************************************************************
@@ -2324,7 +2450,8 @@ C***********************************************************************
       SUBROUTINE S03UBF(UNP,SUBSET,*,*,*)
 C     ---> PACKS DATA INTO UNP ARRAY
  
-      PARAMETER (NUMCAT=8, LEVLIM=300, MAXOBS=3500)
+C      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=3500)
+      PARAMETER (NUMCAT=9, LEVLIM=300, MAXOBS=4500)
 
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
@@ -2397,7 +2524,7 @@ C  -----------------------------------------------
  
       UNP(1:12)  = HDR
       UNP(13:52) = RCAT(13:52)
- 
+
       RETURN
       END
 C***********************************************************************
@@ -2406,7 +2533,7 @@ C***********************************************************************
       SUBROUTINE S04UBF
 C     ---> SORTS DATA LEVEL CATEGORIES
  
-      PARAMETER (NUMCAT=8, LEVLIM=300)
+      PARAMETER (NUMCAT=9, LEVLIM=300)
 
       COMMON/IUBFAA/BMISS
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
@@ -2429,7 +2556,7 @@ C     ---> SORTS DATA LEVEL CATEGORIES
      $ 30.,20.,10./
  
 C  INSERT DATA LEVEL CATEGORY 1 PRESSURE & DEF. Q.M.'S INTO THOSE LEVELS
-C   WHERE MSSING
+C   WHERE MISSING
 C  ---------------------------------------------------------------------
 
       DO I=1,NCAT(1)
@@ -2765,7 +2892,7 @@ C  ----------------------
                ERTUBF = 534
             END IF
          ELSE  IF(SUBSET(1:5).EQ.'NC002')  THEN
-            IF(SUBSET(6:8).EQ.'001')  THEN
+            IF(SUBSET(7:8).EQ.'01')  THEN
 
 C  LAND RADIOSONDE - FIXED
 C  -----------------------
@@ -2773,26 +2900,26 @@ C  -----------------------
                ERTUBF = 011
                IF(L03UBF(RPID)) ERTUBF = 012
                IF(RPID(1:4).EQ.'CLAS') ERTUBF = 013
-            ELSE  IF(SUBSET(6:8).EQ.'002') THEN
+            ELSE  IF(SUBSET(7:8).EQ.'02') THEN
 
 C  LAND RADIOSONDE - MOBILE
 C  ------------------------
 
                ERTUBF = 013
-            ELSE  IF(SUBSET(6:8).EQ.'003') THEN
+            ELSE  IF(SUBSET(7:8).EQ.'03') THEN
 
 C  SHIP RADIOSONDE
 C  ---------------
 
                ERTUBF = 022
                IF(RPID(1:4).EQ.'SHIP') ERTUBF = 023
-            ELSE  IF(SUBSET(6:8).EQ.'004') THEN
+            ELSE  IF(SUBSET(7:8).EQ.'04') THEN
 
 C  DROPWINSONDE
 C  -------------
 
                ERTUBF = 031
-            ELSE  IF(SUBSET(6:8).EQ.'005') THEN
+            ELSE  IF(SUBSET(7:8).EQ.'05') THEN
 
 C  PIBAL
 C  -----
@@ -2910,7 +3037,7 @@ C***********************************************************************
       FUNCTION R03UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
 C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
  
-      PARAMETER (NUMCAT=8, LEVLIM=300)
+      PARAMETER (NUMCAT=9, LEVLIM=300, MXLV=19999)
 
       COMMON/IUBFAA/BMISS
       COMMON/IUBFBB/KNDX,KSKACF(8),KSKUPA,KSKSFC,KSKSAT,KFLSAT(12),
@@ -2919,28 +3046,32 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
       COMMON/IUBFDD/HDR(12),RCATS(50,LEVLIM,NUMCAT),IKAT(NUMCAT),
      $ MCAT(NUMCAT),NCAT(NUMCAT),LVDX(NUMCAT)
       COMMON/IUBFEE/POB(255),QOB(255),TOB(255),ZOB(255),DOB(255),
-     $              SOB(255),VSG(255),OB8(255),CF8(255)
+     $              SOB(255),VSG(255),OB8(255),CF8(255),
+     $              XDR(255),YDR(255),HRDR(255)
       COMMON/IUBFFF/PQM(255),QQM(255),TQM(255),ZQM(255),WQM(255)
       COMMON/IUBFII/PWMIN
       COMMON/IUBFLL/Q81(255),Q82(255)
       COMMON/IUBFMM/XIND(255)
  
-      CHARACTER*80 HDSTR,LVSTR,QMSTR,RCSTR
-      CHARACTER*8  SUBSET,SID,RSV1,RSV2
+      CHARACTER*80 HDSTR,LVSTR,QMSTR,RCSTR,HDSTB
+      CHARACTER*8  SUBSET,SID,RSV1,RSV2,BHD,BQ,RID2(750)
       REAL(8)  RID_8,HDR_8(12),VSG_8(255),OBS2_8(43),OBS3_8(5,255,7),
      $ RCT_8(5,255),ARR_8(10,255),RAT_8(255),RMORE_8(4),RGP10_8(255),
-     $ PRGP10_8(255),RPMSL_8,RPSAL_8,BMISS,AMINIMUM_8,obs8_8(2)
+     $ PRGP10_8(255),RPMSL_8,RPSAL_8,BMISS,AMINIMUM_8,obs8_8(2),
+     $ VSGX8(MXLV),ARRX(10,MXLV),BHD8
       DIMENSION  OBS(*),OBS2(43),OBS3(5,255,7),NOBS3(7),RCT(5,255),
      $ ARR(10,255), RAT(255),RMORE(4),RGP10(255),PRGP10(255),P2(255),
-     $ P8(255),P16(255)
+     $ P8(255),P16(255),NUSL(MXLV)
 
-      EQUIVALENCE  (RID_8,SID)
+      EQUIVALENCE  (RID_8,SID),(BHD8,BHD)
       LOGICAL      L02UBF
 
       SAVE
  
       DATA HDSTR/'NUL  CLON CLAT HOUR MINU SELV               '/
-      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD          '/
+      DATA HDSTB/'NUL CLONH CLATH HOUR MINU HBMSL HEIT        '/ ! BUFR
+      DATA LVSTR/'PRLC TMDP TMDB GP07 GP10 WDIR WSPD 
+     $ LTDS LATDH LONDH '/
       DATA QMSTR/'QMPR QMAT QMDD QMGP QMWN                    '/
       DATA RCSTR/'RCHR RCMI RCTS                              '/
  
@@ -2966,6 +3097,57 @@ C  ---------------------------------------------------------------------
       OBS3_8 = BMISS
       NOBS3  = 0
       obs8_8 = bmiss
+      NBFLG  = 0
+      NBMX   = 4
+      NSKP   = 0
+
+      CALL UFBINT(LUNIT,RID_8,1,1,IRET,'RPID')
+      IF(IRET.EQ.0.OR.IBFMS(RPID_8).NE.0) THEN
+       CALL UFBINT(LUNIT,RID_8,1,1,IRET,'WGOSLID')
+       CALL READLC(LUNIT,SID,'WIGOSLID')
+       IF(ICBFMS(SID,8).NE.0)  SID = 'MISSING ' 
+      ELSE
+      CALL READLC(LUNIT,SID,'RPID')
+      ENDIF
+      
+CC    ANALYZE BUHD CONTENT PRIOR TO VSIG/VSIGX READ  CH 12/18/2020
+CC    AND TO ADPUPA/UPRAIR CONTENT READ             rev 03/23/2022
+      CALL UFBINT(LUNIT,BHD8,1,1,IRET,'BUHD')
+      CALL READLC(LUNIT,BHD,'BUHD')
+
+      IF (BHD(1:2).EQ.'IU') THEN
+       READ(BHD(5:5),'(I1)') IFTH
+       NBFLG = 9
+       IF (BHD(3:3).EQ.'W') NBFLG = 1
+       IF (BHD(3:3).EQ.'J') NBFLG = 2
+       IF((BHD(3:3).EQ.'D').AND.(SID(6:6).EQ.'A')) NBFLG = 2
+CCdesc  revisit for descending radiosonde profiles
+       IF (BHD(3:3).EQ.'K') NBFLG = 2
+       IF((BHD(3:3).EQ.'K').AND.(IFTH.LE.5)) NBFLG = 3
+       IF (BHD(3:3).EQ.'S') NBFLG = 3
+       IF((BHD(3:3).EQ.'S').AND.(IFTH.LE.5)) NBFLG = 4
+CCdesc IF (BHD(3:3).EQ.'X')) NBFLG = 5
+       IF (SUBSET(1:6).EQ.'NC0021') WRITE(95,'(A8,1X,A8)') SID, BHD
+      END IF
+
+      IF (SUBSET(1:6).EQ.'NC0020') THEN
+       NX=1
+       IRT=0
+       RID2=''
+       OPEN(92,IOSTAT=INP)
+       IF(INP.EQ.0) THEN
+        REWIND 92
+        DO WHILE (NX.LT.700.AND.NSKP.EQ.0.AND.IRT.EQ.0)
+         READ(92,'(A8,1X,A8)',IOSTAT=IRT) RID2(NX), BQ
+         IF(SID.EQ.RID2(NX)) NSKP=1
+         NX=NX+1
+        ENDDO
+        CLOSE(92)
+       ENDIF
+      ENDIF
+
+      IF(NSKP.GT.0) GOTO 9997   ! Skip ADPUPA when duplicating UPRAIR
+
       CALL UFBINT(LUNIT,OBS2_8( 1),2,1,IRET,'RSRD EXPRSRD')
       CALL UFBINT(LUNIT,OBS2_8( 4),1,1,IRET,'SST1')
       IF(IBFMS(OBS2_8(4)).EQ.0)  OBS2_8(41) = 2.0
@@ -3029,20 +3211,89 @@ C              processed as unpacked category 2
 C         2   Significant level, wind
 C              processed as unpacked category 3 or 4
 C
+C       128   BUFR Vertical level
+C              processed as unpacked category 10
+C
 C NOTE: THIS SUBR. ASSIGNS VSIG=1 TO LEVELS THAT SHOULD BE
 C       PROCESSED AS UNPACKED CATEGORY 6 (ONLY APPLIES TO
 C       RECCOS)
 C
 C  anything else - the level is not processed
- 
-      CALL UFBINT(LUNIT,VSG_8,1,255,NLEV,'VSIG');VSG=VSG_8
+
+      VSG_8 =  BMISS
+      VSGX8 =  BMISS
+      VLINC =  BMISS
+       NUSL =  0
+
+CC    USE NBFLG TO CHOOSE VSIG OR VSIGX          CH 12/18/2020
+CC                                              rev 03/23/2022 
+      IF(NBFLG.EQ.0)
+     +CALL UFBINT(LUNIT,VSG_8,1,255,NLEV,'VSIG')
+
+      IF ((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
+CC      VSIGXs ARE READ INTO A LARGER ARRAY      CH 11/12/2020
+       CALL UFBINT(LUNIT,VSGX8,1,MXLV,NLEVX,'VSIGX')
+CC
+CC      COMPUTE AN INTEGER SAMPLE INCREMENT ACCORDING TO NLEVX
+       IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
+corig   VLINC = MAX(1.0,(REAL(NLEVX)/255.))
+        LS = 1
+        LX = 1
+        SN = 0.
+        NC = 0
+        NC0 =0
+        DO L2 = 1,NLEVX
+        VLINC = MAX(1.0,(REAL(NLEVX)/(255.-SN)))
+        NC=INT(REAL(L2)/VLINC)
+        IF (LS.LE.255) THEN
+CC     VSIG = VSIGX / 2048, INITIALLY
+         VSG_8(LS) = VSGX8(L2)/2048.
+         IF (VSGX8(L2).EQ.0.) VSG_8(LS) = 128.
+         IF ((VSG_8(LS).GE.1.).AND.(VSG_8(LS).LT.128.)) THEN
+          DO LE = 0,6
+           LF  = 2.**LE
+           LF1 = 2.**(LE+1)
+           IF ((VSG_8(LS).GE.LF).AND.(VSG_8(LS).LT.LF1)) THEN
+            IF(LE.LE.1) VSG_8(LS) = LF1
+            IF(LE.GE.2) VSG_8(LS) = LF
+           ENDIF
+          ENDDO
+         ENDIF
+CC       SAVE MANDATORY LEVELS
+         IF (VSG_8(LS).EQ.64.) NUSL(L2) = 1
+         IF (VSG_8(LS).EQ.32.) THEN
+          NUSL(L2) = 1
+          SN = SN + 1.
+         ENDIF
+CC       SAVE INCREMENTAL LEVELS
+         IF ((NC.EQ.LX).AND.(NC.GT.NC0)) THEN
+          NUSL(L2) = 1
+          LX = LX + 1
+          NC0=NC
+         ENDIF
+         IF (NUSL(L2).EQ.1) LS = LS + 1
+        ENDIF
+CC     STEP TO THE NEXT LEVEL
+        ENDDO
+        NLEV=MIN(LS,255)
+       ENDIF
+      ENDIF
+CC    END VSIGX ANALYSIS           CH 11/12/2020 (rev 11/30/2022)
+      VSG=VSG_8
  
 C  PUT THE HEADER INFORMATION INTO UNPACKED FORMAT
 C  -----------------------------------------------
- 
-      CALL UFBINT(LUNIT,HDR_8,12,  1,IRET,HDSTR);HDR=HDR_8
+
+      HDR_8=BMISS 
+      CALL UFBINT(LUNIT,HDR_8,12,  1,IRET,HDSTR)
+      IF((HDR_8(2).GE.BMISS).AND.(HDR_8(3).GE.BMISS)) THEN
+       CALL UFBINT(LUNIT,HDR_8,12,  1,IRET,HDSTB)
+      ENDIF
+      HDR=HDR_8
       IF(HDR(5).GE.BMISS) HDR(5) = 0
-      CALL UFBINT(LUNIT,RID_8,1,1,IRET,'RPID')
+
+cCC   CALL UFBINT(LUNIT,RID_8,1,1,IRET,'RPID')
+
 cccc  IF(IRET.NE.1.OR.(RID_8.GT.BMISS-5000..AND.RID_8.LT.BMISS+5000.))
 cccc $  SID = 'MISSING '
 cxxxx
@@ -3054,7 +3305,9 @@ ccccc IF(ICBFMS(SID,8).NE.0)  SID = 'MISSING '
 C above line not working right - may return 0 when missing, so use next
 C  two lines below temporarily until this is fixed (readlc will return
 C  all blanks for sid when mnemonic "RPID" not found) - dak 2/19/13
-         call readlc(lunit,sid,'RPID')
+
+cCC      call readlc(lunit,sid,'RPID')
+
 cpppppppppp
 cc       print'(" sid = """,A,"""")', sid
 cpppppppppp
@@ -3063,14 +3316,20 @@ cxxxx
 cppppp-ID
       iprint = 0
 cc         iprint = 1
-c     if(sid.eq.'89571   ')  iprint = 1
-c     if(sid.eq.'68906   ')  iprint = 1
-c     if(sid.eq.'68842   ')  iprint = 1
-c     if(sid.eq.'59362   ')  iprint = 1
-c     if(sid.eq.'57957   ')  iprint = 1
-c     if(sid.eq.'74794   ')  iprint = 1
-c     if(sid.eq.'74389   ')  iprint = 1
-c     if(sid.eq.'96801A  ')  iprint = 1
+c      if(sid.eq.'89571   ')  iprint = 1
+c      if(sid.eq.'68906   ')  iprint = 1
+c      if(sid.eq.'68842   ')  iprint = 1
+c      if(sid.eq.'59362   ')  iprint = 1
+c      if(sid.eq.'57957   ')  iprint = 1
+c      if(sid.eq.'74794   ')  iprint = 1
+c      if(sid.eq.'74389   ')  iprint = 1
+c      if(sid.eq.'96801A  ')  iprint = 1
+c      if(sid.eq.'10304   ')  iprint = 1
+c      if(sid.eq.'57461   ')  iprint = 1
+c      if(sid.eq.'71811   ')  iprint = 1
+c      if(sid.eq.'70200   ')  iprint = 1
+c      if(sid.eq.'72215   ')  iprint = 1
+c      if(sid.eq.'72786   ')  iprint = 1
       if(iprint.eq.1)
      $ print'(" @@@ START DIAGNOSTIC PRINTOUT FOR ID ",A)', sid
 cppppp-ID
@@ -3129,7 +3388,9 @@ cpppppppppp
       RCTIM = BMISS
       RSV1 = '        '
       RSV2 = '        '
+      ELV = BMISS
       ELV = HDR(6)
+      IF (ELV.GE.BMISS) ELV = HDR(7)
       QMELV = XMISS
      
       CALL UFBINT(LUNIT,RAT_8, 1,255,NLEV,'RATP');RAT=RAT_8
@@ -3137,7 +3398,8 @@ cpppppppppp
       RTP = ERTUBF(SUBSET,SID)
       IDS = IMISS
       IF(ELV.GE.BMISS)  THEN
-         IF((RTP.GT.20.AND.RTP.LT.24).OR.SUBSET.EQ.'NC002004')  THEN
+         IF((RTP.GT.20.AND.RTP.LT.24)
+     $  .OR.(RPT.EQ.31.AND.SUBSET.NE.'NC004005'))  THEN 
             print'(" IW3UNPBF/R03UBF: ID ",A," has a missing elev, so ",
      $       "elevation set to ZERO")', sid
             ELV = 0
@@ -3161,8 +3423,35 @@ cdak  if(sid(5:5).eq.' ') print, sid
  
 C  PUT THE LEVEL DATA INTO SPECIFIED UNPACKED FORMAT
 C  -------------------------------------------------
- 
-      CALL UFBINT(LUNIT,ARR_8,10,255,NLEV,LVSTR);ARR=ARR_8
+
+      IF(NBFLG.EQ.0) 
+     +CALL UFBINT(LUNIT,ARR_8,10,255,NLEV,LVSTR)
+
+CCCCCCCCCCCCCCCCCCCv CH 11/12/2020
+
+      IF((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
+CC    WITH VSIGX, VARIABLES ARE READ INTO LARGER ARRAY
+        CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,LVSTR)
+C
+C
+        IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
+        LS = 1
+        DO L2 = 1,NLEVX
+        IF (NUSL(L2).EQ.1) THEN
+CC        ARRX -> ARR_8
+          DO MS = 1,10
+             ARR_8(MS,LS) = ARRX(MS,L2)
+          ENDDO
+          LS = LS + 1
+        ENDIF
+CC      STEP TO THE NEXT LEVEL
+        ENDDO
+        NLEV=MIN(LS,255)
+      ENDIF
+      ENDIF
+
+      ARR=ARR_8
+CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
 
       PWMIN = 999999.
 
@@ -3201,15 +3490,58 @@ C  -------------------------------------------------
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         if(iprint.eq.1)  then
+         IF(ARR(8,L).LT.IMISS) THEN 
+             HRDR(L) = NINT(ARR(8,L))
+         ELSE
+             HRDR(L) = IMISS
+         END IF
+         IF(ARR(9,L).LT.IMISS) THEN
+             YDR(L) = NINT((ARR(9,L)*100000))
+         ELSE
+             YDR(L) = IMISS
+         END IF
+         IF(ARR(10,L).LT.IMISS) THEN 
+             XDR(L) = NINT((ARR(10,L)*100000))
+         ELSE
+             XDR(L) = IMISS
+         END IF
+C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
      $       G0,"; TOB = ",G0,"; ZOB = ",G0,"; DOB = ",G0,"; SOB = ",
-     $       G0)', L,vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L)
-         end if
+     $       G0,"; HRDR = ",G0,"; XDR = ",G0,"; YDR = ",G0,"; fin")', L, 
+     $       vsg(L),pob(L),qob(L),tob(L),zob(L),dob(L),sob(L),hrdr(L),
+     $       ydr(L),xdr(L)
+C         end if
          IF(MAX(POB(L),DOB(L),SOB(L)).LT.BMISS) PWMIN =MIN(PWMIN,POB(L))
       ENDDO
 
-      CALL UFBINT(LUNIT,ARR_8,10,255,NLEV,QMSTR);ARR=ARR_8
+      IF(NBFLG.EQ.0)
+     +CALL UFBINT(LUNIT,ARR_8,10,255,NLEV,QMSTR)
+
+CCCCCCCCCCCCCCCCCCCv CH 11/12/2020
+
+      IF((NBFLG.GE.1).AND.(NBFLG.LE.NBMX)) THEN
+CC    WITH VSIGX, VARIABLES ARE READ INTO LARGER ARRAY
+       CALL UFBINT(LUNIT,ARRX,10,MXLV,NLEVX,QMSTR)
+CC
+      IF ((NLEVX.GT.0).AND.(NLEVX.LE.MXLV)) THEN
+       LS = 1
+       DO L2 = 1,NLEVX
+       IF (NUSL(L2).EQ.1) THEN
+CC      ARRX -> ARR_8
+        DO MS = 1,10
+         ARR_8(MS,LS) = ARRX(MS,L2)
+        ENDDO
+       LS = LS + 1
+       ENDIF
+CC     STEP TO THE NEXT LEVEL
+       ENDDO
+      NLEV=MIN(LS,255)
+      ENDIF
+      ENDIF
+
+      ARR=ARR_8
+CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
 
       DO L=1,NLEV
          PQM(L) = EQMUBF(ARR(1,L))
@@ -3256,7 +3588,8 @@ C   LIST Q.M.
                CALL SE01UBF(4,L)
             END IF
             VSG(L) = 0
-         ELSE  IF(NINT(VSG(L)).EQ.2)  THEN
+         ELSE IF (NBFLG.EQ.0) THEN
+         IF(NINT(VSG(L)).EQ.2)  THEN
             P2(L) = POB(L)
             INDX2 = L
             IF(INDX8.GT.0)  THEN
@@ -3341,6 +3674,7 @@ C   LIST Q.M.
             INDX16 = INDX16 + 1
             P16(INDX16) = POB(L)
          END IF
+         ENDIF    ! end check NBFLG
       ENDDO LOOP1
  
  
@@ -3371,7 +3705,29 @@ C  ----------------
                   VSG(L) = 0
                END IF
             END IF
-         ELSE  IF(NINT(VSG(L)).EQ. 4) THEN
+Ccccccc  v                                   CH 01/19/2021
+         ELSE IF ((NINT(VSG(L)).EQ.128).OR.
+     +           ((NBFLG.GE.1).AND.(NBFLG.LE.NBMX))) THEN
+C                PROCESS ALL VALID LEVELS FROM BUFR PROFILE  CH 11/30/2022
+            IF(MIN(DOB(L),ZOB(L),TOB(L)).GE.BMISS) THEN
+                  if(iprint.eq.1) then
+                    print'(" ==> For lvl ",I0,"; VSG=",F4.0" & DOB,ZOB,"
+     $              " TOB are all missing --> this level is not ",
+     +              " processed")', L, VSG(L)
+                  end if
+                  VSG(L) = 0
+            ELSE
+                  if(iprint.eq.1) then
+                    print'("==> For lvl ",I0,"; VSG=",F4.0," & one or",
+     $              "more of ZOB,TOB,DOB non-missing --> valid cat.10 ",
+     $              "lvl")', L, VSG(L)
+                  end if
+                  CALL S02UBF(10,L,*9999)  !! BUFR levels
+                  VSG(L) = 0
+            END IF
+Ccccccccc   ^
+
+         ELSE  IF((NINT(VSG(L)).EQ. 4).AND.(NBFLG.EQ.0)) THEN
             if(iprint.eq.1)  then
                print'(" ==> For lvl ",I0,"; VSG= 4 --> valid cat. 2 ",
      $          "lvl")', L
@@ -3394,7 +3750,7 @@ C  ----------------
             END IF
             CALL S02UBF(2,L,*9999)
             VSG(L) = 0
-         ELSEIF(NINT(VSG(L)).EQ.16) THEN
+         ELSEIF((NINT(VSG(L)).EQ.16).AND.(NBFLG.EQ.0)) THEN
             if(iprint.eq.1)  then
                print'(" ==> For lvl ",I0,"; VSG=16 --> valid cat. 5 ",
      $          "lvl")', L
@@ -3440,7 +3796,7 @@ cc    print'("~#~# GOING INTO S02UFB, QOB(L) = ",G0)', qob(L)
 cpppppppppp
             CALL S02UBF(6,L,*9999)
             VSG(L) = 0
-         ELSEIF(NINT(VSG(L)).EQ. 2)  THEN
+         ELSEIF((NINT(VSG(L)).EQ. 2).AND.(NBFLG.EQ.0))  THEN
             IF(POB(L).LT.BMISS) THEN
                IF(MAX(SOB(L),DOB(L)).LT.BMISS)  THEN
                if(iprint.eq.1)  then
@@ -3496,7 +3852,7 @@ C  ---------------------------------------------------------------
                END IF
                VSG(L) = 0
             END IF
-         ELSEIF(NINT(VSG(L)).EQ. 8)  THEN
+         ELSEIF((NINT(VSG(L)).EQ. 8).AND.(NBFLG.EQ.0))  THEN
             IF(POB(L).LT.BMISS) THEN
                if(iprint.eq.1)  then
                   print'(" ==> For lvl ",I0,"; VSG= 8 & POB .ne. ",
@@ -3605,7 +3961,14 @@ C        63   Missing
          CALL S02UBF(8,L,*9999)
       ENDDO
 
-      CALL UFBINT(LUNIT,RMORE_8,4,1,NRMORE,'SIRC TTSS UALNHR UALNMN')
+      IF(NBFLG.EQ.0)
+     +CALL UFBINT(LUNIT,RMORE_8,4,1,NRMORE,'SIRC TTSS UALNHR UALNMN')
+CCCCCCCCCCCCCCCCCCCv CH 11/13/2020
+      IF((NBFLG.GT.0).AND.(NBFLG.LE.NBMX)) THEN
+       CALL UFBINT(LUNIT,RMORE_8,2,1,NRMORE,'SIRC TTSS')
+       CALL UFBINT(LUNIT,RMORE_8(3),2,1,NRMORE,'HOUR MINU')
+      END IF
+CCCCCCCCCCCCCCCCCCC^ CH 11/13/2020
       RMORE=RMORE_8
       IF(MAX(RMORE(3),RMORE(4)).LT.BMISS)  THEN
          CF8(1) = 104
@@ -3660,7 +4023,7 @@ C  --------------------------------
       RETURN
  9998 CONTINUE
       print'("IW3UNPBF/R03UBF: RPT with ID= ",A," TOSSED - ZERO ",
-     $ "CAT.1-6,51 LVLS")', SID
+     $ "CAT.1-6,10,51 LVLS")', SID
  9997 CONTINUE
       R03UBF = -9999
       KSKUPA =KSKUPA + 1
