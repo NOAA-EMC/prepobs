@@ -82,7 +82,7 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE RADEVN
-      PARAMETER (NST=999)
+      PARAMETER (NST=2499)
       PARAMETER (NRID=800) ! max # of raob ids listed per inst. type
 
       REAL(8) BMISS
