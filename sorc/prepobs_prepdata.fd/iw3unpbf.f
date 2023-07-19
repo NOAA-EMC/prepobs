@@ -3490,20 +3490,20 @@ CCCCCCCCCCCCCCCCCCC^ CH 11/12/2020
          ELSE  IF(NINT(DOB(L)).EQ.360.AND.NINT(SOB(L)).EQ.0)  THEN
             DOB(L) = 0
          END IF
-         IF(ARR(8,L).LT.IMISS) THEN 
+         IF(ARR(8,L).LT.BMISS) THEN 
              HRDR(L) = NINT(ARR(8,L))
          ELSE
-             HRDR(L) = IMISS
+             HRDR(L) = BMISS
          END IF
-         IF(ARR(9,L).LT.IMISS) THEN
+         IF(ARR(9,L).LT.BMISS) THEN
              YDR(L) = NINT((ARR(9,L)*100000))
          ELSE
-             YDR(L) = IMISS
+             YDR(L) = BMISS
          END IF
-         IF(ARR(10,L).LT.IMISS) THEN 
+         IF(ARR(10,L).LT.BMISS) THEN 
              XDR(L) = NINT((ARR(10,L)*100000))
          ELSE
-             XDR(L) = IMISS
+             XDR(L) = BMISS
          END IF
 C         if(iprint.eq.1)  then
             print'(" At lvl=",I0,"; VSG=",G0,"; POB = ",G0,"; QOB = ",
