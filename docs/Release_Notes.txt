@@ -1,6 +1,194 @@
+prepobs v1.1.0	RELEASED	AUG ??, 2023
+	v1.1.?	IMPLEMENTED	??? ??, 2023
+
+PRELUDE
+
+ This update supports obsproc.v1.2.0 and bufr-dump.v1.2.0 releases.
+ obsproc.v1.2.0 and bufr-dump.v1.2.0 introduce two new dump files:
+ *satwhr* - satellite AMVs tailored for hurricates, developed at UW/CIMSS, use tank b005/xx099
+          - CONUS domain AMVs at time resolution of 15-20 minutes, NESDIS prouct, use tanks b005/xx052..xx056
+ *uprair* - BUFR formated high-res rawinsondes(radiosondes),part of worldwide TAC2BUFR migration, use tanks b002/xx101..xx105
+          - *uprair* data is added to prepbufr files,to the prepbufr's ADPUPA component
+ prepobs.v1.1.0 adds *uprair* to prepbufr's ADPUPA component
+
+ The prepobs post step adds capability to unrestrict aircraft data (on demand, by default PROCESS_REMOREST_dm2=NO)
+
+FILE CHANGES
+
+ M CMakeLists.txt
+ D README.md
+ D VERSION
+ D build.sh
+ A docs
+ A docs/README.md
+ A docs/Release_Notes.txt
+ A fix/prepobs_landc
+ M fix/prepobs_prep.bufrtable
+ A fix/syndat_syndata.slmask.t126.gaussian
+ A modulefiles/prepobs_jet.lua
+ M scripts/exprep_post.sh
+ M sorc/prepobs_cqcbufr.fd/CMakeLists.txt
+ M sorc/prepobs_cqcbufr.fd/cqcbufr.f
+ M sorc/prepobs_cqcbufr.fd/radcor.f
+ M sorc/prepobs_mpcopybufr.fd/CMakeLists.txt
+ M sorc/prepobs_mpcopybufr.fd/mpcopybufr.f90
+ M sorc/prepobs_prepdata.fd/CMakeLists.txt
+ M sorc/prepobs_prepdata.fd/iw3unpbf.f
+ M sorc/prepobs_prepdata.fd/prepdata.f
+ M sorc/syndat_syndata.fd/CMakeLists.txt
+ M sorc/syndat_syndata.fd/syndata.f
+ A ush/build.sh
+ M ush/gdas_counts.sh
+ M ush/gdas_summary.sh
+ M ush/prepobs_makeprepbufr.sh
+ D versions/README
+ A versions/VERSION
+ (M-modified; A-added; D-deleted)
+
+ NOTE:
+ fix/prepobs_landc and
+ fix/syndat_syndata.slmask.t126.gaussian
+ were not released from EMC to NCO during the transition to WCOSS2. However they appear in $PACKAGEROOT
+ Thus, for consistency, they were added to this release
+
+ROOT LEVEL CHANGES
+
+ CMakeLists.txt
+ Reflect moving file VERSION from root level to directory /versions
+
+ README.md
+ Moved to directory /docs
+
+ VERSION
+ Moved to to directory /versions
+ 
+ build.sh
+ Reflect changes to support functionality on Jet
+
+DOCS CHANGES
+
+ docs
+ Introduce directory for all documents
+
+ docs/README.md
+ Move REDME.md from root level to /docs
+
+ docs/Release_Notes.txt
+ Updated for this release.
+
+FIX CHANGES
+
+ fix/prepobs_landc
+ fix/syndat_syndata.slmask.t126.gaussian
+ These files were not released from EMC to NCO during the transition to WCOSS2. However they appear in $PACKAGEROOT
+ Thus, for consistency, they were added to this release
+
+ fix/prepobs_prep.bufrtable
+ Introduce UPRAIR (from *uprair* dumps) to prepbufr's bufrtable 
+
+MODULEFILES
+
+ modulefiles/bufrdump_jet.lua
+ Support obsproc functionality to jet
+
+SCRIPTS CHANGES
+
+  scripts/exprep_post.sh
+  Add functionality to unrestrict aircraft data, this feature is meant to be used in development environmet
+
+SOURCE CHANGES
+ 
+ sorc/prepobs_cqcbufr.fd/CMakeLists.txt
+ Replace obsolete bufr_4_DA library with bufr_4 which uses Dynamic Allocation by default (in bufr/v11.6 and later)
+
+ sorc/prepobs_cqcbufr.fd/cqcbufr.f
+ Increase array sizes to accomodate upper air data (MXMSGL,MAXSS,MAXOUT,NST,MAXOBS)
+
+ sorc/prepobs_cqcbufr.fd/radcor.f
+ Increase NST to match sorc/prepobs_cqcbufr.fd/cqcbufr.f
+
+ sorc/prepobs_mpcopybufr.fd/CMakeLists.txt
+ Replace obsolete bufr_4_DA library with bufr_4 which uses Dynamic Allocation by default (in bufr/v11.6 and later)
+
+ sorc/prepobs_mpcopybufr.fd/mpcopybufr.f90
+ Increase array sizes to accomodate upper air data (MXMSGL,MAXSS)
+ Introduce functionality for adding upper air data (*uprair*) to prepbufr's ADPUPA
+
+ sorc/prepobs_prepdata.fd/CMakeLists.txt
+ Replace obsolete bufr_4_DA library with bufr_4 which uses Dynamic Allocation by default (in bufr/v11.6 and later)
+ 
+ sorc/prepobs_prepdata.fd/iw3unpbf.f
+ Introduce functionality for adding upper air data (*uprair*) to prepbufr's ADPUPA
+ Introduce functionality to use GNSS-measured drift info from *uprair* dumps and add to prepbufr file
+
+ sorc/prepobs_prepdata.fd/prepdata.f
+ Introduce functionality for adding upper air data (*uprair*) to prepbufr's ADPUPA
+ Introduce functionality to use GNSS-measured drift info from *uprair* dumps and add to prepbufr file
+
+ sorc/syndat_syndata.fd/CMakeLists.txt
+ Replace obsolete bufr_4_DA library with bufr_4 which uses Dynamic Allocation by default (in bufr/v11.6 and later)
+
+ sorc/syndat_syndata.fd/syndata.f
+ Increase MXMSGL, MAXSS, MAXOUT to accomodate the additional BUFR formated upper air data
+
+USH CHANGES
+  
+ ush/build.sh
+ Move from root level to ush, to accomodate coding standards
+
+ ush/gdas_counts.sh
+ Minor INFILE path correction for consistent path structue
+
+ ush/gdas_summary.sh
+ Minor correction for consistency with NCO 
+
+ ush/prepobs_makeprepbufr.sh
+ Introduce functionality to add upper air dump data (*uprair*) to prepbufr's ADPUPA
+
+VERSIONS CHANGES
+ 
+ versions/README
+ Delete/clean up old notes
+
+ versions/VERSION
+ Update to this release's versione
+
+CHANGES TO OUTPUT AND FILE SIZES
+
+ obsproc.v1.2.0 generates new dumps: *satwhr*, *uprair*
+ prepobs.v1.1.0 incorporates *uprair* into prepbufr's ADPUPA
+ (this release must be synced with obsproc.v1.2.0 and bufr-dump.v1.2.0)
+
+ The updated *prepbur* files  are up to ~20% larger in size
+ For examples, see: /lfs/h2/emc/stmp/iliana.genkova/CRON/R12/com
+
+PRE-IMPLEMENTATION TESTING REQUIREMENTS
+
+ obsproc needs modules bufr-dump and prepobs in order to run
+ See docs/README.md for build instructions
+ See versions/build.ver and versions/run.ver for libaries
+
+ Run jobs/JOBSPROC_networkname_DUMP,  jobs/JOBSPROC_networkname_DUMP_POST
+     jobs/JOBSPROC_networkname_PREP1, jobs/JOBSPROC_networkname_PREP1_POST
+     jobs/JOBSPROC_networkname_PREP2, jobs/JOBSPROC_networkname_PREP2_POST
+ for the following networkname values: GLOBAL, RAP
+ *uprair* is only added to GLOBAL and RAP's prepbufr files
+
+DISSEMINATION INFORMATION
+
+ No changes to dissemination on WCOSS2
+ For NOMAD proposed changes, a SCN will be issued/submitted to Data Flow
+
+SPECIAL INSTRUCTIONS
+
+ 1.Implement release/obsproc.v1.2.0, release/bufr-dump.v1.2.0, and release/prepobs.v1.1.0 at the same time
+
+ 2.Implement release/obsproc.v1.2.0, release/bufr-dump.v1.2.0, and release/prepobs.v1.1.0 after confirming GFS global-workflow is ready for the new versions (first 2 digits)
+
+
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-prepobs v1.0.0	RELEASED	MAR 01, 2022
-	v1.0.1	IMPLEMENTED	JUN 28, 2022
+prepobs v1.0.0  RELEASED        MAR 01, 2022
+        v1.0.1  IMPLEMENTED     JUN 28, 2022
 
 Transition from WCOSS Cray and Phase3 to WCOSS2
 ===============================================
@@ -8,7 +196,7 @@ Usage
  module use /apps/ops/test/nco/modulefiles/compiler/intel/19.1.3.304
  module load prepobs/1.0.1
 
-Where is the release tag on subversion/git/vlab? 
+Where is the release tag on subversion/git/vlab?
  git clone https://github.com/NOAA-EMC/prepobs
  git checkout release/prepobs.v1.0.0
 
@@ -153,13 +341,13 @@ What changes were made to the above code/scripts to support the new architecture
  prepobs  has been moved to github as its own repository. https://github.com/NOAA-EMC/prepobs
  prepobs utilizes cmake to build and install the code. build prepobs repo with cmake
 
-Were any other changes made that aren’t directly related to the transition? 
+Were any other changes made that aren’t directly related to the transition?
  No
 
-Are there any changes to incoming data needs or outgoing products? 
+Are there any changes to incoming data needs or outgoing products?
  No
 
-If output filenames are changing, list the current and new filename 
+If output filenames are changing, list the current and new filename
  N/A
 
 Compute resource information, for every job:
@@ -173,7 +361,7 @@ List any other PBS resource information requirements or MPI tunables
  *** Providing PBS and/or ecFlow submission scripts as part of release tag is preferred; if they are provided then resource information is not needed in the release notes.
 
 Runtime changes compared to current production (/gpfs/dell1/nco/ops/com/logs/runtime/daily/* for current stats)
- Optimization for network dump jobs was not performed prior to release because of the team reshuffling and resultant tight deadline. 
+ Optimization for network dump jobs was not performed prior to release because of the team reshuffling and resultant tight deadline.
  Obsproc developers will work with assigned SPA to meet optimization goals for network dump jobs.
 
 Disk space required per day or per cycle; data retention on disk will remain the same unless otherwise requested.
@@ -191,3 +379,4 @@ Provide a pointer to your COMOUT, temp directory and pbspro output file that was
 WCOSS1 RN:https://github.com/ShelleyMelchior-NOAA/smelchior/tree/main/RNs
 
 END
+                                                        
