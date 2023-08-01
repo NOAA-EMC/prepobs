@@ -444,7 +444,7 @@ ccccc PARAMETER (MAXBPT=31,MAXPTS=MAXBPT*MAXBPT)
      4               NOBWMN,NOGES,MODTYP,NPREQ,NVREQ,IPREQ,IVREQ,RLATMN,
      5               RLATMX,PREVEN,FLMASS,MAK111,FLBWND
 
-      CHARACTER STMNAM*9,STMID*3,RSMC*4,DO_BOGUS*3
+      CHARACTER STMNAM*9,STMID*3,RSMC*4,DO_BOGUS*3,DO_FLMASS*3
 
       LOGICAL FSTFLG
 
@@ -556,7 +556,7 @@ C  PRESET AND UPDATE SOME OPTIONS AND READ IN DATE/TIME
       MWAVEZ   = MWAVE
       PTOPAZ   = PTOPAL
       ADVORT   = .TRUE.
-      FLMASS   = .TRUE.
+C     FLMASS   = .TRUE.
       MAK111   = .FALSE.
       FLBWND   = .TRUE.
       DIVFAC   = 0.0
@@ -565,6 +565,12 @@ C  PRESET AND UPDATE SOME OPTIONS AND READ IN DATE/TIME
       CALL GET_ENVIRONMENT_VARIABLE('DO_BOGUS',DO_BOGUS)
       IF(DO_BOGUS.NE.'YES' .AND. DO_BOGUS.NE.'NO')  DO_BOGUS = 'YES'
       WRITE(6,'("DO_BOGUS = ",A)') DO_BOGUS
+
+      CALL GET_ENVIRONMENT_VARIABLE('DO_FLMASS',DO_FLMASS)
+      IF(DO_FLMASS.NE.'YES' .AND. DO_FLMASS.NE.'NO')  DO_FLMASS ='YES'
+      WRITE(6,'("DO_FLMASS = ",A)') DO_FLMASS
+      IF(DO_FLMASS.NE.'YES') FLMASS = .FALSE.
+      WRITE(6,'("FLMASS = ",L1)') FLMASS
 
       IF(IDATEZ .LT. 0 .OR. IUTCZ .LT. 0)  THEN
          CALL SLDATE(IUNTDT,IDATEZ,IUTCZ,IOFFT)
@@ -623,10 +629,12 @@ C   (i.e., mass reports near storms are not flagged)
 C  --------------------------------------------------------------------
 
          PRINT *
-         PRINT *, '--> NOTE: DO_BOGUS IS "NO", SO HARDWIRE FLMASS TO ',
-     $    '"FALSE"'
-         PRINT *
-         FLMASS = .FALSE.
+C  Note below is modified: not defaulted FLMASS to be .FALSE.
+C        PRINT *, '--> NOTE: DO_BOGUS IS "NO", SO HARDWIRE
+C        FLMASS TO ',
+C    $    '"FALSE"'
+C        PRINT *
+C        FLMASS = .FALSE.
       END IF
 
       CALL RITCR1(IUNTBD,IUNTBH,IDATEZ,IUTCZ,RUNID)

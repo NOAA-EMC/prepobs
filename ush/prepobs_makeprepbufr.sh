@@ -2514,7 +2514,8 @@ if [ "$SYNDATA"  = 'YES' ]; then
    set -x
    if [ "$SYN" = 'YES' ]; then
 
-      DO_BOGUS=YES
+#     DO_BOGUS=${DO_BOGUS:-YES}
+#     DO_FLMASS=${DO_FLMASS:-YES}
       run_syndat_twice=no
       if [ -f ${tstsp}syndata.tcvitals.$tmmark ]; then
          cp ${tstsp}syndata.tcvitals.$tmmark tcvitals_orig
