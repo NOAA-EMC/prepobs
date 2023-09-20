@@ -14,7 +14,7 @@ add_dependencies(${exe_name} gblevents)
 target_link_libraries(
   ${exe_name}
   gblevents
-  bufr::bufr_4_DA)
+  bufr::bufr_4)
 
 if(MKL_FOUND)
   target_link_libraries(

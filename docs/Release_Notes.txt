@@ -28,6 +28,9 @@ FILE CHANGES
  A modulefiles/prepobs_jet.lua
  M scripts/exprep_post.sh
  M sorc/prepobs_cqcbufr.fd/CMakeLists.txt
+ M sorc/prepobs_mpcopybufr.fd/CMakeLists.txt
+ M sorc/prepobs_prepdata.fd/CMakeLists.txt
+ M sorc/syndat_syndata.fd/CMakeLists.txt
  M sorc/prepobs_cqcbufr.fd/cqcbufr.f
  M sorc/prepobs_cqcbufr.fd/radcor.f
  M sorc/prepobs_mpcopybufr.fd/CMakeLists.txt
@@ -59,7 +62,7 @@ ROOT LEVEL CHANGES
  README.md
  Moved to directory /docs
 
- VERSION
+VERSION
  Moved to to directory /versions
  
  build.sh
@@ -97,7 +100,7 @@ SCRIPTS CHANGES
   Add functionality to unrestrict aircraft data, this feature is meant to be used in development environmet
 
 SOURCE CHANGES
- 
+
  sorc/prepobs_cqcbufr.fd/CMakeLists.txt
  Replace obsolete bufr_4_DA library with bufr_4 which uses Dynamic Allocation by default (in bufr/v11.6 and later)
 
