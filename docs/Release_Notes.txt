@@ -156,6 +156,9 @@ VERSIONS CHANGES
  versions/VERSION
  Update to this release's versione
 
+ versions/build.ver
+ Start using bufr v11.7 to match the calls to bufr_4 libraries (instead of bufr_4_DA which required v11.5) 
+
 CHANGES TO OUTPUT AND FILE SIZES
 
  obsproc.v1.2.0 generates new dumps: *satwhr*, *uprair*
