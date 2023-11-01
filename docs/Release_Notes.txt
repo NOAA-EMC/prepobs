@@ -35,6 +35,7 @@ FILE CHANGES
  M sorc/prepobs_cqcbufr.fd/radcor.f
  M sorc/prepobs_mpcopybufr.fd/CMakeLists.txt
  M sorc/prepobs_mpcopybufr.fd/mpcopybufr.f90
+ M sorc/prepobs_oiqcbufr.fd/oiqcbufr.f
  M sorc/prepobs_prepdata.fd/CMakeLists.txt
  M sorc/prepobs_prepdata.fd/iw3unpbf.f
  M sorc/prepobs_prepdata.fd/prepdata.f
@@ -116,6 +117,9 @@ SOURCE CHANGES
  sorc/prepobs_mpcopybufr.fd/mpcopybufr.f90
  Increase array sizes to accomodate upper air data (MXMSGL,MAXSS)
  Introduce functionality for adding upper air data (*uprair*) to prepbufr's ADPUPA
+
+ sorc/prepobs_oiqcbufr.fd/oiqcbufr.f
+ Increase MAXOUT
 
  sorc/prepobs_prepdata.fd/CMakeLists.txt
  Replace obsolete bufr_4_DA library with bufr_4 which uses Dynamic Allocation by default (in bufr/v11.6 and later)
