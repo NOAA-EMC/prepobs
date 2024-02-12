@@ -114,7 +114,7 @@ C     CHECK THE STATUS OF THE PREVIOUS SET(S) OF WIND DATA.
       CALL TWINWIND_HIS_CHECK
 C     IF FILE IS MISSING OR CORRUPT  IT DOES ERREXIT 33
 
-                                                                                
+
 C     OPEN THE BUFR FILE ...
                                                                                 
       CALL OPENBF(INFILE,'IN',INFILE)                                           
@@ -127,13 +127,13 @@ C     FIND SUBSET 'ADPUPA' ...
          IF(IRET.NE.0) GO TO 999                                                
          GO TO 1                                                                
       ENDIF                                                                     
-                                                                                
-C     SPLIT DATE UP INTO COMPONENTS                                             
-                                                                                
+
+C     SPLIT DATE UP INTO COMPONENTS
+                                                                                      
       WRITE (CDATE, '(I10)')  IDATE      
       CDAT8(1:8)=CDATE(3:10)                                        
       READ  (CDATE, '(5I2)') IIDATE                                             
-                                                                                
+
 C     NOW READ THE SUBSET (ADPUPA)                                              
                                                                                 
    10 CONTINUE                                                                  
@@ -147,7 +147,7 @@ C     NOW READ THE SUBSET (ADPUPA)
          ENDIF                                                                  
             GO TO 10                                                            
       ENDIF                                                                     
-                                                                                
+
 C     NOW GET THE DATA ...                                                      
                                                                                 
       CALL UFBINT(INFILE,HDR,7,1,IRET,HSTR)                                     
@@ -238,9 +238,9 @@ C Make sure the direction is correct to proper 5 degree choice
       GO TO 10                                                                  
                                                                                 
 C     COME HERE WHEN ALL REPORTS HAVE BEEN READ IN -- CLOSE FILE                
-C     AND QUIT.                                                                 
-                                                                                
-  999 CONTINUE                                                                  
+C     AND QUIT.
+
+  999 CONTINUE                              
       CALL CLOSBF(INFILE)                                                       
       PRINT 102, IIDATE                                                         
  101  FORMAT(I5)                                                                
@@ -249,9 +249,16 @@ C     AND QUIT.
       DO 68 KZ=1,6
       MOUT=KZ+60
 
+      
       DO 67 KJ=1,IM(KZ)
       CARDT(KJ)=CARD(KZ,KJ)
  67   CONTINUE
+
+      IF (IM(KZ) .GT. 690000 ) THEN
+       print *, 'Warning:Index IM(KZ) exceeds CARDS array size'
+       print *, 'KZ=',KZ,' IM(KZ)=',IM(KZ)
+       IM(KZ)=0 
+      ENDIF
 
 C Do heap sort on array CARDT, store sorted locations in INDR
       CALL INDEX41(IM(KZ),CARDT,INDR)
@@ -287,10 +294,10 @@ C      SUBROUTINE CDUPS CHECKS ALL THESE WIND MATCHES TO SEE IF
 C      TWO DIFFERENT MODEL RUNS HAVE ENOUGH WIND MATCHES TO
 C      QUALIFY AS A TWINWIND
       CALL TWINWIND
-
 C      CALL W3TAGE('TIMETWIN')
       STOP                                                                      
       END
+
       SUBROUTINE PARTID(UID,CSID,PRS,RTIM,ICAT,IW,ISTA)
 C$$$  SUBPROGRAM DOCUMENTATION BLOCK
 C                .      .    .                                       .
@@ -405,19 +412,25 @@ C
 33     CONTINUE                                                         
        IF (L.GT.1) THEN                                                 
            L = L - 1                                                    
-           INDXT=INDX(L)            
-           print *,'ILIANA :timetwin IF L=  INDXT= ',L,' ', INDXT             
-           Q = ARRIN(INDXT)                                             
+           INDXT=INDX(L)
+c           print *,'timetwin.f/INDEX41 (if) L=',L,' INDXT=', INDXT            
+           Q = ARRIN(INDXT) 
        ELSE                                                             
            INDXT = INDX(IR)
-           print *,'412 ILIANA :timetwin ELSE L= INDXT= ',L,' ',INDXT           
-           Q = ARRIN(INDXT)                                             
-           INDX(IR) = INDX(1)                                           
-           IR = IR - 1                                                  
-           IF ( IR.EQ. 1) THEN                                          
+c           print *,'timetwin.f/INDEX41 (else) L=',L,' INDXT=', INDXT 
+c           Should wind be missing in a report, exit gracefully
+            IF (INDXT.GT.0) THEN
+            Q = ARRIN(INDXT)      
+            INDX(IR) = INDX(1)    
+            IR = IR - 1                                                  
+            IF ( IR.EQ. 1) THEN                                          
                INDX(1) = INDXT                                          
                RETURN                                                   
-           ENDIF                                                        
+            ENDIF 
+           ELSE ! IF (INDXT.GT.0)
+c            print *,'Proceed to next iteration gracefully'
+            RETURN        
+           ENDIF! IF (INDXT.GT.0)           
        ENDIF                                                            
                                                                         
        I = L                                                            
@@ -440,7 +453,8 @@ C
        INDX(I) = INDXT                                                  
        GOTO 33
        RETURN
-       END                                                              
+       END
+
       SUBROUTINE TWINWIND_HIS_CHECK
 C$$$  SUBPROGRAM DOCUMENTATION BLOCK
 C
@@ -514,6 +528,7 @@ C$$$
  999  CONTINUE
       RETURN
       END
+
       SUBROUTINE TWINWIND
 C$$$  SUBPROGRAM DOCUMENTATION BLOCK
 C
@@ -913,7 +928,8 @@ C
        IF ( J.LE.IR) GOTO 30                                            
        INDX(I) = INDXT                                                  
        GOTO 33                                                          
-       END                                                              
+       END
+
        SUBROUTINE INCSORT(CARDO,CARDN,CARDS,CARDD,INN,NDUPS,NSORT,DAYL)
 C$$$  SUBPROGRAM DOCUMENTATION BLOCK
 C                .      .    .                                       .
