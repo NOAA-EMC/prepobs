@@ -394,7 +394,7 @@ C                                      IN ASCENDING ORDER FOR J = 1,...
 C                                                                       
        INTEGER INDX(*)                                                  
        CHARACTER*41 ARRIN(*),Q                                           
-                                                                        
+                 
        DO 10 J = 1,N                                                    
            INDX(J) = J                                                  
 10     CONTINUE                                                         
@@ -405,10 +405,12 @@ C
 33     CONTINUE                                                         
        IF (L.GT.1) THEN                                                 
            L = L - 1                                                    
-           INDXT=INDX(L)                                                
+           INDXT=INDX(L)            
+           print *,'ILIANA :timetwin IF L=  INDXT= ',L,' ', INDXT             
            Q = ARRIN(INDXT)                                             
        ELSE                                                             
-           INDXT = INDX(IR)                                             
+           INDXT = INDX(IR)
+           print *,'412 ILIANA :timetwin ELSE L= INDXT= ',L,' ',INDXT           
            Q = ARRIN(INDXT)                                             
            INDX(IR) = INDX(1)                                           
            IR = IR - 1                                                  

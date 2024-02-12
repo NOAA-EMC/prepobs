@@ -2217,7 +2217,7 @@ set -x
             [ $err != 0 ] && exit 55  # for extra measure
          fi
       elif [ $BACK = 'YES' ] ; then
-         echo 'BACK=YES'
+         echo 'BACK=YES' # IG Feb2024: doesn't come here
          launcher_PREP=${launcher_PREP:-mpiexec}
 	 NPROCS=${NPROCS:-6}
          if [ "$launcher_PREP" = mpiexec ]; then
