@@ -2,12 +2,15 @@ help([[
 Load environment to build prepobs on Hera
 ]])
 
-load("cmake/3.20.1")
+prepend_path("MODULEPATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.5.1/envs/gsi-addon/install/modulefiles/Core")
 
-prepend_path("MODULEPATH", "/scratch2/NCEPDEV/nwprod/hpc-stack/libs/hpc-stack/modulefiles/stack")
-load("hpc/1.1.0")
-load("hpc-intel/18.0.5.274")
-load("hpc-impi/2018.0.4")
+stack_intel_ver=os.getenv("stack_intel_ver") or "2021.5.0"
+stack_impi_ver=os.getenv("stack_impi_ver") or "2021.5.1"
+cmake_ver=os.getenv("cmake_ver") or "3.23.1"
+
+load(pathJoin("stack-intel", stack_intel_ver))
+load(pathJoin("stack-intel-oneapi-mpi", stack_impi_ver))
+load(pathJoin("cmake", cmake_ver))
 
 -- Load common modules for this package
 load("prepobs_common")
