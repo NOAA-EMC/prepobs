@@ -14,7 +14,9 @@ if [[ "${target}" =~ ^(wcoss2|hera|orion|jet|hercules)$ ]]; then
   # copy the target specific build.ver and run.ver
   cp "${pkg_root}/versions/build.${target}.ver" "${pkg_root}/versions/build.ver"
   cp "${pkg_root}/versions/run.${target}.ver" "${pkg_root}/versions/run.ver"
+  export HOMEprepobs="${pkg_root}"
   source "${pkg_root}/versions/build.ver"
+  unset HOMEprepobs
   set +x
   module purge
   module use "${pkg_root}/modulefiles"
