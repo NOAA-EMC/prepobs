@@ -1,7 +1,7 @@
-build/
-exec/
-install/
-log*
+build*/
+exec*/
+install*/
+*log*
 versions/build.ver
 versions/run.ver
 
