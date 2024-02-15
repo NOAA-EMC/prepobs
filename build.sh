@@ -11,11 +11,11 @@ MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"${INSTALL_PREFIX}/module
 
 target="${INSTALL_TARGET,,}"
 if [[ "${target}" =~ ^(wcoss2|hera|orion|jet|hercules)$ ]]; then
-  # link the target specific build.ver and run.ver
+  # prepare the target specific build.ver and run.ver
   cd "${pkg_root}/versions" || exit 1
   rm -f build.ver run.ver
-  ln -s "build.${target}.ver" "build.ver"
-  ln -s "run.${target}.ver"   "run.ver"
+  cp "build.${target}.ver" "build.ver"
+  cp "run.${target}.ver"   "run.ver"
   cd "${pkg_root}" || exit 1
   export HOMEprepobs="${pkg_root}"
   source "${pkg_root}/versions/build.ver"
