@@ -16,4 +16,7 @@ load(pathJoin("cmake", cmake_ver))
 -- Load common modules for this package
 load("prepobs_common")
 
+-- On Hercules, MKL needs to be loaded separately
+load("intel-oneapi-mkl/2022.2.1")
+
 whatis("Description: prepobs build environment")
