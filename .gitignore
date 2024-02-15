@@ -1,0 +1,13 @@
+build*/
+exec*/
+install*/
+*log*
+versions/build.ver
+versions/run.ver
+
+*.mod
+*.[aox]
+
+*.sw[a-p]
+~
+.DS_Store
