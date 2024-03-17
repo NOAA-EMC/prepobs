@@ -401,7 +401,7 @@ C                                      IN ASCENDING ORDER FOR J = 1,...
 C                                                                       
        INTEGER INDX(*)                                                  
        CHARACTER*41 ARRIN(*),Q                                           
-                                                                        
+                 
        DO 10 J = 1,N                                                    
            INDX(J) = J                                                  
 10     CONTINUE                                                         
