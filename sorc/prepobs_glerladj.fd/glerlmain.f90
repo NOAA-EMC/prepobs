@@ -79,7 +79,7 @@ program prepobs_glerladj
 
   ! DAK: Need dynamic allocation on dimension of imatch
 
-  integer(4),dimension(8000,600)::imatch
+  integer(4),dimension(8000,900)::imatch
   integer(4)::isub,nmsub
   real(8)::sqn_8,sqn_8_last
   integer(4),dimension(dictmax)::types,lake,date,mask,act,anht
@@ -225,6 +225,7 @@ program prepobs_glerladj
      if (ctyp.ne."ADPSFC  ".and.ctyp.ne."MSONET  ".and.ctyp.ne."SFCSHP  ") cycle
      do while (ireadsb(13).eq.0)
         call ufbcnt(13,amsg,asub)
+        !print*, "GLERL amsg= asub= ..." , amsg, asub
         isub = isub+1
         sqn_8 = bmiss
         call ufbint(13,sqn_8,1,1,iret,'SQN')
