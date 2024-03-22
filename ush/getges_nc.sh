@@ -1392,7 +1392,7 @@ while [[ $fh -le $fhend ]];do
      [[ $cyc -ne $bn ]]  && break 1
   fi
   gesbn=`basename $ges`
-  logfbn=$(echo ${gesbn/atm/log})
+  logfbn=${gesbn/atm/atm.log}
   logfbn=$(echo ${logfbn/nc/txt})
   logf=$dn/$logfbn
   if [[ $quiet = NO ]]; then
