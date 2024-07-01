@@ -4,8 +4,8 @@ Load environment to build prepobs on Orion
 
 prepend_path("MODULEPATH", "/work/noaa/epic/role-epic/spack-stack/orion/spack-stack-1.6.0/envs/gsi-addon-env-rocky9/install/modulefiles/Core")
 
-stack_intel_ver=os.getenv("stack_intel_ver") or "2022.0.2"
-stack_impi_ver=os.getenv("stack_impi_ver") or "2021.5.1"
+stack_intel_ver=os.getenv("stack_intel_ver") or "2021.9.0"
+stack_impi_ver=os.getenv("stack_impi_ver") or "2021.9.0"
 cmake_ver=os.getenv("cmake_ver") or "3.23.1"
 
 load(pathJoin("stack-intel", stack_intel_ver))
