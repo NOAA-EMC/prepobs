@@ -2,7 +2,7 @@ help([[
 Load environment to build prepobs on Hera
 ]])
 
-prepend_path("MODULEPATH", "/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/gsi-addon-dev-rocky8/install/modulefiles/Core")
+prepend_path("MODULEPATH", pathJoin("/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-" .. (os.getenv("spack_stack_ver") or "None"), "/envs/" .. (os.getenv("spack_env") or "None"), "-dev-rocky8/install/modulefiles/Core")
 
 
 stack_intel_ver=os.getenv("stack_intel_ver") or "2021.5.0"
