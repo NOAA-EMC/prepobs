@@ -1,8 +1,8 @@
 help([[
-Load environment to build prepobs on Orion
+Load environment to build prepobs on Hercules
 ]])
 
-prepend_path("MODULEPATH", pathJoin("/work/noaa/epic/role-epic/spack-stack/hercules/spack-stack-" .. (os.getenv("spack_stack_ver") or "None"), "/envs/" .. (os.getenv("spack_env") or "None"), "-env/install/modulefiles/Core")
+prepend_path("MODULEPATH", "/work/noaa/epic/role-epic/spack-stack/hercules/spack-stack-1.6.0/envs/gsi-addon-env/install/modulefiles/Core")
 
 stack_intel_ver=os.getenv("stack_intel_ver") or "2021.9.0"
 stack_impi_ver=os.getenv("stack_impi_ver") or "2021.9.0"
