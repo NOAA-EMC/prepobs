@@ -2138,7 +2138,7 @@ C       12 - COAST GUARD TIDE GAUGE STATIONS
 CC
 C    FWINDO - TIME WINDOW (+/-) FOR SURFACE RPTS (IN HUNDREDTHS OF AN
 C              HR) - (MAX IS +/- 12 HRS)
-C                            (DEF - FWINDO(12)/4*300.,600.,7*300./)
+C                            (DEF - FWINDO(13)/4*300.,600.,8*300./)
 C    JSURFM - SURFACE MASS DATA TYPE SWITCH -
 C       =    0  PROCESS MASS INFO FOR THIS TYPE
 C       = 9999  EXCL. MASS INFO FOR THIS TYPE   (DEF - JSURFM(12)/12*0/)
@@ -2891,7 +2891,7 @@ C      PARAMETER (NUMDAT = NUMVAR + (2 * NUMQMS))
 
 C PARAMETER NAME "NUMTYP" THROUGHOUT PGM SETS NO. OF POSSIBLE MASS
 C  REPORT TYPES (NUMBER OF POSSIBLE WIND REPORT TYPES IS SAME AS THIS)
-      PARAMETER (NUMTYP = 74)
+      PARAMETER (NUMTYP = 75)
 
 C PARAMETER NAME "MAXOBS" THROUGHOUT PGM SETS MAX SIZE OF OBS ARRAY
 C  IN INTERFACE WITH SUBROUTINE IW3UNPBF
@@ -3024,7 +3024,8 @@ C  IN INTERFACE WITH SUBROUTINE IW3UNPBF
      $  'SATWND: NASA/MODIS POES IMGR WV/DEEP LYR',  ! 259
      $ 10*'-- EMPTY --                             ',! 260-9
      $  '* - CONSTANT-LEVEL BALLOON (PSEUDO)     ',  ! 270
-     $  9*'-- EMPTY --                             ',! 271-9
+     $  8*'-- EMPTY --                             ',! 271-8
+     $  'SFC: SAILDRONE                          ',  ! 279
      $  'SFC: MARINE (VALID STATION PRESSURE)    ',  ! 280
      $  'SFC: LAND (VALID STATION PRESSURE)      ',  ! 281
      $  'SFC: MARINE ATLAS BUOYS                 ',  ! 282
@@ -3090,7 +3091,8 @@ C  IN INTERFACE WITH SUBROUTINE IW3UNPBF
      $  'SATSND: RTOVS/ATOVS RAD/SNDG-SEA/CLOUDY ',  ! 173
      $  'SATSND: GOES RADIANCE/SNDG-SEA/CLEAR    ',  ! 174
      $  'SATSND: GOES RADIANCE/SNDG-SEA/CLOUDY   ',  ! 175
-     $  4*'-- EMPTY --                             ',! 176-9
+     $  3*'-- EMPTY --                             ',! 176-8
+     $  'SFC: SAILDRONE                          ',  ! 179
      $  'SFC: MARINE (VALID STATION PRESSURE)    ',  ! 180
      $  'SFC: LAND (VALID STATION PRESSURE)      ',  ! 181
      $  'SFC: SPLASH-LVL (DROP OR RECCO W/ PMSL) ',  ! 182
@@ -11064,8 +11066,9 @@ C ENCODE REPORT INTO PREPBUFR DATASET
       IF(IERF.NE.0)  RETURN
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C OPTION TO PRINT LISTING OF ALL REPORTS (NORMALLY COMMENTED OUT)
-C     PRINT 9091, STNID,NINT(HDR(6))
-C9091 FORMAT(1X,'STN. ',A8,'  PREPBUFR REPORT TYPE =',I4)
+      PRINT *, "DM: reports print  " 
+      PRINT 9091, STNID,NINT(HDR(6))
+ 9091 FORMAT(1X,'STN. ',A8,'  PREPBUFR REPORT TYPE =',I4)
 C+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 C ACCUMULATE COUNTS OF ENCODED REPORTS ACCORDING TO PREPBUFR REPORT TYPE
       KKTYPE(NINT(HDR(6))) = KKTYPE(NINT(HDR(6))) + 1
@@ -15686,6 +15689,7 @@ C    NN = 3 ===> MESONET SURFACE (COOPERATIVE NETWORKS)
 C    NN = 4 ===> ADPUPA (SPLASH-LEVEL REPORTS OVER WATER FROM EITHER
 C                DROPWINSONDES OR RECCOS WITH PMSL OBS)
 C    NN = 5 ===> SFCBOG (MEAN S-LVL PRESS. BOGUS OVER WATER -BOTH TYPES)
+C    NN = 6 ===> SAILDRONES 
       NNN = NC(NN)
       IF(NN.EQ.1)  THEN
 C CHECK TO SEE IF ANY BUFR MESSAGES CAN BE SKIPPED IN INPUT ADPSFC DUMP
@@ -15757,7 +15761,7 @@ C IFLAG = 1 RETURNS DATA SET INFO (ONLY) AFTER FIRST CALL
             PRINT'(1X)'
          ELSE  IF(NN.EQ.2)  THEN
             PRINT 872, FWINDO(2),FWINDO(4),FWINDO(6),FWINDO(9),
-     $                 fwindo(12)
+     $                  FWINDO(12)
   872 FORMAT(42X,'SURFACE SHIP ',28('.'),F5.0/42X,'BUOY ',36('.'),F5.0/
      $ 42X,'C-MAN PLATFORM ',26('.'),F5.0/42X,'AUTOMATED TIDE GAUGE ',
      $ 'STATIONS ',11('.'),F5.0/42X,'COAST GUARD TIDE GAUGE STATIONS ',
@@ -15848,6 +15852,8 @@ C  OF THE SFC R. TYPE - DEFAULT IS 0 ==> OCEANIC WITH VALID PSTN
          INSTR = 2
       ELSE  IF(ITYP.EQ.10)  THEN
          INSTR = 8
+      ELSE  IF(ITYP.EQ.13)  THEN
+         INSTR = 19
       ELSE  IF(ITYP.GT.19)  THEN
 C SKIP ALL INVALID SURFACE TYPES (WITH NO COUNT)
 CCCCC    IF(ITYP.EQ.20)  PRINT 8755, STNID,RDATA(1),RDATA(2),IDATA(9)
@@ -16526,7 +16532,7 @@ C    case (there is no mass piece)
             ISQNUM(MNDX) = ISQNUM(MNDX) - 1
             IF(IRNMRK.NE.4)  THEN
                PRINT 2713, STNID,RDATA(1),RDATA(2),IDATA(9)
- 2713 FORMAT(' * * TOTAL REPORT TOSSED  -ID=',A8,', LAT=',F7.2,'N, ',
+ 2713 FORMAT(' * * TOTAL REPORT TOSSED  -ID=',A8,',LAT=',F7.2,'N, ',
      $ 'LON=',F8.2,'E, RTYP',I4,' - ATLAS BUOY WITH MISSING WIND')
             ELSE
                PRINT 6713, STNID,RDATA(1),RDATA(2),IDATA(9)
@@ -16545,6 +16551,9 @@ C      FILL IN WIND INFORMATION FOR SURFACE LAND OR MARINE REPORT
 C-----------------------------------------------------------------------
 C PREPBUFR REPORT TYPE IS BASED ON INSTR
       HDR(6) = 280 + MOD(INSTR,20)
+      if ((idata(9).eq.560))  HDR(6) = 279
+      if ((idata(9).eq.560))  print *, 'SSSSSS  ', HDR(6)
+C-DM      if ((HDR(6).eq.280.and.idata(9).eq.560))  HDR(6) = 279
 C RESET PREPBUFR REPORT TYPE 283 TO 284 (SSM/I W. SPEED WILL USE
 C  PREPBUFR REPORT TYPE 283)
       IF(HDR(6).EQ.283)  HDR(6) = 284
@@ -16563,6 +16572,9 @@ C  assign new PREPBUFR report type based on dump report type
             hdr(6) = 294  ! Platform (C-MAN, tide gauge, Coast Guard)
          else if(idata(9).eq.540) then
             hdr(6) = 295  ! mesonet
+         else if(idata(9).eq.560) then
+            hdr(6) = 279  ! saldrn
+            print *,'SSSSS-SAILDRONE WIND KX   ',HDR(6),IDATA(9)
          else if(idata(9).eq.561) then
             hdr(6) = 294  ! buoys arriving in WMO FM13 format (fixed)
          else if(idata(9).eq.562.and..not.ATLAS) then
@@ -16641,6 +16653,7 @@ C   MASS AND WIND REPORTS}
       NOBS3 = NOBS3_SAVE
 C FOR NON-BOGUS TYPES, PREPBUFR REPORT TYPE IS BASED ON INSTR
       IF(.NOT.MSLBOG)  HDR(6) = 180 + INSTR
+      IF(IDATA(9).eq.560)  HDR(6) = 179
 C INITIALIZE BOTTOM LEVEL OF MOBS ARRAY
       MOBS(1:MXTYPV,1:MXWRDL,1:1) = IMISS
       if(ipstnflg.eq.1) then
@@ -16658,6 +16671,8 @@ C  assign new PREPBUFR report type based on dump report type
             hdr(6) = 195  ! mesonet
          else if(idata(9)/10.eq.56) then
             hdr(6) = 194  ! buoys (all types)
+         else if(idata(9).eq.560) then
+            hdr(6) = 199  ! buoys (all types)
          else
 C ... would not expect to get here but just in case should trap report
             print 3955, stnid,rdata(1),rdata(2),hdr(13),idata(9)
@@ -18573,11 +18588,11 @@ C  MNEMONICS PASSED INTO SUBROUTINE "UFBINT".
      $            'AIRCFT  ','SATWND  ','SATEMP  ','SPSSMI  ',
      $            'ADPSFC  ','SFCSHP  ','SFCBOG  ','ERS1DA  ',
      $            'GOESND  ','QKSWND  ','MSONET  ','GPSIPW  ',
-     $            'RASSDA  ','WDSATR  ','ASCATW  ','UPRAIR  ',
-     $            'SALDRN  '/
+     $            'RASSDA  ','WDSATR  ','ASCATW  ','SALDRN  ',
+     $            'UPRAIR  '/
 
       DATA  ICALL/0/,SINGLE/3*.FALSE.,3*.TRUE.,.FALSE.,5*.TRUE.,
-     $ .FALSE.,3*.TRUE.,.FALSE.,2*.TRUE.,.FALSE.,.TRUE./,ITYPL/0/,
+     $ .FALSE.,3*.TRUE.,.FALSE.,2*.TRUE.,.TRUE.,.FALSE./,ITYPL/0/,
      $ ISUB/0/,ISUBT/0/,IRECL/0/,AERS/12*0.0/
 
       DATA YMISS/99998.8/,IMISS/99999/
@@ -18593,24 +18608,24 @@ CCC              150  151  152  153  154  155  156-159
      $            8 , 13 ,  8 , 16 ,  0 ,  0 ,    4*13,
 CCC              160-163  164-165  166-169
      $              4*7 ,    2*13,    4*0 ,
-CCC              170-173  174-175  176-179
-     $              4*7 ,    2*13,    4*0 ,
+CCC              170-173  174-175  176-178 179
+     $              4*7 ,    2*13,    3*0 , 20
 CCC              180  181  182  183  184-186  187  188  189
      $           10 ,  9 , 10 ,  9 ,    3*0 ,  9 , 15 ,  0 ,
-CCC              190-191  192-193  194  195  196-199
-     $              2*11,   2*9,    10,  15,   4*0 ,
+CCC              190-191  192-193  194  195  196-198
+     $              2*11,   2*9,    10,  15,   3*0 ,
 CCC              200-209   210-219
      $             10*0 ,    10*0 ,
 CCC              220-222  223  224  225  226  227  228  229
      $              3*3 ,  1 ,  2 ,  0 ,  0 ,  1 ,  1 ,  1 ,
 CCC              230-231  232  233  234  235  236-239
      $              2*5,   3 ,  4 ,  5 ,  5 ,    4*0 ,
-CCC              240-249   250-259   260-269   270-279
-     $             10*6 ,    10*6 ,    10*0 ,    10*0 ,
+CCC              240-249   250-259   260-269   270-278, 279
+     $             10*6 ,    10*6 ,    10*0 ,    9*0 ,  20
 CCC              280  281  282  283  284  285  286  287  288  289
      $           10 ,  9 , 10 ,  8 ,  9 , 14 , 12 ,  9 , 15 , 18 ,
-CCC              290  291  292-293  294  295  296-299
-     $           19 ,  0,   2*9,     10,  15,   4*0 /
+CCC              290  291  292-293  294  295  296-298 
+     $           19 ,  0,   2*9,     10,  15,   3*0 /
 
       IER = 1
       IF(ICALL.EQ.0)  THEN
