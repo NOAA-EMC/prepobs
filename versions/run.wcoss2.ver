@@ -10,4 +10,4 @@ export w3emc_ver=2.9.1
 export sp_ver=2.3.3
 export sigio_ver=2.3.2
 export nemsio_ver=2.5.2
-export bufr_ver=11.5.0
+export bufr_ver=11.7.0

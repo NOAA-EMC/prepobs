@@ -1811,6 +1811,7 @@ C  -------------------------------
 C     CALL OPENBF(LUBIN,'IN',LUBIN)
       CALL UFBQCD(LUBIN,'OIQC',QCD)
       CALL OPENBF(LUBOT,'OUT',LUBIN)
+      CALL MAXOUT(50000)     !IG
       imsg = 1
       irec = 1
       ifld = 1

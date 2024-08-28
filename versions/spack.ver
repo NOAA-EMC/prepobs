@@ -1,5 +1,7 @@
-export spack_stack_ver=1.5.1
+export spack_stack_ver=1.6.0
 export spack_env=gsi-addon
+
+export cmake_ver=3.23.1
 
 export jasper_ver=2.0.32
 export libpng_ver=1.6.37
