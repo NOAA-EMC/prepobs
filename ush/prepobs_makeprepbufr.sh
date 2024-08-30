@@ -1914,9 +1914,12 @@ set -u
 echo " &task mp_process=$multi /" >>prepdata.stdin
 cat $DATA/prepdata.stdin >> prepdata.stdin
 
-BUFRLIST_all="uprair adpupa aircar aircft satwnd proflr vadwnd rassda adpsfc \
- sfcshp sfcbog msonet spssmi erscat qkswnd wdsatr ascatw saldrn rtovs atovs \
- goesnd gpsipw"
+#BUFRLIST_all="uprair adpupa aircar aircft satwnd proflr vadwnd rassda adpsfc \
+# sfcshp sfcbog msonet spssmi erscat qkswnd wdsatr ascatw saldrn rtovs atovs \
+# goesnd gpsipw"
+BUFRLIST_all="uprair aircar aircft satwnd proflr vadwnd rassda adpupa adpsfc \
+ sfcshp sfcbog msonet spssmi erscat qkswnd wdsatr ascatw saldrn rtovs atovs goesnd \
+ gpsipw"
  
 ###BUFRLIST_all_array=($BUFRLIST_all) # this does not work on all platforms
 set -A BUFRLIST_all_array `echo $BUFRLIST_all` # this works on all platforms
