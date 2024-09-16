@@ -1101,7 +1101,8 @@ PREPDATA=${PREPDATA:-YES}
 
 SYNDATA=${SYNDATA:-YES}
 
-GLERLBUFR=${GLERLBUFR:-NO} # normally only runs in URMA
+GLERLBUFR=${GLERLBUFR:-NO} # normally only runs in URMA; 
+                           # set in obsproc/jobs/JOBSPROC_URMA_PREP
 
 DO_QC=${DO_QC:-YES}
 
