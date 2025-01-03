@@ -9,6 +9,10 @@ INSTALL_TARGET=${INSTALL_TARGET:-"wcoss2"}
 INSTALL_PREFIX=${INSTALL_PREFIX:-"${pkg_root}/install"}
 MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"${INSTALL_PREFIX}/modulefiles"}
 
+if [[ "${INSTALL_TARGET}" == "wcoss2" ]]; then
+  export LMOD_TMOD_FIND_FIRST=yes
+fi
+
 target="${INSTALL_TARGET,,}"
 if [[ "${target}" =~ ^(wcoss2|hera|orion|jet|hercules)$ ]]; then
   # prepare the target specific build.ver and run.ver
