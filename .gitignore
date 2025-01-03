@@ -1,7 +1,6 @@
 build*/
 exec*/
 install*/
-modulefiles/prepobs
 *log*
 versions/build.ver
 versions/run.ver
