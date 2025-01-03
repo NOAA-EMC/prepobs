@@ -18286,7 +18286,7 @@ C  TABLE-A MESSAGE TYPES
       PARAMETER (IBTBLA = 20)
 
       COMMON/ADP/ISATOB,PMAND(23),RDATA(MAXOBS),IPRINT
-      COMMON/FIZZAA/PCODE,IUNITP,NLV,NBT,HDR_8(MHDRWD),
+      COMMON/FIZZAA/IPCODE,IUNITP,NLV,NBT,HDR_8(MHDRWD),
      $ OBS(MOBSWD,MXBLVL),OB2(MOB2WD,MXBLVL),QMS(MQMSWD,MXBLVL),
      $ PGM(MPGMWD,MXBLVL),RSN(MPGMWD,MXBLVL),BTO(2,MXBLVL),RAD(5),
      $ IUNITG(2)
@@ -18636,10 +18636,10 @@ C  TABLES A/B/D
      $ 'OUTPUT DATA SET'/)
          END IF
 C GET THE "PROGRAM CODE" CORRESPONDING TO "PREPRO" (PREPDATA)
-         CALL UFBQCD(IUNITP,'PREPRO',PCODE)
-         PRINT 400, PCODE
+         CALL UFBQCD(IUNITP,'PREPRO',IPCODE)
+         PRINT 400, IPCODE
   400    FORMAT(/30X,'==> THIS PROGRAM IS "PREPRO" (PREPDATA) AND HAS ',
-     $    'A PROGRAM CODE',F5.0,' <=='/)
+     $    'A PROGRAM CODE',I5.5,' <=='/)
          IF(.NOT.PREVEN)  THEN
             PRINT 7300
  7300 FORMAT(/1X,100('#')/' =====> W3EMC ROUTINE GBLEVENTS NOT INVOKED',
@@ -19452,7 +19452,7 @@ C$$$
       COMMON/STRMSL/IPMSL(MXTYPV)
       COMMON/STRPWT/PWAT(MXTYPV,MXPWT)
       COMMON/STRRRT/REQV
-      COMMON/FIZZAA/PCODE,IUNITP,NLV,NBT,HDR_8(MHDRWD),
+      COMMON/FIZZAA/IPCODE,IUNITP,NLV,NBT,HDR_8(MHDRWD),
      $ OBS(MOBSWD,MXBLVL),OB2(MOB2WD,MXBLVL),QMS(MQMSWD,MXBLVL),
      $ PGM(MPGMWD,MXBLVL),RSN(MPGMWD,MXBLVL),BTO(2,MXBLVL),RAD(5),
      $ IUNITG(2)
@@ -19561,7 +19561,7 @@ C   --> SSM/I OR GPS-IPW TOTAL COLUMN
             IF(PWAT(1,1).LT.YMISS.AND.NINT(PWAT(1,1)*10.).GE.0)  THEN
                OBS(12,1) = PWAT(1,1)
                QMS(6,1)  = MIN(15,NINT(PWAT(2,1)))
-               PGM(7,1)  = PCODE
+               PGM(7,1)  = IPCODE
                RSN(7,1)  = 100.
                NLV = 1
                IF(HDR(6).EQ.153.AND.PRSS.LT.YMISS) OBS(11,1) =PRSS*100.
@@ -19590,7 +19590,7 @@ C   --> GOES SIGMA LAYER (1. TO .9, .9 TO .7, .7 TO .3, AND .3 TO 0.)
      $          .GE.0)  THEN
                   OBS(IPWOBT(IPWTYP),1) = PWAT(1,IPWTYP)
                   QMS(IPWQMT(IPWTYP),1) = MIN(15,NINT(PWAT(2,IPWTYP)))
-                  PGM(IPWPCT(IPWTYP),1) = PCODE
+                  PGM(IPWPCT(IPWTYP),1) = IPCODE
                   RSN(IPWPCT(IPWTYP),1) = 100.
                   NLV = 1
                END IF
@@ -19609,7 +19609,7 @@ C DATA LEVEL CATEGORY IS STORED AS 6 (NOT DEFINED IN ICAT ARRAY)
 C STORE RAIN RATE OBS., TABLE VALUE, PROGRAM CODE AND REASON CODE
          OB2(1,1) = REQV
          QMS(7,1) = 2
-         PGM(8,1) = PCODE
+         PGM(8,1) = IPCODE
          RSN(8,1)  = 100.
          NLV = 1
 
@@ -19624,7 +19624,7 @@ C DATA LEVEL CATEGORY IS STORED AS 6 (NOT DEFINED IN ICAT ARRAY)
 C STORE CLOUD TOP PRESSURE OBS., TABLE VALUE, PROGRAM CODE & REASON CODE
          OB2(1,1) = CLTOP(1,1) * 100.
          QMS(9,1)  = MIN(15,NINT(CLTOP(2,1)))
-         PGM(9,1)  = PCODE
+         PGM(9,1)  = IPCODE
          RSN(9,1)  = 100.
 C STORE TOTAL CLOUD COVER OBS. AND CLOUD TOP TEMPERATURE OBS. (THESE
 C  CAN BE MISSING)
@@ -19728,7 +19728,7 @@ C particular type) - this pstn is also encoded (q.m. is minimum of 3)
 C (Note: ipstnflg is not passed into this subroutine as it is not used)
                OBS(1,NLV) = OBS1 * 0.1
                QMS(1,NLV) = QMS1
-               PGM(1,NLV) = PCODE
+               PGM(1,NLV) = IPCODE
                IF(RSN1.LT.YMISS)  RSN(1,NLV) = RSN1
 C DATA LEVEL CATEGORY PROCESSING
                IF(.NOT.SINGLE)  THEN
@@ -19811,7 +19811,7 @@ C STORE U- & V-COMP OBS; WIND TABLE VALUE, PROGRAM CODE AND REASON CODE
                         QMS4 = MAX(QMS3,QMS4)
                      END IF
                      QMS(2,NLV) = QMS4
-                     PGM(3,NLV) = PCODE
+                     PGM(3,NLV) = IPCODE
                      IF(RSN4.LT.YMISS)  RSN(3,NLV) = RSN4
 C.......................................................................
                      if(subset.ne.'ADPSFC'.and.subset.ne.'SFCSHP'.and.
@@ -19824,7 +19824,7 @@ C         BOTH present)
                            OBS(10,NLV) = OBS5
                            OBS(11,NLV) = OBS6
                            qms(8,nlv)  = qms4
-                           PGM(4,NLV)  = PCODE
+                           PGM(4,NLV)  = IPCODE
                            if(rsn4.lt.ymiss)  rsn(4,nlv) = rsn4
                         END IF
                      end if
@@ -19841,7 +19841,7 @@ cdak                    IF(CAT6.OR.OBS(7,NLV).EQ.4.OR.(.NOT..SINGLE.AND.
 cdak $                   OBS(7,NLV).EQ.6) THEN
                            OBS(6,NLV) = OBS2
                            QMS(5,NLV) = QMS2
-                           PGM(2,NLV) = PCODE
+                           PGM(2,NLV) = IPCODE
                            IF(RSN2.LT.YMISS)  RSN(2,NLV) = RSN2
                         END IF
                      END IF
@@ -19860,7 +19860,7 @@ C  are missing) - also store wind table value in case not stored above
 C.......................................................................
                         obs(10,nlv) = obs5
                         qms(8,nlv)  = qms4
-                        pgm(4,nlv)  = pcode
+                        pgm(4,nlv)  = Ipcode
                         if(rsn4.lt.ymiss)  rsn(4,nlv) = rsn4
                      end if
                      if(obs6.lt.ymiss)  then
@@ -19872,7 +19872,7 @@ C  stored above
 C.......................................................................
                         obs(11,nlv) = obs6 * 0.1
                         qms(8,nlv)  = qms4
-                        pgm(4,nlv)  = pcode
+                        pgm(4,nlv)  = Ipcode
                         if(rsn4.lt.ymiss)  rsn(4,nlv) = rsn4
                      end if
                   end if
@@ -19888,7 +19888,7 @@ C.......................................................................
 C STORE GEOPOTENTIAL OBS, TABLE VALUE, PROGRAM CODE AND REASON CODE
                      OBS(6,NLV) = OBS2
                      QMS(5,NLV) = QMS2
-                     PGM(2,NLV) = PCODE
+                     PGM(2,NLV) = IPCODE
                      IF(RSN2.LT.YMISS)  RSN(2,NLV) = RSN2
                   END IF
 C NO OTHER DATA IS PROCESSED FOR SUBSET = SFCBOG
@@ -19898,7 +19898,7 @@ C.......................................................................
 C STORE REPORTED TEMPERATURE OBS, TABLE VALUE, PGM CODE AND REASON CODE
                      OBS(4,NLV) = OBS3 * .01
                      QMS(3,NLV) = QMS3
-                     PGM(5,NLV) = PCODE
+                     PGM(5,NLV) = IPCODE
                      IF(RSN3.LT.YMISS)  RSN(5,NLV) = RSN3
                   END IF
 C.......................................................................
@@ -20020,7 +20020,7 @@ C IF DEWPOINT (K) .GT. TDMAX, MOISTURE FLAGGED FOR ALL DATA TYPES
 C. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
                      OBS(5,NLV) = OBS4
                      QMS(4,NLV) = QMS4
-                     PGM(6,NLV) = PCODE
+                     PGM(6,NLV) = IPCODE
                      IF(RSN4.LT.YMISS)  RSN(6,NLV) = RSN4
                   END IF
                END IF

@@ -406,7 +406,7 @@ C$$$
 
       COMMON /CGBEVAA/ SID_8,OBS_8(12,255),BAK_8(12,255),NLEV,XOB,YOB,
      $ DHR,TYP
-      COMMON /CGBEVBB/ PVCD,VTCD
+      COMMON /CGBEVBB/ IPVCD,IVTCD
       COMMON /CGBEVCC/ DOVTMP,DOFCST,SOME_FCST,DOBERR,FCST,VIRT,
      $ QTOP_REJ,SATMQC,ADPUPA_VIRT
       COMMON /CGBEVDD/ ERRS(300,33,6)
@@ -550,8 +550,8 @@ C  ---------------------------------------------------------------
 C  OBTAIN NECESSARY PROGRAM CODES (ONLY USED IN PREVENTS MODE)
 C  -----------------------------------------------------------
 
-         CALL UFBQCD(IUNITP,'PREVENT',PVCD)
-         CALL UFBQCD(IUNITP,'VIRTMP ',VTCD)
+         CALL UFBQCD(IUNITP,'PREVENT',IPVCD)
+         CALL UFBQCD(IUNITP,'VIRTMP ',IVTCD)
 
          PRINT 703
   703 FORMAT(/1X,100('#')/)
@@ -754,7 +754,7 @@ C***********************************************************************
 
       COMMON /CGBEVAA/ SID_8,OBS_8(12,255),BAK_8(12,255),NLEV,XOB,YOB,
      $ DHR,TYP
-      COMMON /CGBEVBB/ PVCD,VTCD
+      COMMON /CGBEVBB/ IPVCD,IVTCD
       COMMON /CGBEVCC/ DOVTMP,DOFCST,SOME_FCST,DOBERR,FCST,VIRT,
      $ QTOP_REJ,SATMQC,ADPUPA_VIRT
       COMMON /CGBEVEE/PSG01_C,ZSG01_C,TG01_C(100),UG01_C(100),
@@ -876,7 +876,7 @@ C  -------------------------------------------------------------------
                DN2FAR = .TRUE.
                PEV_8(1,L) = POB
                PEV_8(2,L) = REJ
-               PEV_8(3,L) = PVCD
+               PEV_8(3,L) = IPVCD
                PEV_8(4,L) = RCD
                MAXPEV = L
             ENDIF
@@ -934,7 +934,7 @@ CDAK $ ' ERROR')
                DN2FAR = .TRUE.
                PEV_8(1,L) = POB
                PEV_8(2,L) = REJ
-               PEV_8(3,L) = PVCD
+               PEV_8(3,L) = IPVCD
                PEV_8(4,L) = RCD
                MAXPEV = L
             ENDIF
@@ -1006,7 +1006,7 @@ cdak $ 'E, REJECT TOB/QOB ON LVL - TOB=',F5.1,'C, MISSING OBS. ERROR')
                ENDIF
                TEV_8(1,L) = TOB
                TEV_8(2,L) = REJ
-               TEV_8(3,L) = PVCD
+               TEV_8(3,L) = IPVCD
                TEV_8(4,L) = RCD
                MAXTEV = L
             ENDIF
@@ -1087,7 +1087,7 @@ cdak $'E, REJECT QOB ON LVL - QOB=',F6.3,'G/KG, MISSING OBS. ERROR')
                ENDIF
                QEV_8(1,L) = QOB
                QEV_8(2,L) = REJ
-               QEV_8(3,L) = PVCD
+               QEV_8(3,L) = IPVCD
                QEV_8(4,L) = RCD
                MAXQEV = L
             ENDIF
@@ -1129,7 +1129,7 @@ cdak $'E, REJECT UOB/VOB ON LVL - MISSING OBS. ERROR')
                WEV_8(1,L) = UOB
                WEV_8(2,L) = VOB
                WEV_8(3,L) = REJ
-               WEV_8(4,L) = PVCD
+               WEV_8(4,L) = IPVCD
                WEV_8(5,L) = RCD
                MAXWEV = L
             ENDIF
@@ -1156,7 +1156,7 @@ cd113 FORMAT(' ~~> ID ',A8,' (RTP ',I3,'), LAT=',F6.2,'N, LON=',F6.2,
 cdak $'E, REJECT PWO ON LVL - PWO=',F5.1,'MM, MISSING OBS. ERROR')
                PWV_8(1,L) = PWO
                PWV_8(2,L) = 9
-               PWV_8(3,L) = PVCD
+               PWV_8(3,L) = IPVCD
                PWV_8(4,L) = 3
                MAXPWV = L
             ENDIF
@@ -1183,7 +1183,7 @@ cd114 FORMAT(' ~~> ID ',A8,' (RTP ',I3,'), LAT=',F6.2,'N, LON=',F6.2,
 cdak $'E, REJECT PW1O ON LVL - PW1O=',F5.1,'MM, MISSING OBS. ERROR')
                PW1V_8(1,L) = PW1O
                PW1V_8(2,L) = 9
-               PW1V_8(3,L) = PVCD
+               PW1V_8(3,L) = IPVCD
                PW1V_8(4,L) = 3
                MAXPW1V = L
             ENDIF
@@ -1210,7 +1210,7 @@ cd115 FORMAT(' ~~> ID ',A8,' (RTP ',I3,'), LAT=',F6.2,'N, LON=',F6.2,
 cdak $'E, REJECT PW2O ON LVL - PW2O=',F5.1,'MM, MISSING OBS. ERROR')
                PW2V_8(1,L) = PW2O
                PW2V_8(2,L) = 9
-               PW2V_8(3,L) = PVCD
+               PW2V_8(3,L) = IPVCD
                PW2V_8(4,L) = 3
                MAXPW2V = L
             ENDIF
@@ -1237,7 +1237,7 @@ cd116 FORMAT(' ~~> ID ',A8,' (RTP ',I3,'), LAT=',F6.2,'N, LON=',F6.2,
 cdak $'E, REJECT PW3O ON LVL - PW3O=',F5.1,'MM, MISSING OBS. ERROR')
                PW3V_8(1,L) = PW3O
                PW3V_8(2,L) = 9
-               PW3V_8(3,L) = PVCD
+               PW3V_8(3,L) = IPVCD
                PW3V_8(4,L) = 3
                MAXPW3V = L
             ENDIF
@@ -1264,7 +1264,7 @@ cd117 FORMAT(' ~~> ID ',A8,' (RTP ',I3,'), LAT=',F6.2,'N, LON=',F6.2,
 cdak $'E, REJECT PW4O ON LVL - PW4O=',F5.1,'MM, MISSING OBS. ERROR')
                PW4V_8(1,L) = PW4O
                PW4V_8(2,L) = 9
-               PW4V_8(3,L) = PVCD
+               PW4V_8(3,L) = IPVCD
                PW4V_8(4,L) = 3
                MAXPW4V = L
             ENDIF
@@ -1813,7 +1813,7 @@ C$$$
 
       COMMON /CGBEVAA/ SID_8,OBS_8(12,255),BAK_8(12,255),NLEV,XOB,YOB,
      $ DHR,TYP
-      COMMON /CGBEVBB/ PVCD,VTCD
+      COMMON /CGBEVBB/ IPVCD,IVTCD
       COMMON /CGBEVCC/ DOVTMP,DOFCST,SOME_FCST,DOBERR,FCST,VIRT,
      $ QTOP_REJ,SATMQC,ADPUPA_VIRT
       COMMON /CGBEVGG/ BMISS
@@ -1880,7 +1880,7 @@ C  ---------------------------------------------------------------------
                IF(TOB.LT.BMISS) THEN
                   BAKV_8(1,L) = TOB
                   BAKV_8(2,L) = TQM_8(L)
-                  BAKV_8(3,L) = VTCD
+                  BAKV_8(3,L) = IVTCD
                   BAKV_8(4,L) = 3
                   EVNV = .TRUE.
                   CYCLE
@@ -1901,7 +1901,7 @@ cdak $ print *, '&&& bad QM fails sanity check'
             BAKQ_8(1,L) = QOB*1E6
             BAKQ_8(2,L) = QQM_8(L)  ! Moist qm same as before for
                                     !  re-calc. q
-            BAKQ_8(3,L) = VTCD
+            BAKQ_8(3,L) = IVTCD
             BAKQ_8(4,L) = 0     ! Re-calc. q gets unique reason code 0
             EVNQ = .TRUE.
 C  If message type ADPUPA, test this level to see if at or above trop
@@ -1913,7 +1913,7 @@ C   q calculation)
      $       ((CAT.EQ.5 .AND. POB.LT.500.) .OR. POB.LT. 80. .OR. TROP))
             IF(DOVTMP .AND. .NOT.TROP) THEN
                BAKV_8(1,L) = (TOB+273.16)*(1.+.61*QOB)-273.16
-               BAKV_8(3,L) = VTCD
+               BAKV_8(3,L) = IVTCD
                IF(SUBSET.EQ.'ADPUPA  ') THEN
 C  Message type ADPUPA comes here
                   IF(QQM_8(L).LT.4 .OR. TQM_8(L).EQ.0 .OR.

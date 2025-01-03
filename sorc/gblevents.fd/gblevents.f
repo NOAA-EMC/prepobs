@@ -557,7 +557,7 @@ C>
 
       COMMON /GBEVAA/ SID_8,OBS_8(13,255),QMS_8(12,255),BAK_8(12,255),
      $ XOB,YOB,DHR,TYP,NLEV
-      COMMON /GBEVBB/ PVCD,VTCD
+      COMMON /GBEVBB/ IPVCD,IVTCD
       COMMON /GBEVCC/ DOVTMP,DOFCST,SOME_FCST,DOBERR,FCST,VIRT,
      $ QTOP_REJ,SATMQC,ADPUPA_VIRT,RECALC_Q,DOPREV,dopmsl
       COMMON /GBEVDD/ ERRS(300,33,6)
@@ -730,8 +730,8 @@ C  ---------------------------------------------------------------
 C  OBTAIN NECESSARY PROGRAM CODES (ONLY USED IN PREVENTS MODE)
 C  -----------------------------------------------------------
 
-         CALL UFBQCD(IUNITP,'PREVENT',PVCD)
-         CALL UFBQCD(IUNITP,'VIRTMP ',VTCD)
+         CALL UFBQCD(IUNITP,'PREVENT',IPVCD)
+         CALL UFBQCD(IUNITP,'VIRTMP ',IVTCD)
 
          PRINT 703
   703 FORMAT(/1X,100('#')/)
@@ -957,7 +957,7 @@ C>
 
       COMMON /GBEVAA/ SID_8,OBS_8(13,255),QMS_8(12,255),BAK_8(12,255),
      $ XOB,YOB,DHR,TYP,NLEV
-      COMMON /GBEVBB/ PVCD,VTCD
+      COMMON /GBEVBB/ IPVCD,IVTCD
       COMMON /GBEVCC/ DOVTMP,DOFCST,SOME_FCST,DOBERR,FCST,VIRT,
      $ QTOP_REJ,SATMQC,ADPUPA_VIRT,RECALC_Q,DOPREV,dopmsl
       COMMON /GBEVEE/PSG01,ZSG01,TG01(500),UG01(500),VG01(500),
@@ -1096,7 +1096,7 @@ C  -------------------------------------------------------------------
                REJP_PS = .TRUE.
                PEV_8(1,L) = POB
                PEV_8(2,L) = REJ
-               PEV_8(3,L) = PVCD
+               PEV_8(3,L) = IPVCD
                PEV_8(4,L) = RCD
                MAXPEV = L
             ENDIF
@@ -1166,7 +1166,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1401) STNID,NINT(TYP),YOB,XOB,PQM
                ELSE
                   PEV_8(1,L) = POB
                   PEV_8(2,L) = REJ
-                  PEV_8(3,L) = PVCD
+                  PEV_8(3,L) = IPVCD
                   PEV_8(4,L) = RCD
                   MAXPEV = L
                ENDIF
@@ -1254,7 +1254,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1402) STNID,NINT(TYP),YOB,XOB,TQM
                ELSE
                   TEV_8(1,L) = TOB
                   TEV_8(2,L) = REJ
-                  TEV_8(3,L) = PVCD
+                  TEV_8(3,L) = IPVCD
                   TEV_8(4,L) = RCD
                   MAXTEV = L
                ENDIF
@@ -1359,7 +1359,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1403) STNID,NINT(TYP),YOB,XOB,QQM
                ELSE
                   QEV_8(1,L) = QOB
                   QEV_8(2,L) = REJ
-                  QEV_8(3,L) = PVCD
+                  QEV_8(3,L) = IPVCD
                   QEV_8(4,L) = RCD
                   MAXQEV = L
                ENDIF
@@ -1428,7 +1428,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1404) STNID,NINT(TYP),YOB,XOB,WQM
                   WEV_8(1,L) = UOB
                   WEV_8(2,L) = VOB
                   WEV_8(3,L) = REJ
-                  WEV_8(4,L) = PVCD
+                  WEV_8(4,L) = IPVCD
                   WEV_8(5,L) = RCD
                   MAXWEV = L
                ENDIF
@@ -1450,7 +1450,7 @@ cccccccc      if(ibfms(ufc_8).eq.0.or.ibfms(vfc_8).eq.0) then
                     wev_8(1,1) = uob
                     wev_8(2,1) = vob
                     wev_8(3,1) = 8
-                    wev_8(4,1) = pvcd
+                    wev_8(4,1) = Ipvcd
                     wev_8(5,1) = 8
                     maxwev = 1
                   end if
@@ -1487,7 +1487,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1405) STNID,NINT(TYP),YOB,XOB,PWQ
                ELSE
                   PWV_8(1,L) = PWO
                   PWV_8(2,L) = 9
-                  PWV_8(3,L) = PVCD
+                  PWV_8(3,L) = IPVCD
                   PWV_8(4,L) = 3
                   MAXPWV = L
                ENDIF
@@ -1522,7 +1522,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1406) STNID,NINT(TYP),YOB,XOB,PW1Q
                ELSE
                   PW1V_8(1,L) = PW1O
                   PW1V_8(2,L) = 9
-                  PW1V_8(3,L) = PVCD
+                  PW1V_8(3,L) = IPVCD
                   PW1V_8(4,L) = 3
                   MAXPW1V = L
                ENDIF
@@ -1557,7 +1557,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1407) STNID,NINT(TYP),YOB,XOB,PW2Q
                ELSE
                   PW2V_8(1,L) = PW2O
                   PW2V_8(2,L) = 9
-                  PW2V_8(3,L) = PVCD
+                  PW2V_8(3,L) = IPVCD
                   PW2V_8(4,L) = 3
                   MAXPW2V = L
                ENDIF
@@ -1592,7 +1592,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1408) STNID,NINT(TYP),YOB,XOB,PW3Q
                ELSE
                   PW3V_8(1,L) = PW3O
                   PW3V_8(2,L) = 9
-                  PW3V_8(3,L) = PVCD
+                  PW3V_8(3,L) = IPVCD
                   PW3V_8(4,L) = 3
                   MAXPW3V = L
                ENDIF
@@ -1627,7 +1627,7 @@ CDAKCDAKCDAKCDAK  WRITE(IUNITS,1409) STNID,NINT(TYP),YOB,XOB,PW4Q
                ELSE
                   PW4V_8(1,L) = PW4O
                   PW4V_8(2,L) = 9
-                  PW4V_8(3,L) = PVCD
+                  PW4V_8(3,L) = IPVCD
                   PW4V_8(4,L) = 3
                   MAXPW4V = L
                ENDIF
@@ -2220,7 +2220,7 @@ C>
 
       COMMON /GBEVAA/ SID_8,OBS_8(13,255),QMS_8(12,255),BAK_8(12,255),
      $ XOB,YOB,DHR,TYP,NLEV
-      COMMON /GBEVBB/ PVCD,VTCD
+      COMMON /GBEVBB/ IPVCD,IVTCD
       COMMON /GBEVCC/ DOVTMP,DOFCST,SOME_FCST,DOBERR,FCST,VIRT,
      $ QTOP_REJ,SATMQC,ADPUPA_VIRT,RECALC_Q,DOPREV,dopmsl
       COMMON /GBEVFF/ BMISS
@@ -2307,7 +2307,7 @@ C  ---------------------------------------------------------------------
                IF(TOB.LT.BMISS) THEN
                   BAKV_8(1,L) = TOB
                   BAKV_8(2,L) = TQM_8(L)
-                  BAKV_8(3,L) = VTCD
+                  BAKV_8(3,L) = IVTCD
                   BAKV_8(4,L) = 3
                   EVNV = .TRUE.
                   CYCLE
@@ -2336,7 +2336,7 @@ ccc         IF(QOB*1E6.LT.BMISS) BAKQ_8(1,L) = QOB*1E6
             IF(QOB*1E6.LT.BMISS .AND. QOB.GT.0.) BAKQ_8(1,L) = QOB*1E6
             BAKQ_8(2,L) = QQM_8(L)  ! Moist qm same as before for
                                     !  re-calc. q
-            BAKQ_8(3,L) = VTCD
+            BAKQ_8(3,L) = IVTCD
             BAKQ_8(4,L) = 0     ! Re-calc. q gets unique reason code 0
             EVNQ = .TRUE.
 C  If message type ADPUPA, test this level to see if at or above trop
@@ -2348,7 +2348,7 @@ C   q calculation)
      $       ((CAT.EQ.5 .AND. POB.LT.500.) .OR. POB.LT. 80. .OR. TROP))
             IF(DOVTMP .AND. .NOT.TROP) THEN
                BAKV_8(1,L) = (TOB+273.16)*(1.+.61*QOB)-273.16
-               BAKV_8(3,L) = VTCD
+               BAKV_8(3,L) = IVTCD
                IF(SUBSET.EQ.'ADPUPA  ') THEN
 C  Message type ADPUPA comes here
                   IF((QQM_8(L).LT.4.OR.QQM_8(L).EQ.9.OR.QQM_8(L).EQ.15)

@@ -28941,7 +28941,7 @@ C  --------------------------------------------------------------
 
       CALL OPENBF(IUNTPO,'OUT',IUNTPN)
       CALL MAXOUT(50000)                ! CH 08/31/21
-      CALL UFBQCD(IUNTPO,'SYNDATA',SYNPC)
+      CALL UFBQCD(IUNTPO,'SYNDATA',ISYNPC)
 
 C  VARIOUS COPYING OPTIONS
 C  -----------------------
@@ -29092,7 +29092,7 @@ C-----------------------------------------------------------------------
                PQM = PES_8(2,J)
                IF(PQM.LT.10) THEN
                   PES_8(2,J) = 10
-                  PES_8(3,J) = SYNPC
+                  PES_8(3,J) = ISYNPC
                   PES_8(4,J) = 10
                   NFLAG = 1
                ELSE
@@ -29144,7 +29144,7 @@ C              IF(RDIST.LE.(MAX(111.,3*RMW(J))))  GO TO 1600
                WQM = WES_8(3,J)
                IF(WQM.LT.10) THEN
                   WES_8(3,J) = 10
-                  WES_8(4,J) = SYNPC
+                  WES_8(4,J) = ISYNPC
                   WES_8(5,J) = 99
                   NFLAG = 1
                ELSE
@@ -29290,18 +29290,18 @@ C  --------------------------------
                TZS_8(1,NLT) = 1
                TZS_8(2,NLT) = IPOB
                TZS_8(3,NLT) = 1
-               TZS_8(4,NLT) = SYNPC
+               TZS_8(4,NLT) = ISYNPC
                TZS_8(5,NLT) = 0
                IF(TOB.GT.-9999) THEN
                   TZS_8(6,NLT) = TOB
                   TZS_8(7,NLT) = ITQM
-                  TZS_8(8,NLT) = SYNPC
+                  TZS_8(8,NLT) = ISYNPC
                   TZS_8(9,NLT) = 0
                END IF
                IF(ZOB.GT.-9999) THEN
                    TZS_8(10,NLT) = ZOB
                    TZS_8(11,NLT) = IZQM
-                   TZS_8(12,NLT) = SYNPC
+                   TZS_8(12,NLT) = ISYNPC
                    TZS_8(13,NLT) = 0
                END IF
             ENDIF
@@ -29310,12 +29310,12 @@ C  --------------------------------
                UVS_8( 1,NLW) = 1
                UVS_8( 2,NLW) = IPOB
                UVS_8( 3,NLW) = 1
-               UVS_8( 4,NLW) = SYNPC
+               UVS_8( 4,NLW) = ISYNPC
                UVS_8( 5,NLW) = 0
                UVS_8( 6,NLW) = UOB
                UVS_8( 7,NLW) = VOB
                UVS_8( 8,NLW) = IWQM
-               UVS_8( 9,NLW) = SYNPC
+               UVS_8( 9,NLW) = ISYNPC
                UVS_8(10,NLW) = 0
             ENDIF
          ELSE IF(IRTYP.EQ.111 .AND. MAK111) then
@@ -29325,12 +29325,12 @@ C  --------------------------------
             IF(ZOB.GT.-9999) THEN
                ZDTA_8(2,NLTX) = ZOB
                ZDTA_8(3,NLTX) = IZQM
-               ZDTA_8(4,NLTX) = SYNPC
+               ZDTA_8(4,NLTX) = ISYNPC
                ZDTA_8(5,NLTX) = 0
             END IF
             PEVN_8(1,NLTX) = IPOB
             PEVN_8(2,NLTX) = 1
-            PEVN_8(3,NLTX) = SYNPC
+            PEVN_8(3,NLTX) = ISYNPC
             PEVN_8(4,NLTX) = 0
             IF (ILEV .EQ. 1)  THEN
 
@@ -29338,7 +29338,7 @@ C The initial surface pressure for report type 111 (the reported
 C  storm center pressure) is assigned a reason code of 2
 
                PEVN_8(2,NLTX) = 0
-               PEVN_8(3,NLTX) = SYNPC
+               PEVN_8(3,NLTX) = ISYNPC
                PEVN_8(4,NLTX) = 2
             END IF
          ENDIF
@@ -29416,7 +29416,7 @@ C  with reason code 3
 
                   pevn_8(1,ilev) = pnew
                   pevn_8(2,ilev) = 0
-                  pevn_8(3,ilev) = synpc
+                  pevn_8(3,ilev) = Isynpc
                   pevn_8(4,ilev) = 3
                   call ufbint(IUNTPO,pevn_8(1,ilev),4,1,iret,pestr)
                end if
@@ -29438,7 +29438,7 @@ C  this event gets reason code 1
 
                   qevn_8(1,ilev) = 0.99 * qsat
                   qevn_8(2,ilev) = 0
-                  qevn_8(3,ilev) = synpc
+                  qevn_8(3,ilev) = Isynpc
                   qevn_8(4,ilev) = 1
                end if
             end if

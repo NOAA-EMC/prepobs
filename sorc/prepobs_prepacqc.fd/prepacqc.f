@@ -845,7 +845,7 @@ c^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 c Miscellaneous
 c -------------
-      real       nrlacqc_pc              ! PREPBUFR program code for the NRL PREPACQC step
+      integer    nrlacqc_pc              ! PREPBUFR program code for the NRL PREPACQC step
 
       logical    l_first_date            ! true for first date (used inside NRL QC code)
       data       l_first_date /.true./   ! always initialize as T
@@ -1438,7 +1438,7 @@ c ------------------------------------------------------------------------------
      +                        uob_ev,vob_ev,wqm_ev,wpc_ev,wrc_ev,
      +                        wbg,wpp,
      +	                      ddo_ev,ffo_ev,dfq_ev,dfp_ev,dfr_ev,
-     +                        nrlacqc_pc,l_allev_pf,l_prof1lvl,
+     +                        real(nrlacqc_pc),l_allev_pf,l_prof1lvl,
      +                        l_mandlvl,tsplines,
      +                        l_operational,lwr)
 
@@ -1501,7 +1501,7 @@ c ------------------------------------------------------------------------------
      +                        ncep_qm_t,ncep_rc_t,
      +                        ncep_qm_q,ncep_rc_q,
      +                        ncep_qm_w,ncep_rc_w,
-     +                        ncep_rej,nrlacqc_pc)
+     +                        ncep_rej,real(nrlacqc_pc))
 
       write(*,*)
       write(*,*)
