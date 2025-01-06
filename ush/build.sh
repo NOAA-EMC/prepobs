@@ -11,7 +11,6 @@ MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"${INSTALL_PREFIX}/module
 
 if [[ "${INSTALL_TARGET}" == "wcoss2" ]]; then
   export LMOD_TMOD_FIND_FIRST=yes
-  export spack_mod_path="/apps/ops/test/spack-stack-1.6.0-nco/envs/nco-intel-19.1.3.304/install/modulefiles/Core"
 fi
 
 target="${INSTALL_TARGET,,}"

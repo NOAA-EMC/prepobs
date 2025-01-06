@@ -2,7 +2,7 @@ help([[
 Load environment to build prepobs on WCOSS2
 ]])
 
-prepend_path("MODULEPATH", os.getenv("spack_mod_path"))
+prepend_path("MODULEPATH", os.getenv("spack_stack_mod_path"))
 
 local stack_intel_ver=os.getenv("stack_intel_ver") or "19.1.3.304"
 local stack_cray_mpich_ver=os.getenv("stack_cray_mpich_ver") or "8.1.9"
