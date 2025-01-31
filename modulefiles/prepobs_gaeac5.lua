@@ -1,5 +1,5 @@
 help([[
-Load environment to build prepobs on Gaea
+Load environment to build prepobs on Gaea C5
 ]])
 
 prepend_path("MODULEPATH", os.getenv("spack_stack_mod_path"))
