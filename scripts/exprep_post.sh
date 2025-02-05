@@ -105,7 +105,7 @@ net=$NET
 
 net_uc=$(echo $net | tr [a-z] [A-Z])
 set +u
-[ -n "$cycM" ]  &&  net_uc=RTMA_RU
+[ -n "$cycM" ]  &&  net_uc=${net_uc}_RU
 set -u
 tmmark_uc=$(echo $tmmark | tr [a-z] [A-Z])
 RUN_uc=$(echo $RUN | tr [a-z] [A-Z])
