@@ -1617,16 +1617,16 @@ echo "Some or all BUFR data dumps were not found for requested time ... "
 echo
             set -x
 
-#           if [[ "$COMSP" =~ (^/com/|^/com2/|^/gpfs/.../nco/ops/com/) && \
-#               "$tstsp" =~ (^/tmp/null)  ]]; then
-#              set +x
-#echo
-#echo "ABNORMAL EXIT!!!!!!!!!!!"
-#echo
-#               set -x
-#               $DATA/err_exit
-#               exit 55  # for extra measure
-#            fi
+            if [[ "$COMSP" == /com/* || "$COMSP" == /com2/* || "$COMSP" == /gpfs/???/nco/ops/com/* ]] &&
+               [[ "$tstsp" == /tmp/null*  ]]; then
+               set +x
+echo
+echo "ABNORMAL EXIT!!!!!!!!!!!"
+echo
+               set -x
+               $DATA/err_exit
+               exit 55  # for extra measure
+            fi
          fi
       fi
 
