@@ -10,7 +10,7 @@ INSTALL_PREFIX=${INSTALL_PREFIX:-"${pkg_root}/install"}
 MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"${INSTALL_PREFIX}/modulefiles"}
 
 target="${INSTALL_TARGET,,}"
-if [[ "${target}" =~ ^(wcoss2|hera|orion|jet|hercules|gaea)$ ]]; then
+if [[ "${target}" =~ ^(wcoss2|hera|orion|jet|hercules|gaeac5|gaeac6)$ ]]; then
   # prepare the target specific build.ver and run.ver
   cd "${pkg_root}/versions" || exit 1
   rm -f build.ver run.ver
