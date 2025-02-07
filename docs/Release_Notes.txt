@@ -16,6 +16,7 @@ FILE CHANGES
  M fix/prepobs_prep.bufrtable
  M sorc/prepobs_prepdata.fd/iw3unpbf.f
  M sorc/prepobs_prepdata.fd/prepdata.f
+ M ush/gdas_countstat.sh
  M ush/prepobs_makeprepbufr.sh
  M versions/VERSION
  (M-modified; A-added; D-deleted)
@@ -39,6 +40,9 @@ SOURCE CHANGES
  Introduce functionality to add saildrone obs type (*saldrn*) to prepbufr's SFCSHP
 
 USH CHANGES
+ ush/gdas_countstat.sh
+ Count only adpsfc, skip sfcsno when counting obs
+
  ush/prepobs_makeprepbufr.sh
  Introduce functionality to add saildrone obs type (*saldrn*) to prepbufr's SFCSHP
 
