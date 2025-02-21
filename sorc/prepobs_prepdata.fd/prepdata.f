@@ -3258,7 +3258,7 @@ C  GRIDS DEFINED AS FOLLOWS:
 C        GDNH (NH LAND-SEA) - =0.0 SEA; =1.0 LAND
 C        GDSH (SH LAND-SEA) - =0.0 SEA; =1.0 LAND
 C        GDUS (NH GEOGR.)   - =2.0 U.S. MAINLAND; =1.0 ADJOINING
-C         GULF OF MEXICO AND CANADA SOUTH OF 49N LAT; =0.0 REST OF N.H.
+C        WATER SURROUDNING USA, CANADA SOUTH OF 49N LAT; =0.0 REST OF N.H.
       PRINT 101, IUNIT(3)
   101 FORMAT(/,1X,'**** OPEN UNIT ',I2,' TO GET N.H./S.H. LAND-SEA ',
      $ 'GRIDS &  N.H. CONUS GRID FOR LOCATION CHECKS ****')
@@ -5756,7 +5756,7 @@ C    CAUSED AN OVERFLOW IN KXI FOR ELON > 359.98 AND AN OVERFLOW IN KYJ
 C    FOR LAT > -0.01
 C 2015-04-16  D. A. KEYSER -- Added new input argument ITYC to indicate
 C    whether the check being done is land/sea (=1) or geographical
-C    (inside vs. outside U.S. mainland/Gulf of Mexico/Southern Ontario,
+C    (inside vs. outside U.S. mainland/water surrounding USA/Southern Ontario,
 C    =2).  Added new input agrument NPTS to indicate whether the values
 C    in the immediate surrounding 4 grid points (=4) or these plus the
 C    next ring of 12 grid points (=16) should be tested against the
@@ -5781,7 +5781,7 @@ C     ELON     - LONGITUDE OF DATA REPORT (0.0 TO 359.99 DEG. E)
 C     ITYC     - INDICATES WHAT IS BEING CHECKED:
 C                  =1  - LAND vs. SEA
 C                  =2  - GEOGRAPHICAL (INSIDE vs. OUTSIDE U.S. MAINLAND/
-C                        GULF OF MEXICO/SOUTHERN ONTARIO)
+C                        WATER SURROUDNING USA/SOUTHERN ONTARIO)
 C     NPTS     - NUMBER OF GRID POINTS SURROUNDING REPORT TO BE CHECKED
 C              - {SHOULD BE EITHER 4 OR 16 (I.E., 2 ROWS OUT FROM
 C              - REPORT), IF SOMETHING ELSE DEFAULTS TO 4}
@@ -12066,7 +12066,7 @@ C IDENTIFY AIRCRAFT TYPE INDEX ---> NAC
          END IF
 C-----------------------------------------------------------------------
 C     DETERMINE AIRCRAFT GEOGRAPHICAL LOCATION, IUS (=1-OUTSIDE US
-C    MAINLND/G. MEXICO/SO. ONTARIO - PRESET!; =2-INSIDE THIS REGION)
+C    MAINLND/WATER SURROUDNING USA/SO. ONTARIO - PRESET!; =2-INSIDE THIS REGION)
 C-----------------------------------------------------------------------
          IF(NINT(RDATA(1)*100.).GE.0)  THEN
             CALL LNDCHK(RDATA(1),RDATA(2),2,4,2,GDUS,362,91,0.5,ILAND)
