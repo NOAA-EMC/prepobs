@@ -2037,6 +2037,7 @@ C  -------------------------------------------------------
       ELSE  IF(ADPSUB .EQ. 'SPSSMI')  THEN
          R01UBF = R07UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
       ELSE
+C         print'(" IG IW3UNPBF/R04UBF:Going in... ADPSUB=")', ADPSUB
          R01UBF = R04UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
       END IF
 
@@ -4107,6 +4108,11 @@ C  ---------------------------------------------------------------------
       CALL UFBINT(LUNIT,OBS2_8(1),2,1,IRET,'RSRD EXPRSRD')
       CALL UFBINT(LUNIT,OBS2_8(4),1,1,IRET,'SST1')
       IF(IBFMS(OBS2_8(4)).EQ.0)  OBS2_8(41) = 2.0
+
+
+C      PRINT'("IG:in R04UBF: IS IT SAILDRONE ???   ")', SUBSET
+
+
       IF(SUBSET(1:5).EQ.'NC000')  THEN               ! All surface land
          IF(SUBSET(6:7).EQ.'10') THEN
             CALL UFBSEQ(LUNIT,UFBINT2_8(1,1),4,255,IRET, 'VISBSEQN')
@@ -4665,12 +4671,15 @@ C  ------------------------------------------------------------
       IF(MAX(DPD,STM).LT.BMISS)  THEN
          DPD = (STM-DPD)*10.
       ELSE
-        IF(NINT(RHU).GE.0.AND.NINT(RHU).LE.100.AND.SPV.LT.1200.) THEN
-          QQSAT = QFRMTP(STM,SPV)
-          QQ = (RHU * 0.01) * QQSAT
-          IF(QQ.GT.0.0) THEN
-            TD = TFRMQP(QQ,SPV)
-            DPD = (STM-TD)*10.
+        IF(SUBSET.EQ.'NC001120') THEN
+C          PRINT'(" IG R04UBF ===> SAILDRONE DPD conversion")'
+          IF(NINT(RHU).GE.0.AND.NINT(RHU).LE.100.AND.SPV.LT.1200.) THEN
+            QQSAT = QFRMTP(STM,SPV)
+            QQ = (RHU * 0.01) * QQSAT
+            IF(QQ.GT.0.0) THEN
+              TD = TFRMQP(QQ,SPV)
+              DPD = (STM-TD)*10.
+            END IF
           END IF
         END IF
         IF(DPD.GE.BMISS) THEN
