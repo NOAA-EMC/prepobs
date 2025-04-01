@@ -12,7 +12,6 @@ load("gnu")
 load(pathJoin("stack-intel", stack_intel_ver))
 load(pathJoin("stack-intel-oneapi-mpi", stack_impi_ver))
 load(pathJoin("cmake", cmake_ver))
---unload("gnu")
 
 -- Load common modules for this package
 load("prepobs_common")
