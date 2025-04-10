@@ -4788,7 +4788,7 @@ C***********************************************************************
 C***********************************************************************
 C***********************************************************************
       FUNCTION R05UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
-C     ---> PROCESSES AIRCRAFT DATA (004/001-004, 004/006-011, 004/103)
+C     ---> PROCESSES AIRCRAFT DATA (004/001-004, 004/006-011, 004/017, 004/103)
 
       COMMON/IUBFAA/BMISS
       COMMON/IUBFBB/KNDX,KSKACF(8),KSKUPA,KSKSFC,KSKSAT,KFLSAT(12),
@@ -5105,8 +5105,17 @@ C          because it will print out warning messages.}
          else
             call readlc(lunit,CBORG,'BORG')
          end if
+C Missing headers for AMDAR over AFIRS data: set CBORG to all blanks
+C and don't call READLC because it would print warnings
+         if(subset.eq.'NC004017')  then
+            CBORG = '        '
+            print '(A)','^^^^^^ NC004017 ^^^^^^^'
+            print '(" CBORG = """,A,"""")', CBORG
+         else
+            call readlc(lunit,CBORG,'BORG')
+         end if
 cpppppppppp
-cc    print'(" CBORG = """,A,"""")', CBORG
+C         print'(" CBORG = """,A,"""")', CBORG
 cpppppppppp
          if(CBORG.ne.'        ')  then
 cxxxx
@@ -5132,8 +5141,13 @@ C          print out warning messages.}
          else
             call readlc(lunit,CBORG,'ICLI')
          end if
+         if(subset.eq.'NC004017')  then
+            CBORG = '        '
+         else
+            call readlc(lunit,CBORG,'ICLI')
+         end if
 cpppppppppp
-cc    print'(" CBORG = """,A,"""")', CBORG
+C         print'(" CBORG = """,A,"""")', CBORG
 cpppppppppp
          CBULLX = '       '//CBORG(1:4)
                               ! will set CBULLX back to all blanks
