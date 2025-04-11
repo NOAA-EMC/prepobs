@@ -4891,8 +4891,9 @@ C  ---------------------------------------------------------------------
          CALL UFBINT(LUNIT,OBS2_8(42),1,1,IRET,'MSTQ')
       END IF
       IF(SUBSET.EQ.'NC004002'.OR.SUBSET.EQ.'NC004006'.OR.
-     $   SUBSET.EQ.'NC004009'.OR.SUBSET.EQ.'NC004010')  THEN
-                        ! PIREPs, E-AMDAR, Canadian AMDAR, TAMDARB
+     $   SUBSET.EQ.'NC004009'.OR.SUBSET.EQ.'NC004010'.OR.
+     $   SUBSET.EQ.'NC004017')  THEN
+             ! PIREPs, E-AMDAR, Canadian AMDAR, TAMDARB, AFFIRS
          CALL UFBINT(LUNIT,OBS3_8(1,1,6),5,255,IRET,'AFIC HBOI HTOI')
                                      ! For TAMDAR only AFIC is present
                                      ! and only in older AirDAT
@@ -5108,8 +5109,8 @@ C          because it will print out warning messages.}
 C Missing headers for AMDAR over AFIRS data: set CBORG to all blanks
 C and don't call READLC because it would print warnings
          if(subset.eq.'NC004017')  then
-            CBORG = '        '
             print '(A)','^^^^^^ NC004017 ^^^^^^^'
+            CBORG = '        '
             print '(" CBORG = """,A,"""")', CBORG
          else
             call readlc(lunit,CBORG,'BORG')
@@ -5241,7 +5242,7 @@ C  -----------------------------------------------------------------
      $    'TRBX10 TRBX21 TRBX32 TRBX43');TRBX(1:4)=TRBX_8(1:4)
 
       ELSE IF(SUBSET.EQ.'NC004006'.OR.SUBSET.EQ.'NC004009'.OR.
-     $        SUBSET.EQ.'NC004010') THEN
+     $        SUBSET.EQ.'NC004010'.OR.SUBSET.EQ.'NC004017') THEN
  
 C  ------------------------------------------------------------
 C  E-AMDAR, CANADIAN AMDAR, and TAMDARB AIRCRAFT TYPE COME HERE
