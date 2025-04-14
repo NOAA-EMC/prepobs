@@ -5101,67 +5101,21 @@ C  all blanks for CBORG when mnemonic "BORG" not found) - dak 2/19/13
 C   {Note: For Panasonic (AirDAT) TAMDAR, BORG and BUHD are always
 C          missing, so set CBORG to all blanks and don't call READLC
 C          because it will print out warning messages.}
-         if(subset.eq.'NC004010')  then
+      if(subset.eq.'NC004010'.or.subset.eq.'NC004017')  then
             CBORG = '        '
-         else
+      else
             call readlc(lunit,CBORG,'BORG')
-         end if
-C Missing headers for AMDAR over AFIRS data: set CBORG to all blanks
-C and don't call READLC because it would print warnings
-         if(subset.eq.'NC004017')  then
-            print '(A)','^^^^^^ NC004017 ^^^^^^^'
-            CBORG = '        '
-            print '(" CBORG = """,A,"""")', CBORG
+      end if
+cpppppppppp
+      if(CBORG.ne.'        ')  then
+            CBULLX = '       ' // CBORG(1:4)
+      else
+         if (SUBSET .EQ. 'NC004010'.or.SUBSET .EQ. 'NC004017') THEN 
+               CBORG = '        '      
          else
-            call readlc(lunit,CBORG,'BORG')
+               call readlc(lunit,CBORG,'ICLI') ! Prior to 5/2002
          end if
-cpppppppppp
-C         print'(" CBORG = """,A,"""")', CBORG
-cpppppppppp
-         if(CBORG.ne.'        ')  then
-cxxxx
-         CBULLX = CBUHD(1:6)//' '//CBORG(1:4)
-      ELSE
-         CALL UFBINT(LUNIT,BULL_8,2,1,IRET,'ICLI')  ! Prior to  5/2002
-cccc     IF(IRET.NE.0.AND.(BULL_8(1).LE.BMISS-5000..OR.
-cccc $    BULL_8(1).GE.BMISS+5000.))  CBULLX = '       '//CBORG(1:4)
-cxxxx
-cpppppppppp
-cc    print'(" bull_8(1),icbfms(CBORG,8): ",G0,1X,I0)', bull_8(1),
-cc   $ icbfms(CBORG,8)
-cpppppppppp
-         IF(ICBFMS(CBORG,8).EQ.0) CBULLX = '       '//CBORG(1:4)
-C above line not working right - may return 0 when missing, so use next
-C  two lines below temporarily until this is fixed (readlc will return
-C  all blanks for CBORG when mnemonic "ICLI" not found) - dak 2/19/13
-C   {Note: For Panasonic (AirDAT) TAMDAR, ICLI is always missing, so set
-C          CBORG to all blanks and don't call READLC because it will
-C          print out warning messages.}
-         if(subset.eq.'NC004010')  then
-            CBORG = '        '
-         else
-            call readlc(lunit,CBORG,'ICLI')
-         end if
-         if(subset.eq.'NC004017')  then
-            CBORG = '        '
-         else
-            call readlc(lunit,CBORG,'ICLI')
-         end if
-cpppppppppp
-C         print'(" CBORG = """,A,"""")', CBORG
-cpppppppppp
-         CBULLX = '       '//CBORG(1:4)
-                              ! will set CBULLX back to all blanks
-                              !  if readlc returns CBORG as all blanks
-                              !  {CBULLX may have been set to
-                              !  garbage above if ICBFMS incorrectly
-                              !  returned as zero when CBORG is
-                              !  actually missing) -- if CBORG is
-                              !  filled with a valid character string
-                              !  by readlc, this will also get
-                              !  translated into CBULLX here
-                              ! will also set CBULLX to all blanks if
-                              !  if Panasonic (AirDAT) TAMDAR
+         CBULLX = '       ' // CBORG(1:4)
 cxxxx
       END IF
 
@@ -5269,6 +5223,8 @@ cxxxx
                SID = 'E-AMDAR '
             ELSE IF(SUBSET.EQ.'NC004009') THEN
                SID = 'CA-AMDAR'
+            ELSE IF(SUBSET.EQ.'NC004017') THEN
+               SID = 'AMDAR-AFFIRS'
             ELSE
                SID = 'TAMDARB '
             END IF
@@ -5516,7 +5472,8 @@ C  ------------------------------------------------------------------
  
       IF(SUBSET.EQ.'NC004003'.OR.SUBSET.EQ.'NC004004'.OR.SUBSET.EQ.
      $ 'NC004006'.OR.SUBSET.EQ.'NC004009'.OR.SUBSET.EQ.'NC004011'.OR.
-     $ SUBSET.EQ.'NC004103'.OR.SUBSET.EQ.'NC004010') THEN
+     $SUBSET.EQ.'NC004103'.OR.SUBSET.EQ.'NC004010'.OR.
+     $SUBSET.EQ.'NC004017') THEN
 
 C  -----------------------------------------------------------------
 C  AMDAR FORMAT, MDCRS ACARS, E-AMDAR, CANADIAN AMDAR, KOREAN AMDAR,
@@ -5582,6 +5539,7 @@ C  -------------------------------------------------
      $                           SUBSET.EQ.'NC004013'.OR.
      $                           SUBSET.EQ.'NC004006'.OR.
      $                           SUBSET.EQ.'NC004103'.OR.
+     $                           SUBSET.EQ.'NC004017'.OR.
      $                           SUBSET.EQ.'NC004010')) THEN
 
 C  Process moisture (if present) if MADIS/TAMDAR (all types),
