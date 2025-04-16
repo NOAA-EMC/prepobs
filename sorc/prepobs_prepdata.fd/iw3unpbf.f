@@ -5106,7 +5106,6 @@ C          because it will print out warning messages.}
       else
             call readlc(lunit,CBORG,'BORG')
       end if
-cpppppppppp
       if(CBORG.ne.'        ')  then
             CBULLX = '       ' // CBORG(1:4)
       else
@@ -5477,7 +5476,7 @@ C  ------------------------------------------------------------------
 
 C  -----------------------------------------------------------------
 C  AMDAR FORMAT, MDCRS ACARS, E-AMDAR, CANADIAN AMDAR, KOREAN AMDAR,
-C   CATCH-ALL AMDAR OR TAMDARB AIRCRAFT TYPES COME HERE
+C   CATCH-ALL AMDAR, TAMDARB, or AMDAR over AFIRS AIRCRAFT TYPES COME HERE
 C  -----------------------------------------------------------------
 
 C  GET PRECISION OF TEMPERATURE OBSERVATION FOR LATER STORAGE
