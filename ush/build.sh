@@ -14,7 +14,7 @@ if [[ "${INSTALL_TARGET}" == "wcoss2" ]]; then
 fi
 
 target="${INSTALL_TARGET,,}"
-if [[ "${target}" =~ ^(wcoss2|hera|orion|jet|hercules)$ ]]; then
+if [[ "${target}" =~ ^(wcoss2|hera|orion|jet|hercules|gaeac5|gaeac6|noaacloud)$ ]]; then
   # prepare the target specific build.ver and run.ver
   cd "${pkg_root}/versions" || exit 1
   rm -f build.ver run.ver
