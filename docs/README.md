@@ -14,7 +14,7 @@ Move into desired branch and then run:
 INSTALL_PREFIX=/path/you/wish/to/install/prepobs ./ush/build.sh
 ```
 
-build.sh default to building for WCOSS2, but it also supports Hera, Jet, and Orion by setting `INSTALL_TARGET=hera/jet/orion/wcoss2`
+build.sh default to building for WCOSS2, but it also supports NOAA R&Ds by setting `INSTALL_TARGET=hera/orion/hercules/gaeac6/ursa/wcoss2`
 
 or install in local clone space:
 
