@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 #    mstr_shp_stn_lst_update2.sh
 #
 #    This script updates the "Master Ship Station List" file

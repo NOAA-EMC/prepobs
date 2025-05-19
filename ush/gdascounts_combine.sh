@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 ################################################################################
 #
 #  gdascount_combine.sh, merges 4 html files into a single file.

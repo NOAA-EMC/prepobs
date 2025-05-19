@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 # Run under ksh (ready for WCOSS)
 
 

@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 # Run under ksh (converted to WCOSS)
 
 # This script performs an oi-based quality control on all data

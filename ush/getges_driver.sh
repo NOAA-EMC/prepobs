@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/bash
 # Run under ksh (converted to WCOSS)
 
 ####  UNIX Script Documentation Block
