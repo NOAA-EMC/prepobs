@@ -865,7 +865,6 @@ C          532 - Tide gauge
 C          534 - Coast Guard Tide gauge
 C          540 - Mesonet surface
 C          551 - Sea-level pressure bogus
-C          560 - Saildrone data [WMO FM94 format]
 C          561 - Buoy data arriving in WMO FM13 format (fixed);
 C          562 - Buoy data arriving in WMO FM18 format (fixed or drifting);
 C          563 - Buoy data arriving in WMO FM94 format (fixed);
@@ -1976,11 +1975,7 @@ C***********************************************************************
          C01UBF = 'ADPSFC'
       ELSE  IF(SUBSET(1:5).EQ.'NC001')  THEN
          IF(SUBSET(6:8).NE.'006')  THEN
-           IF(SUBSET(6:8).EQ.'120') THEN
-            C01UBF = 'SALDRN'
-           ELSE
             C01UBF = 'SFCSHP'
-           END IF
          ELSE
             C01UBF = 'SFCBOG'
          END IF
@@ -2037,7 +2032,6 @@ C  -------------------------------------------------------
       ELSE  IF(ADPSUB .EQ. 'SPSSMI')  THEN
          R01UBF = R07UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
       ELSE
-C         print'(" IG IW3UNPBF/R04UBF:Going in... ADPSUB=")', ADPSUB
          R01UBF = R04UBF(LUNIT,OBS,OBS2,OBS3,NOBS3,obs8_8)
       END IF
 
@@ -2859,14 +2853,7 @@ C  -----------------------------------------
     
 C  BUOYS ARRIVING IN WMO FM94/BUFR FORMAT (FIXED OR DRIFTING)
 C  ----------------------------------------------------------
-
                ERTUBF = 564
-            ELSE  IF(SUBSET(6:8).EQ.'120') THEN
-
-C  SAILDRONE DATA ARRIVING IN WMO FM94/BUFR FORMAT
-C  ------------------------------------------------
-
-               ERTUBF = 560
             ELSE  IF(SUBSET(6:8).EQ.'103') THEN
     
 C  BUOYS ARRIVING IN WMO FM94/BUFR FORMAT (FIXED)
@@ -4064,8 +4051,7 @@ C     ---> PROCESSES SURFACE AND MESONET DATA (000/*, 001/*, 255/*)
       REAL(8) RID_8,UFBINT_8,OBS2_8(43),OBS3_8(5,255,7),RRVSTG_8(255),
      $        UFBINT2_8(12,255), RTMP(5,255),RRTMP,
      $ RPRVSTG_8(255),HDR_8(20),RCT_8(5,255),SOLR_8(3,255),
-     $ TOPC_8(5,255),RMSO_8(2),RQCD_8,BMISS,AMINIMUM_8,obs8_8(2),
-     $ RHU, SPV, QQ, QQSAT, TD
+     $ TOPC_8(5,255),RMSO_8(2),RQCD_8,BMISS,AMINIMUM_8,obs8_8(2)
       DIMENSION  OBS(*),OBS2(43),OBS3(5,255,7),NOBS3(7),HDR(20),
      $ RCT(5,255),RRSV(5),SOLR(3,255),TOPC(5,255)
       EQUIVALENCE  (RID_8,SID),(RRVSTG_8,PRVSTG),(RPRVSTG_8,SPRVSTG),
@@ -4079,18 +4065,6 @@ C     ---> PROCESSES SURFACE AND MESONET DATA (000/*, 001/*, 255/*)
       DATA IMISS/99999/
       
       DATA ITIWM/0,3*7,3,3*7,1,3*7,4,3*7/
-
-C  FCNS BELOW CONVERT SAT./SPEC. HUM.(KG/KG) & PRESS(MB) INTO TEMP/TD(K)
-C  ---------------------------------------------------------------------
-
-      AS(Q,P) = ALOG((Q * P)/(6.1078 * ((0.378 * Q) + 0.622)))
-      TFRMQP(Q,P) = ((237.3 * AS(Q,P))/(17.269 - AS(Q,P)) + 273.16)
-
-C  FCNS BELOW CONVERT TEMP/TD(K) & PRESS(MB) INTO SAT./SPEC. HUM.(KG/KG)
-C  ---------------------------------------------------------------------
-
-      ES(T) = 6.1078 * EXP((17.269 * (T - 273.16))/((T - 273.16)+237.3))
-      QFRMTP(T,P) = (0.622 * ES(T))/(P - (0.378 * ES(T)))
 
       R04UBF = 0
 
@@ -4108,11 +4082,6 @@ C  ---------------------------------------------------------------------
       CALL UFBINT(LUNIT,OBS2_8(1),2,1,IRET,'RSRD EXPRSRD')
       CALL UFBINT(LUNIT,OBS2_8(4),1,1,IRET,'SST1')
       IF(IBFMS(OBS2_8(4)).EQ.0)  OBS2_8(41) = 2.0
-
-
-C      PRINT'("IG:in R04UBF: IS IT SAILDRONE ???   ")', SUBSET
-
-
       IF(SUBSET(1:5).EQ.'NC000')  THEN               ! All surface land
          IF(SUBSET(6:7).EQ.'10') THEN
             CALL UFBSEQ(LUNIT,UFBINT2_8(1,1),4,255,IRET, 'VISBSEQN')
@@ -4271,8 +4240,7 @@ CDONG -- BELOW NEED TO CHANGE IN THE FUTURE
          IF(IBFMS(OBS2_8(4)).NE.0) THEN                  ! SST1 missing
 
 c -- Buoy SSTs
-            IF(SUBSET(6:8).EQ.'102'.or.SUBSET(6:8).EQ.'103'
-     +     .or.SUBSET(6:8).EQ.'120') THEN          ! buoys or saildrones
+            IF(SUBSET(6:8).EQ.'102'.or.SUBSET(6:8).EQ.'103') THEN ! buoys
 C         Retrieve field SST0 from buoy reports originating in BUFR form 
               CALL UFBINT(LUNIT,OBS2_8(4),1,1,IRET,'SST0')
             ELSE IF(SUBSET(6:8).EQ.'002') THEN
@@ -4311,7 +4279,6 @@ c -- BUFR Ships reports need ufbint() mnemonics split up
          END IF
          NOBS3(2) = IRET
          IF(SUBSET(6:6).EQ.'1') THEN   ! SFCSHP in BUFR-Feed
-          IF(SUBSET(7:8).NE.'20') THEN
             CALL UFBSEQ(LUNIT,UFBINT2_8(1,1),12,255,IRET,'GENCLOUD')
             I=1
             OBS3_8(1,I,3)=UFBINT2_8(2,I)
@@ -4323,7 +4290,6 @@ c -- BUFR Ships reports need ufbint() mnemonics split up
             NOBS3(3) = IRET
             IF(UFBINT2_8(6,I).LT.BMISS) NOBS3(3) = 2
             IF(UFBINT2_8(7,I).LT.BMISS) NOBS3(3) = 3
-          END IF  
          ELSE
             CALL UFBINT(LUNIT,OBS3_8(1,1,3),5,255,IRET,
      $       'VSSO CLAM CLTP HOCB')
@@ -4540,7 +4506,6 @@ C  ------------------------------------------------------
       CALL UFBINT(LUNIT,UFBINT_8,1,1,IRET,'WSPD');SSP=UFBINT_8
       CALL UFBINT(LUNIT,UFBINT_8,1,1,IRET,'TMDB');STM=UFBINT_8
       CALL UFBINT(LUNIT,UFBINT_8,1,1,IRET,'TMDP');DPD=UFBINT_8
-      CALL UFBINT(LUNIT,UFBINT_8,1,1,IRET,'REHU');RHU=UFBINT_8
 
 C  All surface types come here for possible SDMEDIT q. mark assignment
 C  -------------------------------------------------------------------
@@ -4644,8 +4609,7 @@ C  --------------------------------------------------------
       SWQ = EQSUBF(QMW)
       STQ = EQSUBF(QMT)
       DDQ = EQSUBF(QMD)
-
-      SPV=MIN(STP*0.01,PSL*0.01) 
+ 
       IF(PSL.LT.BMISS)  THEN
          PSL = NINT(PSL*.1)
       ELSE
@@ -4671,22 +4635,9 @@ C  ------------------------------------------------------------
       IF(MAX(DPD,STM).LT.BMISS)  THEN
          DPD = (STM-DPD)*10.
       ELSE
-        IF(SUBSET.EQ.'NC001120') THEN
-C          PRINT'(" IG R04UBF ===> SAILDRONE DPD conversion")'
-          IF(NINT(RHU).GE.0.AND.NINT(RHU).LE.100.AND.SPV.LT.1200.) THEN
-            QQSAT = QFRMTP(STM,SPV)
-            QQ = (RHU * 0.01) * QQSAT
-            IF(QQ.GT.0.0) THEN
-              TD = TFRMQP(QQ,SPV)
-              DPD = (STM-TD)*10.
-            END IF
-          END IF
-        END IF
-        IF(DPD.GE.BMISS) THEN
          DPD = BMISS
 C - note this was not set before  & could make a bufr chg in checking
          DDQ = 2
-        END IF
       END IF
       IF(STM.LT.BMISS)  THEN
          ISTM = NINT(STM*100.)
