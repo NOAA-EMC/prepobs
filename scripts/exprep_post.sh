@@ -317,7 +317,7 @@ already exists"
 #       unblok file location used before on CCS - hopefully this can be removed
 #       someday!
          cp -p $RUN.$cycle.prepbufr${dot_tmmark} \
-$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr 
+$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
          err_cp=$?
          if [ $err_cp -eq 0 ]; then
             cp $RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr \
@@ -495,103 +495,103 @@ be retained"
 =========================================================================
 EOF_EXPRSRDparm
 
-  REMX=${REMX:-$EXECobsproc/bufr_remorest}
-  REMC=${REMC_EXPRSRD:-bufr_remorest.prepbufr_EXPRSRD.parm}
+REMX=${REMX:-$EXECobsproc/bufr_remorest}
+REMC=${REMC_EXPRSRD:-bufr_remorest.prepbufr_EXPRSRD.parm}
 
-  if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
-    cp $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} \
-       $RUN.$cycle.prepbufr${dot_tmmark}
-    $USHobsproc/bufr_remorest.sh \
-       $RUN.$cycle.prepbufr${dot_tmmark}
-    errsc=$?
-    [ "$errsc" -ne '0' ]  &&  exit $errsc
-    cp $RUN.$cycle.prepbufr${dot_tmmark} \
-       $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
-    chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
-    msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago successfully \
-         created -- overwrite existing file made 2-days ago"
-    $DATA/postmsg "$jlogfile" "$msg"
-    if test "$SENDDBN" = "YES"; then
+if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
+   cp $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} \
+    $RUN.$cycle.prepbufr${dot_tmmark}
+   $USHobsproc/bufr_remorest.sh \
+    $RUN.$cycle.prepbufr${dot_tmmark}
+   errsc=$?
+   [ "$errsc" -ne '0' ]  &&  exit $errsc
+   cp $RUN.$cycle.prepbufr${dot_tmmark} \
+    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
+   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
+   msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago successfully \
+created -- overwrite existing file made 2-days ago"
+   $DATA/postmsg "$jlogfile" "$msg"
+   if test "$SENDDBN" = "YES"; then
       if test "$net" = "gdas"; then
-         $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_nr $job \
-         $COMOUTm2/$RUN.$cycle.prepbufr.nr
+	 $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_nr $job \
+          $COMOUTm2/$RUN.$cycle.prepbufr.nr
       elif test "$net" = "nam"; then
-         $DBNROOT/bin/dbn_alert MODEL NAM_BUFR_PREPda_nr $job \
-         $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+	 $DBNROOT/bin/dbn_alert MODEL NAM_BUFR_PREPda_nr $job \
+          $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
       elif test "$net" = "gfs"; then
-         $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_nr $job \
-         $COMOUTm2/$RUN.$cycle.prepbufr.nr
+	 $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_nr $job \
+          $COMOUTm2/$RUN.$cycle.prepbufr.nr
       elif test "$net" = "rap" -o "$net" = "rap_e" -o "$net" = "rap_p"; then
-         $DBNROOT/bin/dbn_alert MODEL ${net_uc}_BUFR_PREPda_nr $job \
-         $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
+	 $DBNROOT/bin/dbn_alert MODEL ${net_uc}_BUFR_PREPda_nr $job \
+	  $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.nr
       fi
-    fi
-    if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok ]; then
-    # make unblocked unrestricted prebufr file
-    #  ---> ON WCOSS prepbufr is already unblocked, so for now just copy it to the
-    #       unblok file location used before on CCS - hopefully this can be removed
-    #       someday!
+   fi
+   if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok ]; then
+# make unblocked unrestricted prebufr file
+#  ---> ON WCOSS prepbufr is already unblocked, so for now just copy it to the
+#       unblok file location used before on CCS - hopefully this can be removed
+#       someday!
       cp -p $RUN.$cycle.prepbufr${dot_tmmark} \
-            $RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
+$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
       err_cp=$?
       if [ $err_cp -eq 0 ]; then
-        cp $RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr \
-           $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
-        chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
-        msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago \
-             successfully created - overwrite existing file made 2-days ago"
-        $DATA/postmsg "$jlogfile" "$msg"
-        if test "$SENDDBN" = "YES"; then
-          if test "$net" = "gdas"; then
-            $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_unblok_nr $job \
-              $COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
-	  elif test "$net" = "gfs"; then
-	    $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_unblok_nr $job \
-              $COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
-	  fi
-        fi
+	 cp $RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr \
+	  $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
+	 chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
+	 msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago \
+successfully created - overwrite existing file made 2-days ago"
+	 $DATA/postmsg "$jlogfile" "$msg"
+	 if test "$SENDDBN" = "YES"; then
+	    if test "$net" = "gdas"; then
+	       $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_unblok_nr $job \
+		$COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
+	    elif test "$net" = "gfs"; then
+	       $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_unblok_nr $job \
+		$COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
+	    fi
+	 fi
       else
-         msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago NOT \
-              created because cp command had return code $err_cp -- existing \
-              file made 2-days ago is not overwritten"
+	 msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago NOT \
+created because cp command had return code $err_cp -- existing file made \
+2-days ago is not overwritten"
 	 $DATA/postmsg "$jlogfile" "$msg"
       fi
-    else
+   else
       msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago NOT \
-           created because unblocked prepbufr file from 2-days ago does not exist"
+created because unblocked prepbufr file from 2-days ago does not exist"
       $DATA/postmsg "$jlogfile" "$msg"
-    fi
-  else
-    msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago NOT created \
-         because prepbufr file from 2-days ago does not exist"
-    $DATA/postmsg "$jlogfile" "$msg"
-    if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok ]; then
+   fi
+else
+   msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago NOT created \
+because prepbufr file from 2-days ago does not exist"
+   $DATA/postmsg "$jlogfile" "$msg"
+   if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark}.unblok ]; then
       msg="$RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr from 2-days ago NOT \
-           created because prepbufr file from 2-days ago does not exist"
-    fi
-  fi
+created because prepbufr file from 2-days ago does not exist"
+   fi
+fi
 
-  if [ -f $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} ]; then
-    cp $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
-       $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
-    $USHobsproc/bufr_remorest.sh \
-       $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
-    errsc=$?
-    [ "$errsc" -ne '0' ]  &&  exit $errsc
-    # cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
-    # $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
-    # chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
-    cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
-       $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.ur
-    chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.ur
-    msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr from 2-days ago \
-         successfully created -- overwrite existing file made 2-days ago"
-    $DATA/postmsg "$jlogfile" "$msg"
-  else
-    msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr from 2-days ago NOT \
-         created because prepbufr_pre-qc file from 2-days ago does not exist"
-    $DATA/postmsg "$jlogfile" "$msg"
-  fi
+if [ -f $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} ]; then
+   cp $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
+    $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
+   $USHobsproc/bufr_remorest.sh \
+    $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
+   errsc=$?
+   [ "$errsc" -ne '0' ]  &&  exit $errsc
+#   cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
+#    $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
+#   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr
+   cp $RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
+    $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.ur
+   chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.ur
+   msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr from 2-days ago \
+successfully created -- overwrite existing file made 2-days ago"
+   $DATA/postmsg "$jlogfile" "$msg"
+else
+   msg="$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr from 2-days ago NOT \
+created because prepbufr_pre-qc file from 2-days ago does not exist"
+   $DATA/postmsg "$jlogfile" "$msg"
+fi
 
 fi #  endif loop $PROCESS_REMOREST_dm2
 
