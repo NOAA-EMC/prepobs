@@ -538,6 +538,7 @@ C>
       USE NEMSIO_READ
       USE GBLEVN_MODULE
       use netcdf
+      use sp_mod
 
       INTEGER, PARAMETER :: IM=384, JM=IM/2+1
       integer :: idrt = 0
