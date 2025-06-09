@@ -2192,6 +2192,8 @@ C***********************************************************************
       SUBROUTINE CGBLEVN09(IUNITF,KINDX)
                                          ! FORMERLY SUBROUTINE COF2GRD
  
+      use sp_mod
+
       parameter (PI180=.0174532)
 
       COMMON /CGBEVFF/IMAX,JMAX,KMAX,kmaxs,DLAT,DLON,IDVC,SL(100),

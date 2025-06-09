@@ -538,7 +538,6 @@ C>
       USE NEMSIO_READ
       USE GBLEVN_MODULE
       use netcdf
-      use sp_mod
 
       INTEGER, PARAMETER :: IM=384, JM=IM/2+1
       integer :: idrt = 0
@@ -2481,6 +2480,7 @@ C>             IDRT=256 FOR EQUALLY-SPACED GRID EXCLUDING POLES)
       USE GBLEVN_MODULE
       USE SIGIO_MODULE
       USE SIGIO_R_MODULE
+      use sp_mod
 
       IMPLICIT NONE
       INTEGER IUNITF(2), IDATEP, IM, JM, IDRT
@@ -2926,6 +2926,7 @@ C***********************************************************************
 C***********************************************************************
 C>    North-south swap
       subroutine gblevn11(imax,jmax,grid) ! formerly subroutine n_s_swap
+
       implicit none
       integer imax, jmax
       real grid(imax,jmax)
@@ -3752,6 +3753,7 @@ C>               IDRT=256 FOR EQUALLY-SPACED GRID EXCLUDING POLES)
       subroutine getlats(idrt)
 
       USE GBLEVN_MODULE
+      use sp_mod
 !      integer :: jmax
 !      real,allocatable :: slat(:),wlat(:)
 !      real :: rad2deg
