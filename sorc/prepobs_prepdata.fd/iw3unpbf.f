@@ -5520,7 +5520,7 @@ C  -------------------------------------------------
 
          TOB(L) = BMISS
          QOB(L) = BMISS
-         IF(SUBSET.EQ.'NC004010') THEN
+         IF(SUBSET.EQ.'NC004010'.OR.SUBSET.EQ.'NC004017') THEN
           IF(ARR(3,L).GE.BMISS)  THEN
           CALL UFBINT(LUNIT,UFBINT_8,1,1,IRET,'TMDBST')
           ARR(3,L)=UFBINT_8
