@@ -1,5 +1,5 @@
 help([[
-Load environment to build prepobs on Hercules
+Load environment to build prepobs on Ursa
 ]])
 
 prepend_path("MODULEPATH", os.getenv("spack_stack_mod_path"))
@@ -14,8 +14,5 @@ load(pathJoin("cmake", cmake_ver))
 
 -- Load common modules for this package
 load("prepobs_common")
-
--- On Hercules, MKL needs to be loaded separately
-load("intel-oneapi-mkl/2024.2.1")
 
 whatis("Description: prepobs build environment")

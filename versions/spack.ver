@@ -1,22 +1,22 @@
-export spack_stack_ver=1.6.0
-export spack_env=gsi-addon
+export spack_stack_ver=1.9.1
+export spack_env=ue-oneapi-2024.2.1
 
-export cmake_ver=3.23.1
+export cmake_ver=3.30.2
 
 export jasper_ver=2.0.32
 export libpng_ver=1.6.37
 export zlib_ver=1.2.13
 
-export hdf5_ver=1.14.0
+export hdf5_ver=1.14.3
 export netcdf_c_ver=4.9.2
 export netcdf_fortran_ver=4.6.1
 
 export bacio_ver=2.4.1
 export nemsio_ver=2.5.4
-export sp_ver=2.5.0
-export sigio_ver=2.3.2
+export ip_ver=5.1.0
+export sigio_ver=2.3.3
 export w3emc_ver=2.10.0
-export bufr_ver=11.7.0
+export bufr_ver=12.1.0
 
-export grib_util_ver=1.3.0
-export prod_util_ver=1.2.2
+export grib_util_ver=1.4.0
+export prod_util_ver=2.1.1
