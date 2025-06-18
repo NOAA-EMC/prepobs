@@ -1,23 +1,14 @@
 prepobs v1.2.0  RELEASED        OCT 04, 2024
-        v1.2.0  IMPLEMENTED     ??? ??, 2024
+        v1.1.2  RE-RELEASED     JUN 18, 2025
+        v1.1.2  IMPLEMENTED     ??? ??, 2025
 
 PRELUDE
-
- This update supports obsproc.v1.3.0 and bufr-dump.v1.3.0 releases. Pls implement simultaneously.
- prepobs.v1.1.0 adds *saldrn* obs to prepbufr's SFCSHP component; report type 560 for kx=180,280
-
- IMPORTANT NOTE: 
- GSI needs to be updated (contact Andrew.Collard@noaa.gov) at the same time or shortly after 
- to add control on saildrone use in DA (switch on/off via subtype 02 for kx=180,280 in global_convinfo.txt)
- Without it the saildrone data will allways feed into GSI DA.
+ This update supports obsproc.v1.2.6 and bufr-dump.v1.3.0 releases. Please implement simultaneously.
+ prepobs.v1.1.2 prevents counting twice the observations in adpsfc and sfcsno
 
 FILE CHANGES
  M docs/Release_Notes.txt
- M fix/prepobs_prep.bufrtable
- M sorc/prepobs_prepdata.fd/iw3unpbf.f
- M sorc/prepobs_prepdata.fd/prepdata.f
  M ush/gdas_countstat.sh
- M ush/prepobs_makeprepbufr.sh
  M versions/VERSION
  (M-modified; A-added; D-deleted)
 
@@ -30,30 +21,16 @@ DOCS CHANGES
  docs/Release_Notes.txt
  Updated for this release.
 
-FIX CHANGES
- fix/prepobs_prep.bufrtable
- Introduce saildrone data type to prepbufr's bufrtable
-
-SOURCE CHANGES
- sorc/prepobs_prepdata.fd/iw3unpbf.f
- sorc/prepobs_prepdata.fd/prepdata.f
- Introduce functionality to add saildrone obs type (*saldrn*) to prepbufr's SFCSHP
-
 USH CHANGES
  ush/gdas_countstat.sh
  Count only adpsfc, skip sfcsno when counting obs
-
- ush/prepobs_makeprepbufr.sh
- Introduce functionality to add saildrone obs type (*saldrn*) to prepbufr's SFCSHP
 
 VERSIONS CHANGES
  versions/VERSION
  Update to this release's versione
 
 CHANGES TO OUTPUT AND FILE SIZES
- prepobs.v1.2.0 incorporates *saldrn* into prepbufr's SFCSHP
- (this release must be synced with obsproc.v1.3.0 and bufr-dump.v1.3.0)
- The updated *prepbur* files  are up to ~10% larger in size, saildrone obs are seasonal
+ None
 
 PRE-IMPLEMENTATION TESTING REQUIREMENTS
  obsproc needs modules bufr-dump and prepobs in order to run
@@ -63,14 +40,12 @@ PRE-IMPLEMENTATION TESTING REQUIREMENTS
  Run osbproc's
      jobs/JOBSPROC_networkname_DUMP*,  jobs/JOBSPROC_networkname_DUMP*_POST
      jobs/JOBSPROC_networkname_PREP*, jobs/JOBSPROC_networkname_PREP*_POST
- *saldrn* is only added to GLOBAL  prepbufr files
 
 DISSEMINATION INFORMATION
  No changes to dissemination on WCOSS2
- For NOMAD proposed changes, a SCN will be issued/submitted to Data Flow
 
 SPECIAL INSTRUCTIONS
- 1. Implement release/obsproc.v1.3.0, release/bufr-dump.v1.3.0, and release/prepobs.v1.2.0 at the same time
+ 1. Implement release/obsproc.v1.2.6, release/bufr-dump.v1.3.0, and release/prepobs.v1.1.2 at the same time
 
  2. obsproc/bufr-dump/prepobs new versions need to be propagated to 
      i) GFS global workflow (kate.Friedman@noaa.gov) 
@@ -79,7 +54,7 @@ SPECIAL INSTRUCTIONS
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 prepobs v1.1.1  RELEASED        FEB 21, 2025
-        v1.1.1  IMPLEMENTED     ??? ??, 2025
+        v1.1.1  IMPLEMENTED     FEB 24, 2025
 
 PRELUDE
  Per Executive Order 14172, remove references to Gulf of Mexico
