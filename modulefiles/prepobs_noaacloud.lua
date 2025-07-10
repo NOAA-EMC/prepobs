@@ -20,7 +20,4 @@ load(pathJoin("mkl", mkl_ver))
 -- Load common modules for this package
 load("prepobs_common")
 
---setenv("MKL_LIBRARIES", "/apps/oneapi/mkl/2024.2/lib")
---setenv("MKL_INCLUDE_DIRS", "/apps/oneapi/mkl/2024.2/include")
-
 whatis("Description: prepobs build environment")
