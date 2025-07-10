@@ -3,17 +3,24 @@ Load environment to build prepobs on NOAA cloud
 ]])
 
 prepend_path("MODULEPATH", os.getenv("spack_stack_mod_path"))
+prepend_path("MODULEPATH", "/apps/modules/modulefiles")
 
-stack_intel_ver=os.getenv("stack_intel_ver") or "2021.10.0"
-stack_impi_ver=os.getenv("stack_impi_ver") or "2021.10.0"
-cmake_ver=os.getenv("cmake_ver") or "3.23.1"
+gnu_ver=os.getenv("gnu_ver") or "13.2.0"
+stack_oneapi_ver=os.getenv("stack_oneapi_ver") or "2024.2.1"
+stack_intel_oneapi_mpi_ver=os.getenv("stack_intel_oneapi_mpi_ver") or "2021.13"
+cmake_ver=os.getenv("cmake_ver") or "3.27.9"
+mkl_ver=os.getenv("mkl_ver") or "2024.2.1"
 
-load("gnu")
-load(pathJoin("stack-intel", stack_intel_ver))
-load(pathJoin("stack-intel-oneapi-mpi", stack_impi_ver))
+load(pathJoin("gnu", gnu_ver))
+load(pathJoin("stack-oneapi", stack_oneapi_ver))
+load(pathJoin("stack-intel-oneapi-mpi", stack_intel_oneapi_mpi_ver))
 load(pathJoin("cmake", cmake_ver))
+load(pathJoin("mkl", mkl_ver))
 
 -- Load common modules for this package
 load("prepobs_common")
+
+--setenv("MKL_LIBRARIES", "/apps/oneapi/mkl/2024.2/lib")
+--setenv("MKL_INCLUDE_DIRS", "/apps/oneapi/mkl/2024.2/include")
 
 whatis("Description: prepobs build environment")
