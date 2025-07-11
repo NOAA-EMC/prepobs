@@ -1,6 +1,5 @@
-prepobs v1.2.0  RELEASED        OCT 04, 2024
-        v1.1.2  RE-RELEASED     JUN 18, 2025
-        v1.1.2  IMPLEMENTED     ??? ??, 2025
+prepobs v1.1.2  RELEASED        JUN 18, 2025
+        v1.1.2  IMPLEMENTED     AUG 11, 2025(tbc)
 
 PRELUDE
  This update supports obsproc.v1.2.6 and bufr-dump.v1.3.0 releases. Please implement simultaneously.
