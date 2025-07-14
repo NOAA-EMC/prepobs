@@ -11,7 +11,7 @@ FILE CHANGES
  M versions/VERSION
  (M-modified; A-added; D-deleted)
 
- IMPORTANT:
+IMPORTANT:
  fix/prepobs_landc and
  fix/syndat_syndata.slmask.t126.gaussian
  must be present for the implementation (take from prepobs v1.1.0)
