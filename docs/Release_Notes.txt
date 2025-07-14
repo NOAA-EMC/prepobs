@@ -47,9 +47,9 @@ SPECIAL INSTRUCTIONS
  1. Implement release/obsproc.v1.2.6, release/bufr-dump.v1.3.0, and release/prepobs.v1.1.2 at the same time
 
  2. obsproc/bufr-dump/prepobs new versions need to be propagated to 
-     i) GFS global workflow (kate.Friedman@noaa.gov) 
+     i) GFS global workflow (rahul.mahajan@noaa.gov@noaa.gov) 
      ii) SDM and thanks (kelly.kempisty@noaa.gov )
-     iii) EVS (mallory.Row@noaa.gov) 
+     iii) EVS (alicia.bentley@noaa.gov@noaa.gov) 
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 prepobs v1.1.1  RELEASED        FEB 21, 2025
