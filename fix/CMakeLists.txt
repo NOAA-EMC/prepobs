@@ -20,6 +20,10 @@ file(DOWNLOAD
 
 # Collect list of fix files to install.
 list(APPEND fix_files
+  corecounts_avg.awk
+  corecounts_base.shtml
+  corecounts_html
+  corecounts_types
   gdascounts_avg.awk
   gdascounts_base.shtml
   gdascounts_html

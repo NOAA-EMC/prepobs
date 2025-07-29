@@ -1121,7 +1121,7 @@ PRPC=${PRPC:-$PARMPREP/prepobs_prepdata.${NET}.parm}
 PRPT=${PRPT:-$FIXPREP/prepobs_prep.bufrtable}
 cp $PRPT prep.bufrtable
 LANDC=${LANDC:-$FIXPREP/prepobs_landc}
-if [ "$RUN" = 'gdas' -o "$RUN" = 'gfs' ]; then
+if [ "$RUN" = 'gdas' -o "$RUN" = 'gfs' -o "$RUN" = 'core' ]; then
    PRVT=${PRVT:-$HOMEgfs/fix/prepobs_errtable.global}
 elif [ "$NET" = 'cdas' ]; then
    PRVT=${PRVT:-$HOMEprepobs/fix/prepobs_errtable.cdas}
@@ -1186,7 +1186,7 @@ fi
 
 if [ -s ${COMSP}tropcy_relocation_status.$tmmark ]; then
    if [ "$SENDDBN" = "YES" ]; then
-      if [ "$RUN" = 'gfs' -o "$RUN" = 'gdas' ]; then
+      if [ "$RUN" = 'gfs' -o "$RUN" = 'gdas' -o "$RUN" = 'core' ]; then
          RUN_uc=$(echo $RUN | tr [a-z] [A-Z])
          $DBNROOT/bin/dbn_alert MODEL ${RUN_uc}_TCI $job \
              ${COMSP}tropcy_relocation_status.$tmmark
@@ -1207,7 +1207,7 @@ if [ "$RELOCATION_HAS_RUN" != 'YES' -a "$GETGUESS" != 'NO' ]; then
 #   (NOTE 3: This is not done if GETGUESS is NO)
 #
 
-   if [ "$RUN" = 'gfs' -o "$RUN" = 'gdas' ]; then
+   if [ "$RUN" = 'gfs' -o "$RUN" = 'gdas' -o "$RUN" = 'core' ]; then
       for ihr in -3 +3 ;do
          if [ "$NEMSIO_IN" = .true. -o "$NETCDF_IN" = .true. ]; then 
            if [ $ihr = "-3" ] ; then
@@ -1281,7 +1281,7 @@ elif [ "$RELOCATION_HAS_RUN" = 'YES' ]; then
 
    qual_last=".$tmmark"  # need this because gfs and gdas don't add $tmmark
                          #  qualifier to end of output atmos guess files
-   [ $RUN = gfs -o $RUN = gdas -o $NET = cfs ]  &&  qual_last=""
+   [ $RUN = gfs -o $RUN = gdas -o $RUN = core -o $NET = cfs ]  &&  qual_last=""
    for file in sgm3prep sgesprep sgp3prep tcvitals.relocate.$tmmark; do
       case $file in
         tcvitals.relocate.$tmmark) infile=$file; qual_last="";; #  already has $tmmark at end
@@ -1554,7 +1554,7 @@ echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                qual_last=".$tmmark"  # need this because gfs and gdas don't add
                                      #  $tmmark qualifer to end of output atmos
                                      #  guess files
-               [ $RUN = gfs -o $RUN = gdas ]  &&  qual_last=""
+               [ $RUN = gfs -o $RUN = gdas -o $RUN = core ]  &&  qual_last=""
                if [ "$NEMSIO_IN" = .true. ]; then 
                   gesbase="atmges.nemsio"
                 elif [ "$NETCDF_IN" = .true. ]; then

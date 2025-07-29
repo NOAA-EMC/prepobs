@@ -1,0 +1,41 @@
+<html>
+<head>
+  <title>Monthly Global Data Assimilation System (GDAS) Input Data Counts</title>
+</head>
+<body background="/images/background.gif" bgcolor="#FFFFFF" text="#000000" >
+
+<center>
+  <img src="/images/ncep_logo.gif" alt="Image of NCEP Logo" width="196" height="114" border="0">
+</center>
+
+  <center>
+    <h2>Monthly Global Data Assimilation <br>System (GDAS) Input Data Counts</h2>
+  </center>
+<!-- table starts below this line (Do not modify or remove without ensuring build script no longer needs it) -->
+
+<!-- table ends above this line (Do not modify or remove without ensuring build script no longer needs it) --> 
+<br>
+<address>
+For questions related to the observation counts, please include this site's address in the body of email to 
+<a href="mailto:ncep.list.obsproc_support@noaa.gov">EMC Obs Support</a>
+</address>
+
+<br>
+<table border="2" cellpadding="2" cellspacing="2">
+  <tbody><tr>
+    <td>
+      <font size="-1">
+      <center>
+        <a href="http://www.nws.noaa.gov/disclaimer.html">
+          <b><em>National Weather Service Web Page Disclaimer</em></b></a>
+      </center>
+      </font>
+    </td>
+  </tr>
+</tbody></table>
+
+<center><font size=-2>This document was last modified: <!--#echo var="LAST_MODIFIED" --></font></center>
+
+</body>
+</html>
+

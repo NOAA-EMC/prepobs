@@ -1,5 +1,9 @@
 list(APPEND ush_files
   build_mainpage.sh
+  core_counts.sh
+  core_countstat.sh
+  core_summary.sh
+  corecounts_combine.sh
   gdas_counts.sh
   gdas_countstat.sh
   gdas_summary.sh

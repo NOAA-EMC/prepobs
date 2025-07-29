@@ -136,7 +136,7 @@ CENTERED ON $cdate10"
    set -x
 
    dot_tmmark=".$tmmark"
-   [ $net = gdas -o $net = gfs -o $net = cdas ]  &&  dot_tmmark=""
+   [ $net = gdas -o $net = gfs -o $net = cdas -o $net = core ]  &&  dot_tmmark=""
 
 ##############################################################
 #  Remove or mask restricted data from today's PREPBUFR files
@@ -271,14 +271,14 @@ CENTERED ON $cdate10"
 =========================================================================
 EOFparm
 
-REMX=${REMX:-$EXECobsproc/bufr_remorest}
+REMX=${REMX:-$EXECobscore/bufr_remorest}
 REMC=${REMC:-bufr_remorest.prepbufr.parm}
 
 if [ -f $COMIN/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
    if [ ! -f $COMOUT/$RUN.$cycle.prepbufr${dot_tmmark}.nr ]; then
       cp $COMIN/$RUN.$cycle.prepbufr${dot_tmmark} \
        $RUN.$cycle.prepbufr${dot_tmmark}
-      $USHobsproc/bufr_remorest.sh \
+      $USHobscore/bufr_remorest.sh \
        $RUN.$cycle.prepbufr${dot_tmmark}
       errsc=$?
       [ "$errsc" -ne '0' ]  &&  exit $errsc
@@ -289,6 +289,9 @@ if [ -f $COMIN/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
       $DATA/postmsg "$jlogfile" "$msg"
       if test "$SENDDBN" = "YES"; then
          if test "$net" = "gdas"; then
+            $DBNROOT/bin/dbn_alert MODEL ${RUN_uc}_BUFR_PREPda_nr $job \
+             $COMOUT/$RUN.$cycle.prepbufr.nr
+         elif test "$net" = "core"; then
             $DBNROOT/bin/dbn_alert MODEL ${RUN_uc}_BUFR_PREPda_nr $job \
              $COMOUT/$RUN.$cycle.prepbufr.nr
          elif test "$net" = "nam"; then
@@ -329,6 +332,9 @@ $RUN.$cycle.prepbufr${dot_tmmark}.unblok.nr
                if test "$net" = "gdas"; then
                   $DBNROOT/bin/dbn_alert MODEL ${RUN_uc}_BUFR_PREPda_unblok_nr \
                    $job $COMOUT/$RUN.$cycle.prepbufr.unblok.nr
+               elif test "$net" = "core"; then
+                  $DBNROOT/bin/dbn_alert MODEL ${RUN_uc}_BUFR_PREPda_unblok_nr \
+                   $job $COMOUT/$RUN.$cycle.prepbufr.unblok.nr
                elif test "$net" = "gfs"; then
                   $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_unblok_nr $job \
                    $COMOUT/$RUN.$cycle.prepbufr.unblok.nr
@@ -366,7 +372,7 @@ if [   -f $COMIN/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} -a \
      ! -f $COMOUT/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark}.nr ]; then
    cp $COMIN/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
     $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
-   $USHobsproc/bufr_remorest.sh \
+   $USHobscore/bufr_remorest.sh \
     $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
@@ -495,13 +501,13 @@ be retained"
 =========================================================================
 EOF_EXPRSRDparm
 
-REMX=${REMX:-$EXECobsproc/bufr_remorest}
+REMX=${REMX:-$EXECobscore/bufr_remorest}
 REMC=${REMC_EXPRSRD:-bufr_remorest.prepbufr_EXPRSRD.parm}
 
 if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
    cp $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} \
     $RUN.$cycle.prepbufr${dot_tmmark}
-   $USHobsproc/bufr_remorest.sh \
+   $USHobscore/bufr_remorest.sh \
     $RUN.$cycle.prepbufr${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
@@ -513,6 +519,9 @@ created -- overwrite existing file made 2-days ago"
    $DATA/postmsg "$jlogfile" "$msg"
    if test "$SENDDBN" = "YES"; then
       if test "$net" = "gdas"; then
+	 $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_nr $job \
+          $COMOUTm2/$RUN.$cycle.prepbufr.nr
+      elif test "$net" = "core"; then
 	 $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_nr $job \
           $COMOUTm2/$RUN.$cycle.prepbufr.nr
       elif test "$net" = "nam"; then
@@ -545,6 +554,9 @@ successfully created - overwrite existing file made 2-days ago"
 	    if test "$net" = "gdas"; then
 	       $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_unblok_nr $job \
 		$COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
+	    elif test "$net" = "core"; then
+	       $DBNROOT/bin/dbn_alert MODEL GDAS1_BUFR_PREPda_unblok_nr $job \
+		$COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
 	    elif test "$net" = "gfs"; then
 	       $DBNROOT/bin/dbn_alert MODEL GFS_BUFR_PREPda_unblok_nr $job \
 		$COMOUTm2/$RUN.$cycle.prepbufr.unblok.nr
@@ -574,7 +586,7 @@ fi
 if [ -f $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} ]; then
    cp $COMINm2/$RUN.$cycle.prepbufr_pre-qc${dot_tmmark} \
     $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
-   $USHobsproc/bufr_remorest.sh \
+   $USHobscore/bufr_remorest.sh \
     $RUN.$cycle.prepbufr_pre-qc${dot_tmmark}
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
@@ -600,7 +612,8 @@ fi #  endif loop $PROCESS_REMOREST_dm2
 # PROCESS_TIMETWINS can only be YES in all GDAS cycles (where default is YES)
 # ---------------------------------------------------------------------------
 PROCESS_TIMETWINS=${PROCESS_TIMETWINS:-YES}
-[ $net != gdas ] && PROCESS_TIMETWINS=NO
+#[ $net != gdas ] && PROCESS_TIMETWINS=NO
+[ $net != core ] && PROCESS_TIMETWINS=NO
 
 if [ "$PROCESS_TIMETWINS" = 'YES' ]; then
 
@@ -748,7 +761,8 @@ fi # test for PROCESS_TIMETWINS=YES
 # PROCESS_ALL_REPORT_COUNTS can only be YES in 18z GDAS (where default is YES)
 # ----------------------------------------------------------------------------
 PROCESS_ALL_REPORT_COUNTS=${PROCESS_ALL_REPORT_COUNTS:-YES}
-[ $net != gdas -o $cyc != 18 ] && PROCESS_ALL_REPORT_COUNTS=NO
+#[ $net != gdas -o $cyc != 18 ] && PROCESS_ALL_REPORT_COUNTS=NO
+[ $net != core -o $cyc != 18 ] && PROCESS_ALL_REPORT_COUNTS=NO
 
 if [ "$PROCESS_ALL_REPORT_COUNTS" = 'YES' ]; then
  
@@ -769,7 +783,8 @@ FOR $PDY"
 #   GDAS run)
 #############################################################################
 
-   $USHprepobs/gdas_counts.sh
+#   $USHprepobs/gdas_counts.sh
+   $USHprepobs/core_counts.sh
 
 #  Run monthly summary only on the second day of the month, post to web
 #  --------------------------------------------------------------------
@@ -782,7 +797,8 @@ FOR $PDY"
       echo "$msg"
       echo
       set -x
-      $USHprepobs/gdas_summary.sh
+      #$USHprepobs/gdas_summary.sh
+      $USHprepobs/core_summary.sh
    fi
 fi # test for PROCESS_ALL_REPORT_COUNTS=YES
 
@@ -791,7 +807,8 @@ fi # test for PROCESS_ALL_REPORT_COUNTS=YES
 # PROCESS_MASTER_SHIP_STNLST can only be YES in 18z GDAS (where default is YES)
 # -----------------------------------------------------------------------------
 PROCESS_MASTER_SHIP_STNLST=${PROCESS_MASTER_SHIP_STNLST:-YES}
-[ $net != gdas -o $cyc != 18 ] && PROCESS_MASTER_SHIP_STNLST=NO
+#[ $net != gdas -o $cyc != 18 ] && PROCESS_MASTER_SHIP_STNLST=NO
+[ $net != core -o $cyc != 18 ] && PROCESS_MASTER_SHIP_STNLST=NO
 
 if [ "$PROCESS_MASTER_SHIP_STNLST" = 'YES' ]; then
  
