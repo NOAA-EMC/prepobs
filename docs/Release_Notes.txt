@@ -51,9 +51,8 @@ SPECIAL INSTRUCTIONS
      ii) SDM and thanks (kelly.kempisty@noaa.gov )
      iii) EVS (alicia.bentley@noaa.gov@noaa.gov) 
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 prepobs v1.1.1  RELEASED        FEB 21, 2025
-        v1.1.1  IMPLEMENTED     FEB 24, 2025
+        v1.1.1  IMPLEMENTED     MAR 05, 2025
 
 PRELUDE
  Per Executive Order 14172, remove references to Gulf of Mexico
