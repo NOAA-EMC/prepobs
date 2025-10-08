@@ -460,10 +460,10 @@ elif [[ "$netwk" = "cfs-cdas" ]];then
    fhend=00
    ;;
   sfgges)  geslist='
-   $COMINcfs_cdas/cdas1.t${cyc}z.sfluxgrbf$fh'
+   $COMINcfs_cdas/cdas1.t${cyc}z.sflux.f$fh.grib2'
    ;;
   sfggp3)  geslist='
-   $COMINcfs_cdas/cdas1.t${cyc}z.sfluxgrbf$fhp3'
+   $COMINcfs_cdas/cdas1.t${cyc}z.sflux.f$fhp3.grib2'
    ;;
   pgbges) geslist='
    $COMINcfs_cdas/cdas1.t${cyc}z.pgrbh$fh 
