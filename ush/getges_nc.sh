@@ -446,7 +446,7 @@ elif [[ "$netwk" = "cfs-cdas" ]];then
    $COMINcfs_cdas/cdas1.t${cyc}z.bf$fhp3'
    ;;
   biascr) geslist='
-   $COMINcfs_cdas/cdas1.t${cyc}z.abias.txt'
+   $COMINcfs_cdas/cdas1.t${cyc}z.abias'
    ;;
   satang) geslist='
    $COMINcfs_cdas/cdas1.t${cyc}z.satang'
@@ -460,10 +460,10 @@ elif [[ "$netwk" = "cfs-cdas" ]];then
    fhend=00
    ;;
   sfgges)  geslist='
-   $COMINcfs_cdas/cdas1.t${cyc}z.sflux.f$fh.grib2'
+   $COMINcfs_cdas/cdas1.t${cyc}z.sfluxgrbf.f$fh'
    ;;
   sfggp3)  geslist='
-   $COMINcfs_cdas/cdas1.t${cyc}z.sflux.f$fhp3.grib2'
+   $COMINcfs_cdas/cdas1.t${cyc}z.sfluxgrbf.f$fhp3'
    ;;
   pgbges) geslist='
    $COMINcfs_cdas/cdas1.t${cyc}z.pgrbh$fh 
@@ -506,7 +506,7 @@ elif [[ "$netwk" = "cfs-cdas" ]];then
   sfccur) geslist='
    $COMINcfs_cdas/cdas1.t${cyc}z.bf$fh'
    getlist00='
-   $COMINcfs_cdas/cdas1.t${cyc}z.anl.sfc'
+   $COMINcfs_cdas/cdas1.t${cyc}z.sfcanl'
    fhbeg=00
    ;;
   pgbcur) geslist='
@@ -712,7 +712,7 @@ elif [[ "$netwk" = "cdas" ]];then
    $COMINcdas/cdas.t${cyc}z.bf$fhp3'
    ;;
   biascr) geslist='
-   $COMINcdas/cdas.t${cyc}z.abias.txt'
+   $COMINcdas/cdas.t${cyc}z.abias'
    ;;
   satang) geslist='
    $COMINcdas/cdas.t${cyc}z.satang'
@@ -758,7 +758,7 @@ elif [[ "$netwk" = "cdas" ]];then
   sfccur) geslist='
    $COMINcdas/cdas.t${cyc}z.bf$fh'
    getlist00='
-   $COMINcdas/cdas.t${cyc}z.anl.sfc'
+   $COMINcdas/cdas.t${cyc}z.sfcanl'
    fhbeg=00
    ;;
   pgbcur) geslist='
@@ -873,7 +873,7 @@ elif [[ "$netwk" = "cdc" ]];then
    $COMINcdc/cdas.t${cyc}z.bf$fhp3'
    ;;
   biascr) geslist='
-   $COMINcdc/cdas.t${cyc}z.abias.txt'
+   $COMINcdc/cdas.t${cyc}z.abias'
    ;;
   satang) geslist='
    $COMINcdc/cdas.t${cyc}z.satang'
@@ -919,7 +919,7 @@ elif [[ "$netwk" = "cdc" ]];then
   sfccur) geslist='
    $COMINcdc/cdas.t${cyc}z.bf$fh'
    getlist00='
-   $COMINcdc/cdas.t${cyc}z.anl.sfc'
+   $COMINcdc/cdas.t${cyc}z.sfcanl'
    fhbeg=00
    ;;
   pgbcur) geslist='
@@ -1392,8 +1392,8 @@ while [[ $fh -le $fhend ]];do
      [[ $cyc -ne $bn ]]  && break 1
   fi
   gesbn=`basename $ges`
-  logfbn=${gesbn/atm/atm.log}
-  logfbn=$(echo ${logfbn/nc/txt})
+  logfbn=${gesbn/atm/log}
+  logfbn=${logfbn/nc/txt}
   logf=$dn/$logfbn
   if [[ $quiet = NO ]]; then
     echo Checking: $logf >&2
