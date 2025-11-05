@@ -26,7 +26,7 @@ Fixed a bug in:
 sorc/prepobs_prepdata.fd/prepdata.f - assigned great lake buous elevations (see PRELUDE 3)
 
 git add ush/prepobs_makeprepbufr.sh - cleaned up dev/throubleshooting comments
-
+ush/build.sh - add easu Debug build
 
 
 
