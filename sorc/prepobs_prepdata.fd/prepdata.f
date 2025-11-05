@@ -16060,8 +16060,10 @@ C  ... THESE ARE THE DROPWINSONDES (HAVE NON-MISSING PSML & CAT. 2 DATA)
             END IF
          END IF
       END IF
-C.......................................................................
-      IF(ELEV.GT.10000.)  THEN
+
+C     Keep Great Lakes buoys and assign elevation when missing
+      IF(ELEV.GT.10000. .AND. STNID(1:3).NE.'45')  THEN
+
 C WILL TOSS LAND OR GREAT LAKES REPORTS W/ MISSING OR STRANGE ELEVATION
 C  BUT ALL OTHER MARINE REPORTS GET ELEVATION SET TO 0 IN THIS CASE
          IF(SFLAND)  THEN
@@ -16069,21 +16071,66 @@ C  BUT ALL OTHER MARINE REPORTS GET ELEVATION SET TO 0 IN THIS CASE
   954 FORMAT(' * * TOTAL REPORT TOSSED  -ID=',A8,', LAT=',F7.2,'N, ',
      $ 'LON=',F8.2,'E, RTYP',I4,' - OVER LAND, MISSING ELEVATION ')
             GO TO 2090
-         ELSE  IF(NINT(RDATA(1)*100.).GE.4100.AND.NINT(RDATA(1)*100.)
-     $    .LE.5000.AND.NINT(RDATA(2)*100.).GE.26700.AND.
-     $    NINT(RDATA(2)*100.).LE.28500)  THEN
-            PRINT 3954, STNID,RDATA(1),RDATA(2),IDATA(9)
- 3954 FORMAT(' * * TOTAL REPORT TOSSED  -ID=',A8,', LAT=',F7.2,'N, ',
-     $ 'LON=',F8.2,'E, RTYP',I4,' - OVER GREAT LAKES, MISSING ELEV')
-            GO TO 2090
+C NO LONGER TOSSING GREAT LAKES REPORTS W/ MISSING OR STRANGE ELEVATION
+C    ELSE  IF(NINT(RDATA(1)*100.).GE.4100.AND.NINT(RDATA(1)*100.)
+C     $    .LE.5000.AND.NINT(RDATA(2)*100.).GE.26700.AND.
+C     $    NINT(RDATA(2)*100.).LE.28500)  THEN
+C            PRINT 3954, STNID,RDATA(1),RDATA(2),IDATA(9)
+C 3954 FORMAT(' * * TOTAL REPORT TOSSED  -ID=',A8,', LAT=',F7.2,'N, ',
+C     $ 'LON=',F8.2,'E, RTYP',I4,' - OVER GREAT LAKES, MISSING ELEV')
+C            GO TO 2090
          ELSE
-            PRINT 959, STNID,RDATA(1),RDATA(2),IDATA(9)
+
+          IF( STNID.EQ.'4500001' .OR. STNID.EQ.'4500004' .OR.
+     $        STNID.EQ.'4500006' .OR. STNID.EQ.'4500136' .OR. 
+     $        STNID.EQ.'4500211' )  THEN 
+              ELEV = 183.0 !Lake Superior
+          ELSE IF( STNID.EQ.'4500002' .OR. STNID.EQ.'4500007' .OR.
+     $             STNID.EQ.'4500013' .OR. STNID.EQ.'4500014' .OR.
+     $             STNID.EQ.'4500026' .OR.
+     $             STNID.EQ.'4500029' .OR. STNID.EQ.'4500168' .OR. 
+     $             STNID.EQ.'4500174' .OR. STNID.EQ.'4500175' .OR. 
+     $             STNID.EQ.'4500186' .OR. STNID.EQ.'4500187' .OR.
+     $             STNID.EQ.'4500194' .OR. STNID.EQ.'4500198' .OR.
+     $             STNID.EQ.'4500218' .OR. STNID.EQ.'4500003' .OR.
+     $             STNID.EQ.'4500008' .OR.
+     $             STNID.EQ.'4500149' .OR. STNID.EQ.'4500209' .OR.
+     $             STNID.EQ.'4500212' .OR. STNID.EQ.'4500154' .OR.
+     $             STNID.EQ.'4500137' .OR. STNID.EQ.'4500143')  THEN
+              ELEV = 176.0 !Lake Michigan/Huron/non-GL(N.Channel,Georgian Bay)
+          ELSE IF(STNID.EQ.'4500005' .OR. STNID.EQ.'4500132' .OR.
+     $             STNID.EQ.'4500142' .OR. STNID.EQ.'4500201' .OR. 
+     $             STNID.EQ.'4500202' .OR. STNID.EQ.'4500203' .OR. 
+     $             STNID.EQ.'4500204' .OR. STNID.EQ.'4500205' .OR.
+     $             STNID.EQ.'4500206' .OR. STNID.EQ.'4500207' .OR. 
+     $             STNID.EQ.'4500208' .OR. STNID.EQ.'4500164' .OR. 
+     $             STNID.EQ.'4500176' .OR. STNID.EQ.'4500196' .OR.
+     $             STNID.EQ.'4500197')  THEN
+              ELEV = 174.0 !Lake Erie             
+          ELSE IF(STNID.EQ.'4500012' .OR. STNID.EQ.'4500135' .OR.
+     $             STNID.EQ.'4500139' .OR. STNID.EQ.'4500159' .OR. 
+     $             STNID.EQ.'4500215')  THEN
+              ELEV = 75.0  !Lake Ontario              
+          ELSE IF(STNID.EQ.'4500147')  THEN
+              ELEV = 175.0 !Lake St Clair 
+          ELSE IF(STNID.EQ.'4500151')  THEN
+              ELEV = 219.0 !Lake Simcoe              
+          ELSE IF(STNID.EQ.'4500152')  THEN
+              ELEV = 196.0 !Lake Nipissing              
+          ELSE
+              ELEV = 0.0 !Lake elevation not provided
+          END IF
+
+            PRINT 959, STNID,RDATA(1),RDATA(2),IDATA(9),ELEV
   959 FORMAT(' > > MARINE ELEV. MISSING -ID=',A8,', LAT=',F7.2,'N, ',
-     $ 'LON=',F8.2,'E, RTYP',I4,' - ELEVATION SET TO 0.0 M')
-            ELEV = 0.0
+     $ 'LON=',F8.2,'E, RTYP',I4,' - ELEVATION SET TO ',F8.2,' M')
+
             HDR(10) = ELEV
          END IF
+
       END IF
+
+
 C MOBILE SYNOPTIC LAND REPORTS CAN HAVE AN ELEVATION Q.M. (BUFR C. FIG.)
 C  (IF IT'S POOR, SET PRESS Q.M. TO BAD; IF IT'S FAIR SET PRESS Q.M. TO
 C   SUSPECT)

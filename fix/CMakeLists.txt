@@ -24,7 +24,7 @@ list(APPEND fix_files
   gdascounts_base.shtml
   gdascounts_html
   gdascounts_types
-  glerldict.lmd
+#  glerldict.lmd
   prepobs_cqc_statbge
   prepobs_errtable.cdas
   prepobs_errtable.nam

@@ -1750,7 +1750,7 @@ backup AFWA ACARS into PREPBUFR"
 ##                          HEREFILE MP_PREPDATA                             ##
 ##VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV##
 
-# think of adding a line with "#!/bin/ksh" after the "{ echo" below IG
+# think of adding a line with "#!/bin/ksh" after the "{ echo" below
 
 set +x
 cat <<\EOFmpp > MP_PREPDATA
@@ -2160,8 +2160,6 @@ set -x
 
          elif [ "$launcher_PREP" = mpiexec ]; then
 	    chmod 755 $DATA/prep_exec.cmd
-            #mpiexec -n 6 -ppn 32 $DATA/prep_exec.cmd #IG
-            #mpiexec -n 6 $DATA/prep_exec.cmd
             $launcher_PREP -n $NSPLIT cfp $DATA/prep_exec.cmd  
 	    export err=$?; $DATA/err_chk
             [ $err != 0 ] && exit 55  # for extra measure	 
@@ -2217,7 +2215,7 @@ set -x
             [ $err != 0 ] && exit 55  # for extra measure
          fi
       elif [ $BACK = 'YES' ] ; then
-         echo 'BACK=YES' # IG Feb2024: doesn't come here
+         #echo 'BACK=YES' # never comes here
          launcher_PREP=${launcher_PREP:-mpiexec}
 	 NPROCS=${NPROCS:-6}
          if [ "$launcher_PREP" = mpiexec ]; then

@@ -85,10 +85,10 @@ echo "&DATA" > ${net}_${month}_dumpstats.$CYCLE
 #             num=`grep $type $TF | grep -vi Global | grep qkscat | cut -c65-71`
               num=$(grep $type $TF | grep qkscat | sed -ne 's/.* HAS\( *\)\([0-9]\+\) REPORTS\( *\)$/\2/p')
 #             echo num=$num
-            elif test $type = '000.000' | test $type = '000.007'
+            elif test $type = '000.001' | test $type = '000.007'
             then
 	      # skip sfcsno which uses the same tanks
-	      num=$(grep $type $TF | grep adpscf | sed -ne 's/.* HAS\( *\)\([0-9]\+\) REPORTS\( *\)$/\2/p')
+	      num=$(grep $type $TF | grep adpsfc | sed -ne 's/.* HAS\( *\)\([0-9]\+\) REPORTS\( *\)$/\2/p')
             elif test $type = 'REPROCESSED'
             then
               num=`grep 'REPROCESSED QUIKSCAT' $TF | awk '{ print $11 }'`
