@@ -27,3 +27,8 @@ There is also the option to build and install in your local clone space but inst
 MODULEFILE_INSTALL_PREFIX=/path/you/wish/to/install/prepobs/module ./ush/build.sh
 ```
 Installation is complete.
+
+To build in Debug mode:
+```bash
+BUILD_TYPE=Debug ./ush/build.sh
+```
