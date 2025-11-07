@@ -8,14 +8,6 @@ PRELUDE
  3)Great Lakes buouys in BUFR format are assigned elevation if it's missing
  4)Cleaned code from development/throubleshooting comments
 
-
-GLERL adj reated modification in:
-fix/CMakeLists.txt
-sorc/CMakeLists.txt
-ush/CMakeLists.txt
-
---- below is not edited, you need to edit it, Dagmar ----
-
 FILE CHANGES
  M docs/Release_Notes.txt
  M fix/CMakeLists.txt
@@ -28,6 +20,7 @@ FILE CHANGES
  D ush/prepobs_glerladj.sh
  M ush/prepobs_makeprepbufr.sh
  M ush/build.sh
+ M verions/build.ver
  M versions/VERSION
  (M-modified; A-added; D-deleted)
 
@@ -65,6 +58,11 @@ USH
  Simplify the build in debug mode: DEBUG_TYPE=Debug ./ush/build.sh
 
 VERSIONS
+ versions/build.ver
+ Updated from PrgEnv_intel_ver=8.1.0 to PrgEnv_intel_ver=8.3.3
+ Updated from craype_ver=2.7.8 to craype_ver=2.7.17
+ Updated from cray_mpich_ver=8.1.7 to cray_mpich_ver=8.1.19 
+
  versions/VERSION
  Update to this release's version
 
