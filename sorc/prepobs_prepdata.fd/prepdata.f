@@ -16061,8 +16061,8 @@ C  ... THESE ARE THE DROPWINSONDES (HAVE NON-MISSING PSML & CAT. 2 DATA)
          END IF
       END IF
 
-C     Keep Great Lakes buoys and assign elevation when missing
-      IF(ELEV.GT.10000. .AND. STNID(1:3).NE.'45')  THEN
+C     Assign elevation to Great Lakes bufr buoys if missing
+      IF(ELEV.GT.10000.)  THEN
 
 C WILL TOSS LAND OR GREAT LAKES REPORTS W/ MISSING OR STRANGE ELEVATION
 C  BUT ALL OTHER MARINE REPORTS GET ELEVATION SET TO 0 IN THIS CASE
@@ -16081,47 +16081,29 @@ C     $ 'LON=',F8.2,'E, RTYP',I4,' - OVER GREAT LAKES, MISSING ELEV')
 C            GO TO 2090
          ELSE
 
-          IF( STNID.EQ.'4500001' .OR. STNID.EQ.'4500004' .OR.
-     $        STNID.EQ.'4500006' .OR. STNID.EQ.'4500136' .OR. 
-     $        STNID.EQ.'4500211' )  THEN 
+          IF(STNID.EQ.'4500136')  THEN 
               ELEV = 183.0 !Lake Superior
-          ELSE IF( STNID.EQ.'4500002' .OR. STNID.EQ.'4500007' .OR.
-     $             STNID.EQ.'4500013' .OR. STNID.EQ.'4500014' .OR.
-     $             STNID.EQ.'4500026' .OR.
-     $             STNID.EQ.'4500029' .OR. STNID.EQ.'4500168' .OR. 
-     $             STNID.EQ.'4500174' .OR. STNID.EQ.'4500175' .OR. 
-     $             STNID.EQ.'4500186' .OR. STNID.EQ.'4500187' .OR.
-     $             STNID.EQ.'4500194' .OR. STNID.EQ.'4500198' .OR.
-     $             STNID.EQ.'4500218' .OR. STNID.EQ.'4500003' .OR.
-     $             STNID.EQ.'4500008' .OR.
-     $             STNID.EQ.'4500149' .OR. STNID.EQ.'4500209' .OR.
-     $             STNID.EQ.'4500212' .OR. STNID.EQ.'4500154' .OR.
+          ELSE IF(STNID.EQ.'4500149' .OR. STNID.EQ.'4500154' .OR.
      $             STNID.EQ.'4500137' .OR. STNID.EQ.'4500143')  THEN
-              ELEV = 176.0 !Lake Michigan/Huron/non-GL(N.Channel,Georgian Bay)
-          ELSE IF(STNID.EQ.'4500005' .OR. STNID.EQ.'4500132' .OR.
-     $             STNID.EQ.'4500142' .OR. STNID.EQ.'4500201' .OR. 
-     $             STNID.EQ.'4500202' .OR. STNID.EQ.'4500203' .OR. 
-     $             STNID.EQ.'4500204' .OR. STNID.EQ.'4500205' .OR.
-     $             STNID.EQ.'4500206' .OR. STNID.EQ.'4500207' .OR. 
-     $             STNID.EQ.'4500208' .OR. STNID.EQ.'4500164' .OR. 
-     $             STNID.EQ.'4500176' .OR. STNID.EQ.'4500196' .OR.
-     $             STNID.EQ.'4500197')  THEN
+              ELEV = 176.0 !Lake Huron/non-GL(N.Channel,Georgian Bay)
+          ELSE IF(STNID.EQ.'4500132' .OR. STNID.EQ.'4500142')  THEN
               ELEV = 174.0 !Lake Erie             
-          ELSE IF(STNID.EQ.'4500012' .OR. STNID.EQ.'4500135' .OR.
-     $             STNID.EQ.'4500139' .OR. STNID.EQ.'4500159' .OR. 
-     $             STNID.EQ.'4500215')  THEN
+          ELSE IF(STNID.EQ.'4500135' .OR. STNID.EQ.'4500139' .OR. 
+     $             STNID.EQ.'4500159')  THEN
               ELEV = 75.0  !Lake Ontario              
           ELSE IF(STNID.EQ.'4500147')  THEN
               ELEV = 175.0 !Lake St Clair 
           ELSE IF(STNID.EQ.'4500151')  THEN
               ELEV = 219.0 !Lake Simcoe              
           ELSE IF(STNID.EQ.'4500152')  THEN
-              ELEV = 196.0 !Lake Nipissing              
-          ELSE
-              ELEV = 0.0 !Lake elevation not provided
+              ELEV = 196.0 !Lake Nipissing  
+          ELSE IF(STNID(1:3).EQ.'450') THEN
+              GO TO 2090   !Toss GL BUFR buoys without elevation             
+          ELSE IF(STNID(1:2).NE.'45') THEN                
+              ELEV = 0.0   !Ocean buoys
           END IF
 
-            PRINT 959, STNID,RDATA(1),RDATA(2),IDATA(9),ELEV
+          PRINT 959, STNID,RDATA(1),RDATA(2),IDATA(9),ELEV
   959 FORMAT(' > > MARINE ELEV. MISSING -ID=',A8,', LAT=',F7.2,'N, ',
      $ 'LON=',F8.2,'E, RTYP',I4,' - ELEVATION SET TO ',F8.2,' M')
 
