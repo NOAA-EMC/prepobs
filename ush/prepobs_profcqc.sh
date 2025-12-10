@@ -34,8 +34,8 @@ if [ ! -s $PRPI ] ; then exit 1;fi
 
 jlogfile=${jlogfile:=""}
 
-rm $PRPI.profcqc
-rm profcqc.monitor profcqc.events
+rm -f $PRPI.profcqc
+rm -f profcqc.monitor profcqc.events
 
 pgm=`basename  $PQCX`
 if [ -s $DATA/prep_step ]; then
@@ -91,7 +91,9 @@ fi
 if [ "$err" -gt '0' ]; then
    exit 9
 else
-   mv $PRPI.profcqc $PRPI
+   if [ -e "$PRPI.profcqc" ]; then
+    mv "$PRPI.profcqc" "$PRPI"
+   fi
 fi
 
 exit 0

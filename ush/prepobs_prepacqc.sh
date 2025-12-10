@@ -70,8 +70,8 @@ if [ $PROCESS_ACQC = YES ]; then
    PRPI=$1
    if [ ! -s $PRPI ] ; then exit 1;fi
 
-   rm $PRPI.prepacqc
-   rm prepbufr.acft_profiles
+   rm -f $PRPI.prepacqc
+   rm -f prepbufr.acft_profiles
 
    pgm=`basename  $AQCX`
    if [ -s $DATA/prep_step ]; then

@@ -45,7 +45,7 @@ cat <<\EOFc > cqcvad05
 EOFc
 set -x
 
-rm $PRPI.cqcvad
+rm -f $PRPI.cqcvad
 
 pgm=`basename  $VQCX`
 if [ -s $DATA/prep_step ]; then

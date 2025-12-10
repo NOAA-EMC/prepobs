@@ -55,8 +55,8 @@ set +u
 [ -n "$PRPI_p24" ]  && cp $PRPI_p24 prepbufr_p24
 set -u
 
-rm $PRPI.cqcbufr
-rm cqc_events cqc_stncnt cqc_stnlst
+rm -f $PRPI.cqcbufr
+rm -f cqc_events cqc_stncnt cqc_stnlst
 
 pgm=`basename  $CQCX`
 if [ -s $DATA/prep_step ]; then
