@@ -40,8 +40,8 @@ CDATE10=$2
 
 jlogfile=${jlogfile:=""}
 
-rm $PRPI.oiqcbufr
-rm tosslist
+rm -f $PRPI.oiqcbufr
+rm -f tosslist
 
 pgm=`basename  $OIQCX`
 if [ -s $DATA/prep_step ]; then

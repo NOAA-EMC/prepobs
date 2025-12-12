@@ -48,8 +48,8 @@ PRPI=$1
 if [ ! -s $PRPI ] ; then exit 1 ;fi
 CDATE10=$2
 
-rm $PRPI.prevents
-rm prevents.filtering
+rm -f $PRPI.prevents
+rm -f prevents.filtering
 
 pgm=`basename  $PREX`
 if [ -s $DATA/prep_step ]; then
