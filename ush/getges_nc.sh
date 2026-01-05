@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 ################################################################################
 #
 # Name:  getges.sh            Author:  Mark Iredell
@@ -1367,18 +1367,29 @@ while [[ $fh -le $fhend ]];do
  ((fhp3=10#$fh+3))
  [[ $fhp3 -lt 10 ]]&&fhp3=0$fhp3
  gh=$fh;[[ $gh -lt 100 ]]&&gh=0$gh
- ghm6=$fhm6;[[ $ghm6 -lt 100 ]]&&ghm6=0$ghm6
- ghm5=$fhm5;[[ $ghm5 -lt 100 ]]&&ghm5=0$ghm5
- ghm4=$fhm4;[[ $ghm4 -lt 100 ]]&&ghm4=0$ghm4
- ghm3=$fhm3;[[ $ghm3 -lt 100 ]]&&ghm3=0$ghm3
- ghm2=$fhm2;[[ $ghm2 -lt 100 ]]&&ghm2=0$ghm2
- ghm1=$fhm1;[[ $ghm1 -lt 100 ]]&&ghm1=0$ghm1
- ghp1=$fhp1;[[ $ghp1 -lt 100 ]]&&ghp1=0$ghp1
- ghp2=$fhp2;[[ $ghp2 -lt 100 ]]&&ghp2=0$ghp2
- ghp3=$fhp3;[[ $ghp3 -lt 100 ]]&&ghp3=0$ghp3
+ #ghm6=$fhm6;[[ $ghm6 -lt 100 ]]&&ghm6=0$ghm6
+ #ghm5=$fhm5;[[ $ghm5 -lt 100 ]]&&ghm5=0$ghm5
+ #ghm4=$fhm4;[[ $ghm4 -lt 100 ]]&&ghm4=0$ghm4
+ #ghm3=$fhm3;[[ $ghm3 -lt 100 ]]&&ghm3=0$ghm3
+ #ghm2=$fhm2;[[ $ghm2 -lt 100 ]]&&ghm2=0$ghm2
+ #ghm1=$fhm1;[[ $ghm1 -lt 100 ]]&&ghm1=0$ghm1
+ #ghp1=$fhp1;[[ $ghp1 -lt 100 ]]&&ghp1=0$ghp1
+ #ghp2=$fhp2;[[ $ghp2 -lt 100 ]]&&ghp2=0$ghp2
+ #ghp3=$fhp3;[[ $ghp3 -lt 100 ]]&&ghp3=0$ghp3
+ ghm6=$fhm6; if (( 10#$ghm6 < 100 )); then ghm6=0$ghm6; fi
+ ghm5=$fhm5; if (( 10#$ghm5 < 100 )); then ghm5=0$ghm5; fi
+ ghm4=$fhm4; if (( 10#$ghm4 < 100 )); then ghm4=0$ghm4; fi
+ ghm3=$fhm3; if (( 10#$ghm3 < 100 )); then ghm3=0$ghm3; fi
+ ghm2=$fhm2; if (( 10#$ghm2 < 100 )); then ghm2=0$ghm2; fi
+ ghm1=$fhm1; if (( 10#$ghm1 < 100 )); then ghm1=0$ghm1; fi
+ ghp1=$fhp1; if (( 10#$ghp1 < 100 )); then ghp1=0$ghp1; fi
+ ghp2=$fhp2; if (( 10#$ghp2 < 100 )); then ghp2=0$ghp2; fi
+ ghp3=$fhp3; if (( 10#$ghp3 < 100 )); then ghp3=0$ghp3; fi
  id=$($NDATE -$fh $valid)
- typeset -L8 day=$id
- typeset -R2 cyc=$id
+ #typeset -L8 day=$id	#ksh
+ #typeset -R2 cyc=$id	#ksh
+ day=$(echo $id | cut -c1-8)
+ cyc=$(echo $id | cut -c9-10)
  eval list=\$getlist$fh
  [[ -z "$list" ]]&&list=${geslist}
  for ges_var in $list;do

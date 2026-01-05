@@ -1,5 +1,5 @@
-#!/bin/ksh
-# Run under ksh (converted to WCOSS)
+#!/bin/sh
+# Run under bash (converted to WCOSS)
 
 
 # This script encodes the background (first guess) and observational

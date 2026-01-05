@@ -1,5 +1,5 @@
-#!/bin/ksh
-# Run under ksh (converted to WCOSS)
+#!/bin/sh
+# Run under bash (converted to WCOSS)
 
 ####  UNIX Script Documentation Block
 #
@@ -1454,9 +1454,11 @@ echo "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
                set -x
             else
                if [ "$sfx" = 'A' ]; then
-                 typeset -Z2 fhr
-                 fhr=`awk -F"sf" '{print$2}' sgesprep_pathname | cut -c1-2`
-                 fhr=`expr $fhr + 03`
+                 #typeset -Z2 fhr						#ksh
+                 #fhr=`awk -F"sf" '{print$2}' sgesprep_pathname | cut -c1-2`	#ksh
+		 fhr=$(awk -F"sf" '{print $2}' sgesprep_pathname | cut -c1-2)  #bash
+		 fhr=$(printf "%02d" "$fhr")                                   #bash
+		 fhr=`expr $fhr + 03`
                  dhr=`expr 3 - $modhr`
                fi
                set +x
@@ -1746,15 +1748,16 @@ backup AFWA ACARS into PREPBUFR"
    rm insert
 
 
+   echo "create MP_PREPDATA HEREFILE"
 ##VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV##
 ##                          HEREFILE MP_PREPDATA                             ##
 ##VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV##
 
-# think of adding a line with "#!/bin/ksh" after the "{ echo" below
+# think of adding a line with "#!/bin/sh" after the "{ echo" below
 
 set +x
 cat <<\EOFmpp > MP_PREPDATA
-#!/bin/ksh 
+#!/bin/sh 
 { echo
 
 # This herefile script performs the "prepdata" processing.  It is designed to
@@ -1918,8 +1921,8 @@ BUFRLIST_all="uprair aircar aircft satwnd proflr vadwnd rassda adpupa adpsfc \
  sfcshp sfcbog msonet spssmi erscat qkswnd wdsatr ascatw rtovs atovs goesnd \
  gpsipw"
 ###BUFRLIST_all_array=($BUFRLIST_all) # this does not work on all platforms
-set -A BUFRLIST_all_array `echo $BUFRLIST_all` # this works on all platforms
-
+#set -A BUFRLIST_all_array `echo $BUFRLIST_all` # this works on all platforms; 	#ksh
+BUFRLIST_all_array=($BUFRLIST_all)        					# bash
 
 # Any dump file not included in BUFRLIST is "touched" so that it will not
 #  cause a read error in the event that PREPOBS_PREPDATA still tries to read it
@@ -2123,7 +2126,7 @@ set -x
 #   fire off each MP_PREPDATA thread as a background process
 #  -----------------------------------------------------------------------
       if [ "$POE" != 'NO' ]; then
-         echo "#!/bin/ksh"|tee -a $DATA/prep_exec.cmd
+         echo "#!/bin/sh"|tee -a $DATA/prep_exec.cmd
          multi=-1
          while [ $((multi+=1)) -lt $NSPLIT ] ; do
             echo "$DATA/MP_PREPDATA $multi "|tee -a $DATA/prep_exec.cmd
@@ -2137,7 +2140,7 @@ set -x
          fi
       elif [ $BACK = 'YES' ] ; then
          multi=-1
-         echo "#!/bin/ksh" > $DATA/prepthrds.sh
+         echo "#!/bin/sh" > $DATA/prepthrds.sh
          while [ $((multi+=1)) -lt $NSPLIT ] ; do
             echo "$DATA/MP_PREPDATA $multi &" >> $DATA/prepthrds.sh
             echo "echo $DATA/MP_PREPDATA $multi submitted in background" \
@@ -2183,9 +2186,11 @@ set -x
          elif [ "$launcher_PREP" = aprun ]; then
             ## Determine tasks per node (PREPDATAtpn) and
             ##    max number of concurrent procs (PREPDATAprocs) for cfp
-            typeset -i nodesall=$(echo -e "${LSB_HOSTS// /\\n}"|sort -u|wc -w)
-            typeset -i ncnodes=$(($nodesall-1)) # we want compute nodes only
-            if [ $ncnodes -lt 1 ]; then
+            #typeset -i nodesall=$(echo -e "${LSB_HOSTS// /\\n}"|sort -u|wc -w)	#ksh
+            #typeset -i ncnodes=$(($nodesall-1)) # we want compute nodes only	#ksh
+            declare -i nodesall=$(tr ' ' '\n' <<< "$LSB_HOSTS"|sort -u|wc -l)    #bash
+	    declare -i ncnodes=$((nodesall-1)) # we want compute nodes only      #bash
+	    if [ $ncnodes -lt 1 ]; then
                set +x
                echo
                echo " ** Could not get positive compute node count for aprun **"

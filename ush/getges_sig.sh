@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 ################################################################################
 #
 # Name:  getges.sh            Author:  Mark Iredell
@@ -2973,8 +2973,10 @@ while [[ $fh -le $fhend ]];do
  ((fhp3=10#$fh+3))
  [[ $fhp3 -lt 10 ]]&&fhp3=0$fhp3
  id=$($NDATE -$fh $valid)
- typeset -L8 day=$id
- typeset -R2 cyc=$id
+ #typeset -L8 day=$id	#ksh
+ #typeset -R2 cyc=$id	#ksh
+ day=$(echo $id | cut -c1-8)
+ cyc=$(echo $id | cut -c9-10)
  eval list=\$getlist$fh
  [[ -z $list ]]&&list=${geslist}
  for gestest in $list;do

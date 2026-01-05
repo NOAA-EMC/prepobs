@@ -1,4 +1,4 @@
-#!/bin/ksh 
+#!/bin/sh 
 #    mstr_shp_stn_lst_update.sh
 #
 #    This script copies an updated VOS ship list from

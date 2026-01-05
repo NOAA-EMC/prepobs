@@ -1,5 +1,5 @@
-#!/bin/ksh
-# Run under ksh (converted to WCOSS)
+#!/bin/sh
+# Run under sh (converted to WCOSS)
 
 
 # This script performs rawinsonde upper-air complex quality control checking

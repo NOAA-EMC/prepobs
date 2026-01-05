@@ -1,5 +1,5 @@
-#!/bin/ksh
-# Run under ksh (converted to WCOSS)
+#!/bin/sh
+# Run under sh (converted to WCOSS)
 # This script encodes the analysis into the PREPBUFR reports
 #  (interpolated to obs. locations)
 #
