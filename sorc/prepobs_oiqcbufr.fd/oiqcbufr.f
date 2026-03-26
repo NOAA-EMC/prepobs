@@ -1809,7 +1809,7 @@ C  OPEN THE INPUT AND OUTPUT FILES
 C  -------------------------------
  
 C     CALL OPENBF(LUBIN,'IN',LUBIN)
-      CALL UFBQCD(LUBIN,'OIQC',QCD)
+      CALL UFBQCD(LUBIN,'OIQC',IQCD)
       CALL OPENBF(LUBOT,'OUT',LUBIN)
       CALL MAXOUT(50000)     !IG
       imsg = 1
@@ -1926,7 +1926,7 @@ C  --------------------------------------
          IF(JUPD.LE.3) OBE(JUPD,JLEV) = OBS(JUPD,JLEV)
          IF(JUPD.EQ.3) OBE(   4,JLEV) = OBS(   4,JLEV)
          QME(JUPD,JLEV) = QMN
-         PCS(JUPD,JLEV) = QCD
+         PCS(JUPD,JLEV) = IQCD
          RCS(JUPD,JLEV) = QMN
       ENDIF
  
@@ -1936,7 +1936,7 @@ C  ---------------------------------------------------
       IF(QMN.GE.4 .AND. QMS(5,JLEV).LT.4) THEN
          OBE(5,JLEV) = OBS(5,JLEV)
          QME(5,JLEV) = QMS(5,JLEV)+4
-         PCS(5,JLEV) = QCD
+         PCS(5,JLEV) = IQCD
          RCS(5,JLEV) = QMS(5,JLEV)+4
       ENDIF
  
@@ -1947,7 +1947,7 @@ C  ----------------------------------------------------
          OBE(3,JLEV) = FMW(IREP,1) + FOB(ILEV,1)
          OBE(4,JLEV) = FMW(IREP,2) + FOB(ILEV,2)
          QME(3,JLEV) = QM
-         PCS(3,JLEV) = QCD
+         PCS(3,JLEV) = IQCD
          RCS(3,JLEV) = QM
       ENDIF
  

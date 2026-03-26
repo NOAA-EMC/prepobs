@@ -33,7 +33,7 @@ C   SUBPROGRAMS CALLED:
 C     UNIQUE:  - TWINWIND_HIS_CHECK PARTID INDEX41 TWINWIND
 C     LIBRARY
 C       W3LIB    - DATELEN IW3JDN  W3TAGB W3FC05  W3TAGE   
-C       BUFRLIB  - OPENBF READMG READSB UFBINT CLOSBF
+C       BUFRLIB  - OPENBF READMG READSB UFBINT CLOSBF SETIM8B
 C
 C   EXIT STATES:
 C     COND =   0 - SUCCESSFUL RUN
@@ -109,6 +109,9 @@ C     SET COUNTS TO ZERO
       ISTA=0
       IW=0
 
+C     INFORM BUFR THAT ALL INTEGERS ARE 8-BYTES
+      CALL SETIM8B(.TRUE.)
+
 C     READ DATA FROM PREVIOUS CYCLE INTO COMMON/HISTPART/ and
 C     CHECK THE STATUS OF THE PREVIOUS SET(S) OF WIND DATA.
       CALL TWINWIND_HIS_CHECK
@@ -129,7 +132,6 @@ C     FIND SUBSET 'ADPUPA' ...
       ENDIF                                                                     
 
 C     SPLIT DATE UP INTO COMPONENTS
-                                                                                      
       WRITE (CDATE, '(I10)')  IDATE      
       CDAT8(1:8)=CDATE(3:10)                                        
       READ  (CDATE, '(5I2)') IIDATE                                             
