@@ -21,10 +21,10 @@ qid=$$
 
 # Imported variables that must be passed in:
 #   DATA  - path to working directory
-#   modNET- string indicating system network (either "gfs", "gdas", "cdas",
+#   mNET- string indicating system network (either "gfs", "gdas", "cdas",
 #            "nam", "rap", "rtma" or "urma")
-#            NOTE1: modNET is changed to gdas in the parent Job script for the
-#                   RUN=gdas1 (was gfs - modNET remains gfs for RUN=gfs).
+#            NOTE1: mNET is changed to gdas in the parent Job script for the
+#                   RUN=gdas1 (was gfs - mNET remains gfs for RUN=gfs).
 #            NOTE2: This is read from the program PREPOBS_PREVENTS via a call
 #                   to system routine "GETENV".
 #   SGES  - path to COPY OF global simga first guess file 1 (valid at
