@@ -143,7 +143,7 @@ C$$$
 
       REAL(8)   BMISS,GETBMISS
 
-      CHARACTER*4  NET
+      CHARACTER*4  mNET
       CHARACTER*8  SUBSET,LAST
 
       DIMENSION IUNITG(2)
@@ -237,7 +237,7 @@ C  --------------------------------------------------------
 C  DETERMINE WHICH NETWORK WE ARE RUNNING UNDER
 C  --------------------------------------------
 
-      CALL GET_ENVIRONMENT_VARIABLE('NET',NET)
+      CALL GET_ENVIRONMENT_VARIABLE('mNET',mNET)
 
       print *
       if(net.eq.'cdas' .or. net.eq.'cdc') then
@@ -273,7 +273,7 @@ C  --------------------------------------------------------------------
 
             CALL UFBCPY(IUNITI,IUNITP)
 
-            IF(NET.NE.'cdas' .AND. NET.NE.'cdc') THEN
+            IF(mNET.NE.'cdas' .AND. mNET.NE.'cdc') THEN
 
 C  FOR ALL NETWORKS EXCEPT CDAS AND CDC, CALL W3NCO ROUTINE GBLEVENTS
 C   TO ENCODE FIRST GUESS VALUES FOR THIS REPORT (EXPECTS GFS-STYLE

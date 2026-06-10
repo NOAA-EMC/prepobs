@@ -142,7 +142,7 @@
 #      preparation for future NRL aircraft QC code NRLACQC, added new script
 #      variables NRLACQC (def=NO), USHNQC (def=${HOMEALL}/ush), NQCX
 #      (def=$EXECPREP/prepobs_nrlacqc) and NQCC
-#      (def=$PARMPREP/prepobs_nrlacqc.${NET}.parm"), if NRLACQC=YES will
+#      (def=$PARMPREP/prepobs_nrlacqc.${mNET}.parm"), if NRLACQC=YES will
 #      execute script USHNQC to perform NRL aircraft QC (not yet ready)
 # 2011-10-14  D.A. Keyser -- Updated to handle new "rap" (Rapid Refresh)
 #    network and its model runs "rap", "rap_p" and "rap_e"
@@ -235,7 +235,7 @@
 #      now dependent upon $RUN (for transition from "gdas1" to "gdas").
 # 2017-04-20  D.C. Stokes -- Relocated assignments of variable stype to ensure
 #      it always passes the proper value to the getges utility script.
-# 2017-06-10  D.C. Stokes -- Added logic to accommodate NET=cfs.  Added
+# 2017-06-10  D.C. Stokes -- Added logic to accommodate mNET=cfs.  Added
 #      arithmetic evaluation of "err_this" to remove any whitespace prior to
 #      use of that variable in arithmetic comparison statements.
 # 2017-07-02 JWhiting/D. Keyser 
@@ -316,9 +316,9 @@
 #                          variable BACK is "YES" (see below) (i.e., a parallel
 #                          environment), and the imported shell variable
 #                          PREPDATA=YES (see below)
-#     NET           String indicating system network {either "gfs", "gdas",
+#     mNET        String indicating system network {either "gfs", "gdas",
 #                   "cdas", "nam", "rap", "rtma" or "urma"}
-#                   NOTE : NET is changed to gdas in the parent Job script for
+#                   NOTE : mNET is changed to gdas in the parent Job script for
 #                          RUN=gdas or RUN=gdas1 (was gfs) 
 #     RUN           String indicating model run {either "gfs", "gdas", "gdas1",
 #                         "cdas", "nam", "ndas", "rap", "rap_p", "rap_e",
@@ -574,7 +574,7 @@
 #                   Default is "0"
 #     PRPC          String indicating data card path for PREPOBS_PREPDATA
 #                   program
-#                   Default is "$PARMPREP/prepobs_prepdata.${NET}.parm"
+#                   Default is "$PARMPREP/prepobs_prepdata.${mNET}.parm"
 #     PRPT          String indicating bufrtable file path for PREPOBS_PREPDATA
 #                   program
 #                   Default is "$FIXPREP/prepobs_prep.bufrtable"
@@ -587,9 +587,9 @@
 #                   NOTE: Only read by gdas, gfs, cdas and nam networks
 #                   If imported "RUN=gdas" or "RUN=gfs", default is
 #                   "$HOMEgfs/fix/prepobs_errtable.global";
-#                   if imported "NET=cdas", default is
+#                   if imported "mNET=cdas", default is
 #                   "$HOMEprepobs/fix/prepobs_errtable.cdas";
-#                   if imported "NET=nam", default is
+#                   if imported "mNET=nam", default is
 #                   "$HOMEprepobs/fix/prepobs_errtable.nam"
 #                   otherwise, default is "$DATA/scratch.PRVT" a null file
 #     LISTHDX       String indicating executable path for PREPOBS_LISTHEADERS
@@ -602,7 +602,7 @@
 #                   program
 #                   Default is "$EXECSYND/syndat_syndata"
 #     SYNDC         String indicating data card path for SYNDAT_SYNDATA program
-#                   Default is "$PARMSYND/syndat_syndata.${NET}.parm"
+#                   Default is "$PARMSYND/syndat_syndata.${mNET}.parm"
 #     GLRX          String indicating executable path for PREPOBS_GLERLADJ
 #                   program
 #                   Default is "$EXECPREP/prepobs_glerladj"
@@ -614,13 +614,13 @@
 #                   Default is "$EXECPREP/prepobs_prevents"
 #     PREC          String indicating data card path for PREPOBS_PREVENTS
 #                   program
-#                   Default is "$PARMPREP/prepobs_prevents.${NET}.parm"
+#                   Default is "$PARMPREP/prepobs_prevents.${mNET}.parm"
 #     AQCX          String indicating executable path for PREPOBS_PREPACQC
 #                   program
 #                   Default is "$EXECPREP/prepobs_prepacqc"
 #     AQCC          String indicating data card path for PREPOBS_PREPACQC
 #                   program
-#                   Default is "$PARMPREP/prepobs_prepacqc.${NET}.parm"
+#                   Default is "$PARMPREP/prepobs_prepacqc.${mNET}.parm"
 #     APFX          String indicating executable path for PREPOBS_PREPACPF
 #                   program
 #                   Default is "$EXECPREP/prepobs_prepacpf"
@@ -632,7 +632,7 @@
 #                   Default is "$EXECPREP/prepobs_profcqc"
 #     PQCC          String indicating data card path for PREPOBS_PROFCQC
 #                   program
-#                   Default is "$PARMPREP/prepobs_profcqc.${NET}.parm"
+#                   Default is "$PARMPREP/prepobs_profcqc.${mNET}.parm"
 #     VQCX          String indicating executable path for PREPOBS_CQCVAD
 #                   program
 #                   Default is "$EXECPREP/prepobs_cqcvad"
@@ -641,7 +641,7 @@
 #                   Default is "$EXECPREP/prepobs_cqcbufr"
 #     CQCC          String indicating data card path for PREPOBS_CQCBUFR
 #                   program
-#                   Default is "$PARMPREP/prepobs_cqcbufr.${NET}.parm"
+#                   Default is "$PARMPREP/prepobs_cqcbufr.${mNET}.parm"
 #     CQCS          String indicating statbge path for PREPOBS_CQCBUFR program
 #                   Default is "$FIXPREP/prepobs_cqc_statbge"
 #     OIQCX         String indicating executable path for PREPOBS_OIQCBUFR
@@ -649,7 +649,7 @@
 #                   Default is "$EXECPREP/prepobs_oiqcbufr"
 #     OIQCT         String indicating observational error table file path for
 #                   PREPOBS_OIQCBUFR program
-#                   NOTE: If imported "NET=cdas", default is
+#                   NOTE: If imported "mNET=cdas", default is
 #                   "$HOMEprepobs/fix/prepobs_oiqc.oberrs.cdas"; 
 #                   otherwise default is
 #                   "$HOMEprepobs/fix/prepobs_oiqc.oberrs"
@@ -998,7 +998,7 @@ set -x
 envir=${envir:-prod}
 
 envir_getges=${envir_getges:-$envir}
-if [ $NET = cfs ]; then 
+if [ $mNET = cfs ]; then 
    network_getges=${network_getges:-"cfs-cdas"}
 else
   if [ $modhr -eq 0 -o "$NEMSIO_IN" = .true. -o "$NETCDF_IN" = .true. ]; then
@@ -1117,15 +1117,15 @@ OIQCBUFR=${OIQCBUFR:-YES}
 MPCOPYX=${MPCOPYX:-$EXECPREP/prepobs_mpcopybufr}
 PRPX=${PRPX:-$EXECPREP/prepobs_prepdata}
 errPREPDATA_limit=${errPREPDATA_limit:-0}
-PRPC=${PRPC:-$PARMPREP/prepobs_prepdata.${NET}.parm}
+PRPC=${PRPC:-$PARMPREP/prepobs_prepdata.${mNET}.parm}
 PRPT=${PRPT:-$FIXPREP/prepobs_prep.bufrtable}
 cp $PRPT prep.bufrtable
 LANDC=${LANDC:-$FIXPREP/prepobs_landc}
 if [ "$RUN" = 'gdas' -o "$RUN" = 'gfs' ]; then
    PRVT=${PRVT:-$HOMEgfs/fix/prepobs_errtable.global}
-elif [ "$NET" = 'cdas' ]; then
+elif [ "$mNET" = 'cdas' ]; then
    PRVT=${PRVT:-$HOMEprepobs/fix/prepobs_errtable.cdas}
-elif [ "$NET" = 'nam' ]; then
+elif [ "$mNET" = 'nam' ]; then
    PRVT=${PRVT:-$HOMEprepobs/fix/prepobs_errtable.nam}
 else
    cp /dev/null $DATA/scratch.PRVT
@@ -1134,23 +1134,23 @@ fi
 LISTHDX=${LISTHDX:-$EXECPREP/prepobs_listheaders}
 MONOBFRX=${MONOBFRX:-$EXECPREP/prepobs_monoprepbufr}
 SYNDX=${SYNDX:-$EXECSYND/syndat_syndata}
-SYNDC=${SYNDC:-$PARMSYND/syndat_syndata.${NET}.parm}
+SYNDC=${SYNDC:-$PARMSYND/syndat_syndata.${mNET}.parm}
 GLRX=${GLRX:-$EXECPREP/prepobs_glerladj}
 GLRD=${GLRD:-$FIXPREP/glerldict.lmd}
 PREX=${PREX:-$EXECPREP/prepobs_prevents}
-PREC=${PREC:-$PARMPREP/prepobs_prevents.${NET}.parm}
+PREC=${PREC:-$PARMPREP/prepobs_prevents.${mNET}.parm}
 AQCX=${AQCX:-$EXECPREP/prepobs_prepacqc}
-AQCC=${AQCC:-$PARMPREP/prepobs_prepacqc.${NET}.parm}
+AQCC=${AQCC:-$PARMPREP/prepobs_prepacqc.${mNET}.parm}
 APFX=${APFX:-$EXECPREP/prepobs_prepacpf}
 DICT=${DICT:-$DICTPREP/metar.tbl}
 PQCX=${PQCX:-$EXECPREP/prepobs_profcqc}
-PQCC=${PQCC:-$PARMPREP/prepobs_profcqc.${NET}.parm}
+PQCC=${PQCC:-$PARMPREP/prepobs_profcqc.${mNET}.parm}
 VQCX=${VQCX:-$EXECPREP/prepobs_cqcvad}
 CQCX=${CQCX:-$EXECPREP/prepobs_cqcbufr}
-CQCC=${CQCC:-$PARMPREP/prepobs_cqcbufr.${NET}.parm}
+CQCC=${CQCC:-$PARMPREP/prepobs_cqcbufr.${mNET}.parm}
 CQCS=${CQCS:-$FIXPREP/prepobs_cqc_statbge}
 OIQCX=${OIQCX:-$EXECPREP/prepobs_oiqcbufr}
-if [ "$NET" = 'cdas' ]; then
+if [ "$mNET" = 'cdas' ]; then
    OIQCT=${OIQCT:-$HOMEprepobs/fix/prepobs_oiqc.oberrs.cdas}
 else
    OIQCT=${OIQCT:-$HOMEprepobs/fix/prepobs_oiqc.oberrs}
@@ -1281,7 +1281,7 @@ elif [ "$RELOCATION_HAS_RUN" = 'YES' ]; then
 
    qual_last=".$tmmark"  # need this because gfs and gdas don't add $tmmark
                          #  qualifier to end of output atmos guess files
-   [ $RUN = gfs -o $RUN = gdas -o $NET = cfs ]  &&  qual_last=""
+   [ $RUN = gfs -o $RUN = gdas -o $mNET = cfs ]  &&  qual_last=""
    for file in sgm3prep sgesprep sgp3prep tcvitals.relocate.$tmmark; do
       case $file in
         tcvitals.relocate.$tmmark) infile=$file; qual_last="";; #  already has $tmmark at end
@@ -2563,11 +2563,11 @@ if [ "$SYNDATA"  = 'YES' ]; then
          cp ${COMSPtcvital}syndata.tcvitals.$tmmark tcvitals_orig
       fi
 
-      if [ "$RELOCATION_HAS_RUN" != 'YES' -o "$NET" = 'nam' ]; then
+      if [ "$RELOCATION_HAS_RUN" != 'YES' -o "$mNET" = 'nam' ]; then
 
-# If RELOCATION_HAS_RUN=NO or NET=nam, always use original tcvitals file here
+# If RELOCATION_HAS_RUN=NO or mNET=nam, always use original tcvitals file here
 #  to ensure that SYNDATA will run if there are records in the original
-#  tcvitals file (for NET=nam, RELOCATION_HAS_RUN may be YES but previous
+#  tcvitals file (for mNET=nam, RELOCATION_HAS_RUN may be YES but previous
 #  tropical cyclone relocation processing was only used to update the first
 #  guess read in by the various PREPBUFR processing programs and it mostly like
 #  would have generated a null tcvitals file which would prevent SYNDATA from
@@ -2577,7 +2577,7 @@ if [ "$SYNDATA"  = 'YES' ]; then
       else
          if [ ! -s tcvitals ]; then
 
-#  If RELOCATION_HAS_RUN=YES, NET is not nam (currently meaning it is gfs or
+#  If RELOCATION_HAS_RUN=YES, mNET is not nam (currently meaning it is gfs or
 #   gdas), and the tcvitals file generated by previous tropical cyclone
 #   relocation processing is null (which is usually the case) -- still want
 #   SYNDATA to run but to NOT append bogus reports - it WILL flag dropwinsonde
@@ -2590,7 +2590,7 @@ if [ "$SYNDATA"  = 'YES' ]; then
             cp tcvitals_orig tcvitals
          else
 
-#  If RELOCATION_HAS_RUN=YES, NET is not nam (currently meaning it is gfs or
+#  If RELOCATION_HAS_RUN=YES, mNET is not nam (currently meaning it is gfs or
 #   gdas), and the tcvitals file generated by previous tropical cyclone
 #   relocation processing has at least one record in it (which is usually NOT
 #   the case) -- SYNDATA will run and WILL append bogus reports for the
