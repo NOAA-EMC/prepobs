@@ -5,15 +5,18 @@ list(APPEND ush_files
   gdas_summary.sh
   gdascounts_combine.sh
   getges.sh
+  getges_v17.sh
   getges_driver.sh
+  getges_driver_v17.sh
   getges_nc.sh
+  getges_nc_v17.sh
   getges_sig.sh
   global_postevents.sh
   mstr_shp_stn_lst_update.sh
   mstr_shp_stn_lst_update2.sh
   prepobs_cqcbufr.sh
   prepobs_cqcvad.sh
-  prepobs_glerladj.sh
+#  prepobs_glerladj.sh
   prepobs_makeprepbufr.sh
   prepobs_oiqcbufr.sh
   prepobs_prepacqc.sh

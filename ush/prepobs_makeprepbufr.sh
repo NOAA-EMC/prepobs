@@ -812,8 +812,12 @@
 #     herefiles  : $DATA/MP_PREPDATA
 #                  $DATA/MERGE_MSGS
 #     scripts    : $USHGETGES/getges.sh
+#                  $USHGETGES/getges_v17.sh
+#                  $USHGETGES/getges_nc.sh
+#                  $USHGETGES/getges_nc_v17.sh
 #                  $USHGETGES/getges_sig.sh
 #                  $USHGETGES/getges_driver.sh
+#                  $USHGETGES/getges_driver_v17.sh
 #                  $USHSYND/prepobs_syndata.sh
 #                  $USHGLERL/prepobs_glerladj.sh
 #                  $USHPREV/prepobs_prevents.sh
@@ -1087,11 +1091,25 @@ GETGUESS=${GETGUESS:-YES}
 if [ "$GETGUESS" = 'YES' ]; then
    USHGETGES=${USHGETGES:-${HOMEprepobs}/ush}
    if [ "$NEMSIO_IN" = .true. ]; then
-      GETGESprep_driver=${GETGESprep_driver:-$USHGETGES/getges_driver.sh}
-      GETGESprep=${GETGESprep:-$USHGETGES/getges.sh}
+      #expects gfs_ver=v17.0 in versions/*.ver
+      gfs_ver_num="${gfs_ver:1:2}" # extracts the 17
+      if [[ "$gfs_ver_num" -le 16 ]]; then
+         GETGESprep_driver=${GETGESprep_driver:-$USHGETGES/getges_driver.sh}
+         GETGESprep=${GETGESprep:-$USHGETGES/getges.sh}
+      else
+         GETGESprep_driver=${GETGESprep_driver:-$USHGETGES/getges_driver_v17.sh}
+         GETGESprep=${GETGESprep:-$USHGETGES/getges_v17.sh}
+      fi
    elif [ "$NETCDF_IN" = .true. ]; then
-      GETGESprep_driver=${GETGESprep_driver:-$USHGETGES/getges_driver.sh}
-      GETGESprep=${GETGESprep:-$USHGETGES/getges_nc.sh}
+      #expects gfs_ver=v17.0 in versions/*.ver
+      gfs_ver_num="${gfs_ver:1:2}" # extracts the 17
+      if [[ "$gfs_ver_num" -le 16 ]]; then
+         GETGESprep_driver=${GETGESprep_driver:-$USHGETGES/getges_driver.sh}
+         GETGESprep=${GETGESprep:-$USHGETGES/getges_nc.sh}
+      else
+         GETGESprep_driver=${GETGESprep_driver:-$USHGETGES/getges_driver_v17.sh}
+         GETGESprep=${GETGESprep:-$USHGETGES/getges_nc_v17.sh}
+      fi
    else
       GETGESprep=${GETGESprep:-$USHGETGES/getges_sig.sh}
    fi
@@ -2560,7 +2578,13 @@ if [ "$SYNDATA"  = 'YES' ]; then
       if [ -f ${tstsp}syndata.tcvitals.$tmmark ]; then
          cp ${tstsp}syndata.tcvitals.$tmmark tcvitals_orig
       else
-         cp ${COMSPtcvital}syndata.tcvitals.$tmmark tcvitals_orig
+         #expects gfs_ver=v17.0 in versions/*.ver
+         gfs_ver_num="${gfs_ver:1:2}" # extracts the 17
+         if [[ "$gfs_ver_num" -le 16 ]]; then
+             cp ${COMSPtcvital}syndata.tcvitals.$tmmark tcvitals_orig #GFSv16
+         else
+             cp ${COMSPtcvital}/obs/${NET}.${cycle}.syndata.tcvitals.$tmmark tcvitals_orig #GFSv17
+         fi
       fi
 
       if [ "$RELOCATION_HAS_RUN" != 'YES' -o "$mNET" = 'nam' ]; then
