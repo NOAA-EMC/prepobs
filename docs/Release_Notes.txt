@@ -97,7 +97,7 @@ USH CHANGES
  Introduce BUILD_TYPE for easier "Debug" mode build
  
  ush/CMakeLists.txt
- Add new scripts getges_v17.sh,getges_driver_v17.sh,getges_nc_v17.sh
+ Add new scripts getges_v17.sh, getges_driver_v17.sh, getges_nc_v17.sh
  
  ush/gdas_countstat.sh
  Correct snow obs counts
@@ -111,7 +111,7 @@ USH CHANGES
 
 VERSIONS CHANGES
  versions/build.ver
- Update to bufr_ver=12.2.0;gfs_ver=v17.0;craype_ver=2.7.17;cray_mpich_ver=8.1.19
+ Update to bufr_ver=12.2.0; gfs_ver=v17.0; craype_ver=2.7.17; cray_mpich_ver=8.1.19
  Add ip_ver=5.2.0 (needed b/c of bufr/v12.*.*)
 
  versions/VERSION
