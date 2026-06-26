@@ -240,12 +240,12 @@ C  --------------------------------------------
       CALL GET_ENVIRONMENT_VARIABLE('mNET',mNET)
 
       print *
-      if(net.eq.'cdas' .or. net.eq.'cdc') then
+      if(mNET.eq.'cdas' .or. mNET.eq.'cdc') then
          print'(" --> Running in ",A," network - CALL IN-LINE ROUTINE ",
-     $    "GBLEVENTS_CDAS (expects CDAS-style sigma guess)")', net
+     $    "GBLEVENTS_CDAS (expects CDAS-style sigma guess)")', mNET
       else
          print'(" --> Running in ",A," network - CALL W3NCO ROUTINE ",
-     $    "GBLEVENTS (expects GFS-style sigma or hybrid guess)")', net
+     $    "GBLEVENTS (expects GFS-style sigma or hybrid guess)")', mNET
       end if
       print *
 
