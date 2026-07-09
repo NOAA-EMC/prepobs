@@ -895,6 +895,9 @@ cd $DATA
 
 qid=$$
 
+#Backward Compatability for the continued use of $NET when $NET != obsproc
+if [[ "$NET" != "obsproc" ]]; then mNET="$NET"; fi
+
 #####################################################
 #####################################################
 # create error check and exit utilities if necessary.
