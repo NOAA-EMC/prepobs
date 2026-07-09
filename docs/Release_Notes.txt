@@ -1,5 +1,5 @@
-prepobs v1.1.2  RELEASED        JUN 22, 2026
-        v1.1.2  IMPLEMENTED     ??? ??, 2026
+prepobs v1.1.2->1.2.0  RELEASED JUN 22, 2026
+        v1.2.0         IMPLEMENTED     ??? ??, 2026
         NOTE:v1.1.2 was initially installed on Aug 6,2025, but NCO reverted to using v1.1.1 due to counting bug
              SPA/Diane proposed this is v1.2.0 due to the extensive code changes, could update version if needed
 
