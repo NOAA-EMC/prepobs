@@ -5,9 +5,7 @@ list(APPEND ush_files
   gdas_summary.sh
   gdascounts_combine.sh
   getges.sh
-  getges_v17.sh
   getges_driver.sh
-  getges_driver_v17.sh
   getges_nc.sh
   getges_nc_v17.sh
   getges_sig.sh

@@ -1,6 +1,7 @@
 prepobs v1.1.2  RELEASED        JUN 22, 2026
         v1.1.2  IMPLEMENTED     ??? ??, 2026
- (v1.1.2 was initially installed on Aug 6,2025, but NCO reverted to using v1.1.1 due to counting bug)
+        NOTE:v1.1.2 was initially installed on Aug 6,2025, but NCO reverted to using v1.1.1 due to counting bug
+             SPA/Diane proposed this is v1.2.0 due to the extensive code changes, could update version if needed
 
 PRELUDE
  Prepobs is updated for:
@@ -35,9 +36,7 @@ FILE CHANGES
  M ush/build.sh
  M ush/CMakeLists.txt
  M ush/gdas_countstat.sh
- A ush/getges_driver_v17.sh
  A ush/getges_nc_v17.sh
- A ush/getges_v17.sh
  M ush/prepobs_makeprepbufr.sh
  M ush/prepobs_prevents.sh
  M versions/build.ver
@@ -74,7 +73,7 @@ SOURCE CHANGES (grouped by change type, not alphabetically)
  sorc/prepobs_prepacqc.fd/CMakeLists.txt
  sorc/prepobs_prevents.fd/CMakeLists.txt
  Add "ip" package
-
+ 
  sorc/gblevents.fd/gblevents.f
  sorc/prepobs_cqcbufr.fd/cqcbufr.f
  sorc/prepobs_cqcvad.fd/cqcvad.f
@@ -97,7 +96,15 @@ USH CHANGES
  Introduce BUILD_TYPE for easier "Debug" mode build
  
  ush/CMakeLists.txt
- Add new scripts getges_v17.sh, getges_driver_v17.sh, getges_nc_v17.sh
+ Add new script getges_nc_v17.sh
+
+ ush/getges_driver.sh
+ 
+ ush/getges_nc.sh
+ Update the echo statements to reflect correct script name
+
+ ush/getges_nc_v17.sh
+ Identical to getges_nc.sh functionality but with the GSFv17 paths and filenames for model fields
  
  ush/gdas_countstat.sh
  Correct snow obs counts

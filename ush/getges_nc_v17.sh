@@ -1,9 +1,10 @@
 #!/bin/ksh
 ################################################################################
 #
-# Name:  getges.sh            Author:  Mark Iredell
+# Name:  getges_nc_v17.sh            Author:  Mark Iredell
 #
 # Abstract:
+# This script starts as a version of getges_nc.sh (which is a ver of getges.sh) 
 # This script copies the valid global guess file to a given file.
 # Alternatively, it writes the name of the guess file to standard output.
 # Specify option "-n network" for the job network (default global).
@@ -92,6 +93,7 @@
 #                                         logf file) prior to committing to cp'ing the
 #                                         file to sgesprep. This primarily impacts
 #                                         rap_prep at cycles 03, 09, 15, 21.
+#          2026 June        Genkova       Updated getges_nc.sh for GFSv17
 #####
 #
 ################################################################################
@@ -145,7 +147,7 @@ fi
 if [[ $gfile = '?' || $# -gt 1 || $err -ne 0 || -z $valid ||\
       $netwk = '?' || $envir = '?' || $fhour = '?' || $resol = '?' ||\
       $typef = '?' || $valid = '?' ]];then
- echo "Usage: getges.sh [-n network] [-e environment] [-f fhour] [-q] [-r resolution]" >&2
+ echo "Usage: getges_nc_v17.sh [-n network] [-e environment] [-f fhour] [-q] [-r resolution]" >&2
  echo "                 [-t filetype] [-v valid] [gfile]" >&2
  if [[ $netwk = '?' ]];then
   echo "         network choices:" >&2
@@ -226,7 +228,7 @@ getlist00=""
 # GDAS
 if [[ "$netwk" = "gdas" ]];then
  if [ -z "$COMINgdas" ]; then
-   echo "getges.sh ERROR: The \$COMINgdas variable must be defined." >&2
+   echo "getges_nc_v17.sh ERROR: The \$COMINgdas variable must be defined." >&2
    exit 1
  fi
  fhend=12
@@ -391,7 +393,7 @@ if [[ "$netwk" = "gdas" ]];then
 # CFS-CDAS
 elif [[ "$netwk" = "cfs-cdas" ]];then
  if [ -z "$COMINcfs_cdas" ]; then
-   echo "getges.sh ERROR: The \$COMINcfs_cdas variable must be defined." >&2
+   echo "getges_nc_v17.sh ERROR: The \$COMINcfs_cdas variable must be defined." >&2
    exit 1
  fi
  fhend=12
@@ -590,7 +592,7 @@ elif [[ "$netwk" = "cfs-cdas" ]];then
 # GFS - CONTINUE HERE IG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 elif [[ "$netwk" = "gfs" ]];then
  if [ -z "$COMINgfs" ]; then
-   echo "getges.sh ERROR: The \$COMINgfs variable must be defined." >&2
+   echo "getges_nc_v17.sh ERROR: The \$COMINgfs variable must be defined." >&2
    exit 1
  fi
  fhend=384
@@ -663,7 +665,7 @@ elif [[ "$netwk" = "gfs" ]];then
 # CDAS
 elif [[ "$netwk" = "cdas" ]];then
  if [ -z "$COMINcdas" ]; then
-   echo "getges.sh ERROR: The \$COMINcdas variable must be defined." >&2
+   echo "getges_nc_v17.sh ERROR: The \$COMINcdas variable must be defined." >&2
    exit 1
  fi
  fhbeg=06
@@ -824,7 +826,7 @@ elif [[ "$netwk" = "cdas" ]];then
 # CDC CDAS
 elif [[ "$netwk" = "cdc" ]];then
  if [ -z "$COMINcdc" ]; then
-   echo "getges.sh ERROR: The \$COMINcdc variable must be defined." >&2
+   echo "getges_nc_v17.sh ERROR: The \$COMINcdc variable must be defined." >&2
    exit 1
  fi
  fhbeg=06
@@ -985,11 +987,11 @@ elif [[ "$netwk" = "cdc" ]];then
 # Any resolution production
 elif [[ "$netwk" = "global" ]];then
  if [ -z "$COMINgdas" ]; then
-   echo "getges.sh ERROR: The \$COMINgdas variable must be defined." >&2
+   echo "getges_nc_v17.sh ERROR: The \$COMINgdas variable must be defined." >&2
    exit 1
  fi
  if [ -z "$COMINgfs" ]; then
-   echo "getges.sh ERROR: The \$COMINgfs variable must be defined." >&2
+   echo "getges_nc_v17.sh ERROR: The \$COMINgfs variable must be defined." >&2
    exit 1
  fi
  GETGES_NWG=${GETGES_NWG:-${COMROOT:?}/nwges}
@@ -1335,18 +1337,18 @@ if [[ $valid -lt 20000000 ]];then
  echo '************************************************************' >&2
 fi
 if [[ $($NDATE 0 $valid 2>/dev/null) != $valid ]];then
- echo getges.sh: invalid date $valid >&2
+ echo getges_nc_v17.sh: invalid date $valid >&2
  exit 2
 fi
 if [[ -z "$geslist" ]];then
- echo getges.sh: filetype $typef or resolution $resol not recognized >&2
+ echo getges_nc_v17.sh: filetype $typef or resolution $resol not recognized >&2
  exit 2
 fi
 
 #-------------------------------------------------------------------------------
 # Loop until guess is found.
 fh=$fhbeg
-if [ -z "$PDY" ];then echo "getges.sh WARNING: \$PDY variable not set" >&2; fi
+if [ -z "$PDY" ];then echo "getges_nc_v17.sh WARNING: \$PDY variable not set" >&2; fi
 while [[ $fh -le $fhend ]];do
  ((fhm6=10#$fh-6))
  [[ $fhm6 -lt 10 && $fhm6 -ge 0 ]]&&fhm6=0$fhm6
@@ -1409,7 +1411,7 @@ while [[ $fh -le $fhend ]];do
  [[ $fh -lt 10 ]]&&fh=0$fh
 done
 if [[ $fh -gt $fhend ]];then
- echo getges.sh: unable to find $netwk.$envir.$typef.$resol.$valid >&2
+ echo getges_nc_v17.sh: unable to find $netwk.$envir.$typef.$resol.$valid >&2
  exit 8
 fi
 
