@@ -2600,11 +2600,12 @@ C$$$
 C-----------------------------------------------------------------------
 
       SUBROUTINE DRCTSL(FAALL,RAALL,DOTPRD,NDIM,MAXDIM,NXXYY,NFT,LEV,IV)
+      PARAMETER(NST=2499)
 
-      DIMENSION  FAALL(1000,10), DOTPRD(1000,1),
-     .           RAALL(1000,4,1), NDIM(1000)
+      DIMENSION  FAALL(NST,10), DOTPRD(NST,1),
+     .           RAALL(NST,4,1), NDIM(NST)
 
-      DIMENSION  A(1000,10),B(1000,4,1),BAD(1000),SMOOTH(6)
+      DIMENSION  A(NST,10),B(NST,4,1),BAD(NST),SMOOTH(6)
 
       LOGICAL BAD
       DATA SMOOTH /1.00,1.01,1.02,1.05,1.10,2.00/
@@ -8984,12 +8985,13 @@ C   MACHINE:  NCEP WCOSS
 C
 C$$$
       SUBROUTINE MIMAP(XQC,YQC,NREP)
+      PARAMETER(NST=2499)
 
       DIMENSION XQC(NREP),YQC(NREP)
 
-      COMMON /OBLIST/ NOB,INOB(1000),IMAP(360,181)
+      COMMON /OBLIST/ NOB,INOB(NST),IMAP(360,181)
 
-      DIMENSION INDD(1000)
+      DIMENSION INDD(NST)
 
 C-----------------------------------------------------------------------
 C-----------------------------------------------------------------------
@@ -10728,6 +10730,11 @@ C$$$
 C-----------------------------------------------------------------------
       SUBROUTINE QCOI(LDIM,IDIM,L0,IV0,NOB1,NOB2,IDH,OINC,HRES,HSTD,WTS)
       PARAMETER (NST=2499)
+      PARAMETER (MAXGRP=NST)
+      PARAMETER (MAXNEI=4*NST)
+      PARAMETER (MAXPAIR=6*NST)
+ 
+
 
       REAL(8) BMISS
 
@@ -10737,7 +10744,7 @@ C-----------------------------------------------------------------------
       DIMENSION HSTD(  LDIM,IDIM,NOB1:NOB2)
       DIMENSION WTS (4,LDIM,IDIM,NOB1:NOB2)
 
-      COMMON /OBLIST/ NOBN,INOB(1000),IMAP(360,181)
+      COMMON /OBLIST/ NOBN,INOB(NST),IMAP(360,181)
       COMMON /CORP  / CHLP(0:1500),CVC,IFA(4,4)
       COMMON /LEVEL/   PMAND(21)
       COMMON /HEADER/  CID(NST), DHR(NST), SLON(NST), SLAT(NST),
@@ -10747,18 +10754,16 @@ C-----------------------------------------------------------------------
 
       CHARACTER*8 CID
 
-      DIMENSION  NCIND(1000+1),NDIM(1000),NKOBS(4000),
-     .           XXCP(4000),YYCP(4000),IICP(4000),
-     .           XXOBS(4000),YYOBS(4000),FCAOBS(4000),
-     .           CHTWV(10000),DIST(10000),ZZ(10000),
-     .           XXI(10000),YYI(10000),XXJ(10000),YYJ(10000)
+      DIMENSION  NCIND(MAXGRP+1),NDIM(MAXGRP),NKOBS(MAXNEI),
+     .           XXCP(MAXNEI),YYCP(MAXNEI),IICP(MAXNEI),
+     .           XXOBS(MAXNEI),YYOBS(MAXNEI),FCAOBS(MAXNEI),
+     .           CHTWV(MAXPAIR),DIST(MAXPAIR),ZZ(MAXPAIR),
+     .           XXI(MAXPAIR),YYI(MAXPAIR),XXJ(MAXPAIR),YYJ(MAXPAIR)
 
-      DIMENSION FAALL(1000,10),RAALL(1000,4,1),DOTPRD(1000,1)
+      DIMENSION FAALL(MAXGRP,10),RAALL(MAXGRP,4,1),DOTPRD(MAXGRP,1)
 
       DATA MAXDIM /4/
       DATA MINDIM /2/
-C-----make MAXOBS consistent with other MAXOBS across prepobs---------      
-      DATA MAXOBS /4500/ 
       DATA NFT    /1/
 
 C-----------------------------------------------------------------------
@@ -10792,14 +10797,14 @@ C  CLEAR OUT THE GARBAGE IN THE MATRIX ARRAYS
 C  ------------------------------------------
 
           DO J=1,MAXDIM*(MAXDIM+1)/2
-            DO I=1,MAXOBS
+            DO I=1,MAXGRP
               FAALL(I,J) = 0.
             ENDDO
           ENDDO
 
           DO K=1,NFT
             DO J=1,MAXDIM
-              DO I=1,MAXOBS
+              DO I=1,MAXGRP
                 RAALL(I,J,K) = 0.
               ENDDO
             ENDDO
@@ -11300,7 +11305,7 @@ C$$$
       INTEGER   IDH (4,LDIM,IDIM,NOBN)
       REAL      OINC(  LDIM,IDIM,NOBN)
 
-      COMMON /OBLIST/ NOBN,INOB(1000),IMAP(360,181)
+      COMMON /OBLIST/ NOBN,INOB(NST),IMAP(360,181)
       COMMON /HEADER/  CID(NST), DHR(NST), SLON(NST), SLAT(NST),
      &                 SELV(NST), SQN(NST), ITP(NST), NLV,
      &                 NEV, ISF(NST), NLVM, NLVW
@@ -11312,15 +11317,15 @@ C$$$
       LOGICAL          TEST
       CHARACTER*8 CID
 
-      DIMENSION  NIND(1000),RLAT(1000),RLON(1000),
-     .           DIST(1000),DIRN(1000),OBOK(1000),
-     .           NDIR(1000),IA(2),IB(2)
+      DIMENSION  NIND(NST),RLAT(NST),RLON(NST),
+     .           DIST(NST),DIRN(NST),OBOK(NST),
+     .           NDIR(NST),IA(2),IB(2)
 
       LOGICAL    OBOK, ISISO
       LOGICAL    OG(21,4,NST)
 
       DATA PI180/.0174532/, RADE/6371./
-      DATA MAXCYL/1000/
+      DATA MAXCYL/NST/
 
 C----------------------------------------------------------------------
 C----------------------------------------------------------------------
@@ -14626,12 +14631,12 @@ C$$$
 C-----------------------------------------------------------------------
 
       SUBROUTINE VSOLVE (A,B,NDIM,BAD,NFT,NS,MAXDIM)
+      PARAMETER(NST=2499)
 
-
-      DIMENSION A(1000,10),B(1000,4,1),NDIM(1000),BAD(1000)
+      DIMENSION A(NST,10),B(NST,4,1),NDIM(NST),BAD(NST)
       LOGICAL BAD
 
-      DIMENSION T(1000)
+      DIMENSION T(NST)
 
       DATA CNUM/1.E-15/
 
