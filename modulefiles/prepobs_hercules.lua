@@ -2,7 +2,7 @@ help([[
 Load environment to build prepobs on Hercules
 ]])
 
-prepend_path("MODULEPATH", os.getenv("spack_stack_mod_path"))
+prepend_path("MODULEPATH", os.getenv("stack_core_path"))
 
 stack_oneapi_ver=os.getenv("stack_oneapi_ver") or "2024.2.1"
 stack_intel_oneapi_mpi_ver=os.getenv("stack_intel_oneapi_mpi_ver") or "2021.13"

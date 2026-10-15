@@ -1,7 +1,8 @@
 export stack_oneapi_ver=2024.2.1
 export stack_intel_oneapi_mpi_ver=2021.13
+export spack_stack_env=ue-oneapi-2024.1.0
+
+export spack_stack_root="/apps/contrib/spack-stack"
 source "${HOMEprepobs:-}/versions/spack.ver"
-export spack_env=ue-oneapi-2024.1.0
-export spack_stack_mod_path="/apps/contrib/spack-stack/spack-stack-${spack_stack_ver}/envs/${spack_env}/install/modulefiles/Core"
 
 export gfs_ver=v17.0
