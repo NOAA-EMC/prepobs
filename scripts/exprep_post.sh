@@ -59,7 +59,7 @@ echo "                not on the whole hour (needed for new RTMA_RU runs)     "
 echo "                (Keyser).                                               "
 ###############################################################################
 
-# NOTE: NET is gfs for the gdas RUN (as for the gfs RUN)
+# NOTE: mNET is gfs for the gdas RUN (as for the gfs RUN)
 # -------------------------------------------------------
 
 set -aux
@@ -98,7 +98,7 @@ tmhr=`echo $tmmark|cut -c3-4`
 cdate10=`$NDATE -$tmhr $PDY$cyc`$hr_fraction
 cycp=`echo $cdate10|cut -c9-10`
 
-net=$NET
+net=$mNET
 
 [[ $RUN == rap_p ]]  &&  net=rap_p
 [[ $RUN == rap_e ]]  &&  net=rap_e
@@ -262,7 +262,7 @@ CENTERED ON $cdate10"
     Note 4: In array IMASK_T29, a value of "99999" means not applicable whereas
             a value of "000" means reports in all dump report types in the
             corresponding Table A entry in MSG_MASKA should be considered {in 
-            this case IMASK_T29(1,x) would be set to 000 and IMASK_T29(2:10,x)
+	    this case IMASK_T29(1,x) would be set to 000 and IMASK_T29(2:10,x)
             should be set to 99999 for all reports in Table A entry
             MSG_MASKA(x) since they would all be ignored - this is the default
             for all Table A entries MSG_MASKA(1:20) if this switch is not set
@@ -506,7 +506,7 @@ if [ -f $COMINm2/$RUN.$cycle.prepbufr${dot_tmmark} ]; then
    errsc=$?
    [ "$errsc" -ne '0' ]  &&  exit $errsc
    cp $RUN.$cycle.prepbufr${dot_tmmark} \
-    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
+    $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur 
    chmod 664 $COMOUTm2/$RUN.$cycle.prepbufr${dot_tmmark}.ur
    msg="$RUN.$cycle.prepbufr${dot_tmmark}.nr from 2-days ago successfully \
 created -- overwrite existing file made 2-days ago"

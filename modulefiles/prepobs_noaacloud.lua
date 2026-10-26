@@ -2,7 +2,7 @@ help([[
 Load environment to build prepobs on NOAA cloud
 ]])
 
-prepend_path("MODULEPATH", os.getenv("spack_stack_mod_path"))
+prepend_path("MODULEPATH", os.getenv("stack_core_path"))
 prepend_path("MODULEPATH", "/apps/modules/modulefiles")
 
 gnu_ver=os.getenv("gnu_ver") or "13.2.0"

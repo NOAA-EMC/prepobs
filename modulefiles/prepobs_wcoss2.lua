@@ -25,7 +25,7 @@ load(pathJoin("craype", craype_ver))
 load(pathJoin("cray-mpich", cray_mpich_ver))
 
 load(pathJoin("hdf5-D", hdf5_ver))
-load(pathJoin("pnetcdf-D", netcdf_ver))
+load(pathJoin("pnetcdf-D", pnetcdf_ver))
 load(pathJoin("netcdf-D", netcdf_ver))
 load(pathJoin("bacio", bacio_ver))
 load(pathJoin("w3emc", w3emc_ver))

@@ -53,8 +53,11 @@
     for d_cyc in t00z t06z t12z t18z
     do
       cycdir=$(echo ${d_cyc} | sed 's/^.\(.*\).$/\1/')
-      #INFILE=${COMIN1}${PDY}/${cycdir}/$COMPONENT/$RUN.${d_cyc}.gsistat        
-      INFILE=${COMINgdas}${PDY}/${cycdir}/$COMPONENT/$RUN.${d_cyc}.gsistat # nco suggested
+      if [[ "$gfs_ver_num" -le 16 ]]; then
+         INFILE=${COMINgdas}${PDY}/${cycdir}/$COMPONENT/$RUN.${d_cyc}.gsistat # nco suggested
+      else
+         INFILE=${COMINgdas}${PDY}/${cycdir}/analysis/atmos/$RUN.${d_cyc}.gsistat.txt # for GFSv17
+      fi
       if [ ! -f $INFILE ]; then
             echo -e "\n\n  INFILE:  $INFILE  does not exist \n\n"
             break

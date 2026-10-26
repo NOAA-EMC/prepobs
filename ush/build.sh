@@ -5,11 +5,12 @@ set -eux
 # Location of PWD and package source directory.
 readonly pkg_root=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )/.." && pwd -P)
 
+BUILD_TYPE=${BUILD_TYPE:-"Release"}
 INSTALL_TARGET=${INSTALL_TARGET:-"wcoss2"}
 INSTALL_PREFIX=${INSTALL_PREFIX:-"${pkg_root}/install"}
 MODULEFILE_INSTALL_PREFIX=${MODULEFILE_INSTALL_PREFIX:-"${INSTALL_PREFIX}/modulefiles"}
 
-target="${INSTALL_TARGET,,}"
+target=$(echo $INSTALL_TARGET | tr [:upper:] [:lower:])
 if [[ "${target}" =~ ^(wcoss2|hera|ursa|orion|hercules|gaeac5|gaeac6|noaacloud)$ ]]; then
   # prepare the target specific build.ver and run.ver
   cd "${pkg_root}/versions" || exit 1
