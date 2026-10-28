@@ -1845,6 +1845,7 @@ set -x
 } >> $mp_pgmout
 
 cd $data
+rm -f fort.91 fort.92 uprairids
 
 if [ "$PARALLEL" = 'YES' ]; then
 
@@ -1894,6 +1895,22 @@ else
    dump_dir=$DATA
 
 # fi for $PARALLEL = YES
+fi
+
+# In serial mode, build the same UPRAIR id list used for ADPUPA duplicate
+# filtering in parallel mode.
+if [ "$PARALLEL" = 'NO' ]; then
+   if [ -s $dump_dir/uprair -a -s $dump_dir/adpupa ] ; then
+      export FORT11=$dump_dir/uprair
+      export FORT51=uprair.serial.copy
+      cat<<EOF|$TIMEIT $MPCOPYX >> $mp_pgmout 2>&1
+ &namin nfiles=1 /
+ &mp nprocs=1,mp_process=0 /
+EOF
+      err=$?
+      [ "$err" -gt '0' ]  && exit
+      rm -f uprair.serial.copy
+   fi
 fi
 
 
@@ -2014,12 +2031,12 @@ then
    echo "" > $data/fort.92
   fi
 else
- if [ -s $DATA/fort.91 ]
+ if [ -s $data/fort.91 ]
  then
-  cat $DATA/fort.91 > $DATA/uprairids
-  ln -sf $DATA/uprairids $DATA/fort.92
+  cat $data/fort.91 > $DATA/uprairids
+  ln -sf $data/uprairids $DATA/fort.92
  else
-  echo "" > $DATA/fort.92
+  echo "" > $data/fort.92
  fi
 fi
 ###

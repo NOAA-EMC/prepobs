@@ -3054,7 +3054,7 @@ C     ---> PROCESSES ADPUPA DATA (002/*, 004/005)
       COMMON/IUBFMM/XIND(255)
  
       CHARACTER*80 HDSTR,LVSTR,QMSTR,RCSTR,HDSTB
-      CHARACTER*8  SUBSET,SID,RSV1,RSV2,BHD,BQ,RID2(750)
+      CHARACTER*8  SUBSET,SID,RSV1,RSV2,BHD,BQ,RIDT,BQT
       REAL(8)  RID_8,HDR_8(12),VSG_8(255),OBS2_8(43),OBS3_8(5,255,7),
      $ RCT_8(5,255),ARR_8(10,255),RAT_8(255),RMORE_8(4),RGP10_8(255),
      $ PRGP10_8(255),RPMSL_8,RPSAL_8,BMISS,AMINIMUM_8,obs8_8(2),
@@ -3127,20 +3127,20 @@ CCdesc  revisit for descending radiosonde profiles
        IF (BHD(3:3).EQ.'S') NBFLG = 3
        IF((BHD(3:3).EQ.'S').AND.(IFTH.LE.5)) NBFLG = 4
 CCdesc IF (BHD(3:3).EQ.'X')) NBFLG = 5
-       IF (SUBSET(1:6).EQ.'NC0021') WRITE(95,'(A8,1X,A8)') SID, BHD
       END IF
 
       IF (SUBSET(1:6).EQ.'NC0020') THEN
-       NX=1
        IRT=0
-       RID2=''
+       RIDT=''
+       BQT=''
        OPEN(92,IOSTAT=INP)
        IF(INP.EQ.0) THEN
         REWIND 92
-        DO WHILE (NX.LT.700.AND.NSKP.EQ.0.AND.IRT.EQ.0)
-         READ(92,'(A8,1X,A8)',IOSTAT=IRT) RID2(NX), BQ
-         IF(SID.EQ.RID2(NX)) NSKP=1
-         NX=NX+1
+        DO WHILE (NSKP.EQ.0.AND.IRT.EQ.0)
+         READ(92,'(A8,1X,A8)',IOSTAT=IRT) RIDT, BQT
+         IF(IRT.EQ.0) THEN
+            IF(SID.EQ.RIDT.AND.BHD.EQ.BQT) NSKP=1
+         ENDIF
         ENDDO
         CLOSE(92)
        ENDIF
