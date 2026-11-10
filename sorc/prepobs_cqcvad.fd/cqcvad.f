@@ -129,7 +129,7 @@ C$$$
       REAL(8)   BMISS,GETBMISS
 
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /BIRDST/stnidx(9999,-3:3),alatx(9999,-3:3),
      & alonx(9999,-3:3),knt_5_yes(9999,-3:3),knt_5_no(9999,-3:3),
      & numrpt(9999,-3:3)
@@ -300,7 +300,7 @@ C$$$
       BLOCK DATA
       PARAMETER (NLEV=35)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /HTS/ IZLEV(NLEV), ZLEV(NLEV)
       COMMON /CONSTS/ MAT,E,AA,B,XL,R
       COMMON /BIRDST/stnidx(9999,-3:3),alatx(9999,-3:3),
@@ -385,7 +385,7 @@ C$$$
      &                QQQ(NLEV,NTIMES,NINC,NSTN)
       COMMON /DATET/  IDATE(4), ITIM(6)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /BUFRLIB_MISSING/BMISS
       COMMON /HTS/    IZLEV(NLEV), ZLEV(NLEV)
       COMMON /DMATYP/ IQC(NLEV,NTIMES,NINC,NSTN)
@@ -1080,7 +1080,7 @@ C$$$
      &                QALEV(nevnt), RCEV(nevnt)
       COMMON /HTS/    IZLEV(NLEV), ZLEV(NLEV)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /BUFRLIB_MISSING/BMISS
       COMMON /FLAG/   guess
       COMMON /BIRDST/stnidx(9999,-3:3),alatx(9999,-3:3),
@@ -1140,7 +1140,7 @@ C  ----------------
       enddo loop1
 
       IF(NEVN.GT.0) CALL EVENTW(IOUT,WEVN,NLV,UE,VE,QALE,RCE,INP,NEVN,
-     &                          CQCPC)
+     &                          real(ICQCPC))
 
       if(print_52)  then
 
@@ -1213,7 +1213,7 @@ C 1994-MM-DD  J. WOOLLEN
 C 1997-05-23  W. COLLINS  MODIFIED FOR WIND EVENT.
 C 2012-03-05  S. MELCHIOR  CLARIFIED DOCUMENTATION.
 C
-C USAGE:   CALL EVENTW(LUNIT,EVNSTR,NLV,UOBS,VOBS,QMS,RCS,IND,NEVN,QCPC)
+C USAGE:   CALL EVENTW(LUNIT,EVNSTR,NLV,UOBS,VOBS,QMS,RCS,IND,NEVN,IQCPC)
 C   INPUT ARGUMENT LIST:
 C     LUNIT    - UNIT NUMBER
 C     EVNSTR   - EVENT STREAM OF CHARACTERS
@@ -1354,7 +1354,7 @@ C$$$
       COMMON /HTS/ IZLEV(NLEV), ZLEV(NLEV)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT,
      &                CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /BUFRLIB_MISSING/BMISS
       COMMON /BIRDS/ BIRDTIME
       DATA ITIMES/0, 2,01,0,0,0,0,0,
@@ -1464,9 +1464,9 @@ C  ---------------------------------
       IF(IRETMG.NE.0) GOTO 6
       WRITE(CDATE,'(I10)') KDATE
       PRINT*,'DATA VALID AT ',CDATE
-      CALL UFBQCD(IUNIT,'CQCVAD ',CQCPC)
-      WRITE(6,502) CQCPC
-  502 FORMAT(' PROGRAM CODE NUMBER =',F5.0)
+      CALL UFBQCD(IUNIT,'CQCVAD ',ICQCPC)
+      WRITE(6,502) ICQCPC
+  502 FORMAT(' PROGRAM CODE NUMBER =',I5.5)
       CALL CLOSBF(IUNIT)
       REWIND IUNIT
       CALL OPENBF(IUNIT,'IN',IUNIT)
@@ -1713,7 +1713,7 @@ C$$$
       PARAMETER (NLEV=35)
       COMMON /HTS/ IZLEV(NLEV), ZLEV(NLEV)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
 
       IHT = 0
       IER = 0
@@ -1795,7 +1795,7 @@ C$$$
      &                TFC(NLEV,NTIMES,NINC,NSTN),
      &                QQQ(NLEV,NTIMES,NINC,NSTN)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /HTS/ IZLEV(NLEV), ZLEV(NLEV)
       COMMON /DATET/  IDATE(4), ITIM(6)
 
@@ -1983,7 +1983,7 @@ C$$$
      &                TFC(NLEV,NTIMES,NINC,NSTN),
      &                QQQ(NLEV,NTIMES,NINC,NSTN)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /BUFRLIB_MISSING/BMISS
       COMMON /FLAG/ guess
       LOGICAL     guess, FIRST
@@ -2191,7 +2191,7 @@ C$$$
       REAL(8)   BMISS
 
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /INCS/   UIN(NLEV,NTIMES,NINC,NSTN),
      &                VIN(NLEV,NTIMES,NINC,NSTN),
      &                UUU(NLEV,NTIMES,NINC,NSTN),
@@ -2260,7 +2260,7 @@ C$$$
      &                QQQ(NLEV,NTIMES,NINC,NSTN)
       COMMON /HTS/  IZLEV(NLEV), ZLEV(NLEV)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /CONSTS/ MAT,E,AA,B,XL,R
       DATA IFIRST /0/
 
@@ -2409,7 +2409,7 @@ C$$$
       COMMON /HTS/ IZLEV(NLEV), ZLEV(NLEV)
       COMMON /CONSTS/ MAT,E,AA,B,XL,R
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /BIRDS/  BIRDTIME
       COMMON /DMATYP/ IQC(NLEV,NTIMES,NINC,NSTN)
       COMMON /DATET/  IDATE(4), ITIM(6)
@@ -2713,7 +2713,7 @@ C$$$
       COMMON /HTRES/  RGU(NLEV,NTIMES,NINC,NSTN),
      &                RGV(NLEV,NTIMES,NINC,NSTN)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /HTS/    IZLEV(NLEV), ZLEV(NLEV)
       COMMON /DATET/  IDATE(4), ITIM(6)
       COMMON /DMATYP/ IQC(NLEV,NTIMES,NINC,NSTN)
@@ -2829,7 +2829,7 @@ C$$$
      &                QQQ(NLEV,NTIMES,NINC,NSTN)
       COMMON /HTS/ IZLEV(NLEV), ZLEV(NLEV)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /COLECT/ LS(NSTN,NLEV,NINC), JS(NSTN,NLEV,NINC),
      &                NS(NSTN,NLEV,NINC), NC(NLEV,NINC),
      &                DS(NSTN,NLEV,NINC),
@@ -2934,7 +2934,7 @@ C$$$
      &                QQQ(NLEV,NTIMES,NINC,NSTN)
       COMMON /MATRIC/ A(NSTN,45), C(NSTN,9), NMAT(NSTN), NM
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
 
 C  SOLVE THE MATRIX PROBLEMS
 C    A IS THE SYMMETRIC MATRIX (IN TRIANGULAR FORM)
@@ -3139,7 +3139,7 @@ C$$$
 
       PARAMETER (NLEV=35,NTIMES=6)
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
 
 C  PERFORM OI ANALYSIS IN Z-T PLANE, ONE STATION AT A TIME.
 C  PERFORM OI ANALYSIS FOR THE CENTRAL 3 HOURS
@@ -3206,7 +3206,7 @@ C$$$
 
       COMMON /MATRIC/ A(NSTN,45), C(NSTN,9), NMAT(NSTN), NM
       COMMON /PARAMS/ IUNIT, IUTIM, IOUT, CON, IHE, NUM, NST,
-     &                CQCPC, NEV, NME
+     &                ICQCPC, NEV, NME
       COMMON /INCS/   UIN(NLEV,NTIMES,NINC,NSTN),
      &                VIN(NLEV,NTIMES,NINC,NSTN),
      &                UUU(NLEV,NTIMES,NINC,NSTN),

@@ -59,7 +59,7 @@ echo "                not on the whole hour (needed for new RTMA_RU runs)     "
 echo "                (Keyser).                                               "
 ###############################################################################
 
-# NOTE: NET is gfs for the gdas RUN (as for the gfs RUN)
+# NOTE: mNET is gfs for the gdas RUN (as for the gfs RUN)
 # -------------------------------------------------------
 
 set -aux
@@ -98,7 +98,7 @@ tmhr=`echo $tmmark|cut -c3-4`
 cdate10=`$NDATE -$tmhr $PDY$cyc`$hr_fraction
 cycp=`echo $cdate10|cut -c9-10`
 
-net=$NET
+net=$mNET
 
 [[ $RUN == rap_p ]]  &&  net=rap_p
 [[ $RUN == rap_e ]]  &&  net=rap_e

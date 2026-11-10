@@ -97,7 +97,7 @@ program prepobs_glerladj
   real(8),dimension(5)::wndarr,sobarr
   real(4),dimension(dictmax)::wlat,wlon,llat,llon,olat,olon
   real(8)::bmiss,getbmiss
-  real(4)::vtcd,pcode
+  integer(4)::vtcd,pcode
   real(4)::newlat,newlon,tdiff,newtyp,otyp,rpt,newrpt,newtypmass,windtyp
   real(4)::wlatnew,wlonnew,llatnew,llonnew
   real(4)::lat,lon,temp,dewpt,uob,vob,wspd,wdir,wtemp,sob,ddo
@@ -452,7 +452,7 @@ program prepobs_glerladj
                     do j=1,20
                        temp=real(tobs(1,k,j),4)
                        tqm=real(tobs(2,k,j),4)
-                       if (nint(tpc(k,j)).eq.nint(vtcd)) then
+                       if (nint(tpc(k,j)).eq.vtcd) then
                           temp=real(tobs(1,k,j+1),4)
                           tqm=real(tobs(2,k,j+1),4)
                           !go ahead and assume sensible sits after virtual in stack.  Use program code to check this.

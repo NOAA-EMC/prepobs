@@ -13,6 +13,6 @@ add_executable(${exe_name} ${fortran_src})
 target_link_libraries(
   ${exe_name}
   w3emc::w3emc_d
-  bufr::bufr_d)
+  bufr::bufr_4)
 
 install(TARGETS ${exe_name} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

@@ -6,7 +6,7 @@ file(STRINGS "versions/VERSION" pVersion)
 project(
   obsproc
   VERSION ${pVersion}
-  LANGUAGES Fortran)
+  LANGUAGES C Fortran)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
