@@ -123,6 +123,35 @@ VERSIONS CHANGES
 
  versions/VERSION
  Update to this release's version v1.1.2
+prepobs v1.1.2  RELEASED        JUN 18, 2025
+        v1.1.2  IMPLEMENTED     AUG 11, 2025 (tbc)
+
+PRELUDE
+ This update supports obsproc.v1.2.6 and bufr-dump.v1.3.0 releases. Please implement simultaneously.
+ prepobs.v1.1.2 prevents counting twice the observations in adpsfc and sfcsno
+
+FILE CHANGES
+ M docs/Release_Notes.txt
+ M ush/gdas_countstat.sh
+ M versions/VERSION
+ (M-modified; A-added; D-deleted)
+
+IMPORTANT:
+ fix/prepobs_landc and
+ fix/syndat_syndata.slmask.t126.gaussian
+ must be present for the implementation (take from prepobs v1.1.0)
+
+DOCS CHANGES
+ docs/Release_Notes.txt
+ Updated for this release.
+
+USH CHANGES
+ ush/gdas_countstat.sh
+ Count only adpsfc, skip sfcsno when counting obs
+
+VERSIONS CHANGES
+ versions/VERSION
+ Update to this release's versione
 
 CHANGES TO OUTPUT AND FILE SIZES
  None
@@ -139,6 +168,23 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 prepobs v1.1.1  RELEASED        FEB 21, 2025
         v1.1.1  IMPLEMENTED     FEB 24, 2025 (v1.1.2 was first installed Aug6,2025, 
                                               but NCO reverted to v1.1.1 due to counting bug)
+ Run osbproc's
+     jobs/JOBSPROC_networkname_DUMP*,  jobs/JOBSPROC_networkname_DUMP*_POST
+     jobs/JOBSPROC_networkname_PREP*, jobs/JOBSPROC_networkname_PREP*_POST
+
+DISSEMINATION INFORMATION
+ No changes to dissemination on WCOSS2
+
+SPECIAL INSTRUCTIONS
+ 1. Implement release/obsproc.v1.2.6, release/bufr-dump.v1.3.0, and release/prepobs.v1.1.2 at the same time
+
+ 2. obsproc/bufr-dump/prepobs new versions need to be propagated to 
+     i) GFS global workflow (rahul.mahajan@noaa.gov@noaa.gov) 
+     ii) SDM and thanks (kelly.kempisty@noaa.gov )
+     iii) EVS (alicia.bentley@noaa.gov@noaa.gov) 
+
+prepobs v1.1.1  RELEASED        FEB 21, 2025
+        v1.1.1  IMPLEMENTED     MAR 05, 2025
 
 PRELUDE
  Per Executive Order 14172, remove references to Gulf of Mexico
@@ -177,7 +223,7 @@ DISSEMINATION INFORMATION
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 prepobs v1.1.0	RELEASED	AUG ??, 2023
-	v1.1.?	IMPLEMENTED	??? ??, 2023
+	v1.1.0	IMPLEMENTED	MAY 22, 2023
 
 PRELUDE
 
